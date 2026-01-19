@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Student Dashboard - View your digital student ID">
+    <title>Student Dashboard - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
+    <style>
+        .section-card {
+            background: var(--white);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--space-6);
+            overflow: hidden;
+        }
+
+        .section-card-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: var(--space-4) var(--space-6);
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .section-card-body {
+            padding: var(--space-6);
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--space-5);
+        }
+
+        .detail-grid.three-col {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .detail-item {
+            padding: var(--space-3);
+            background: var(--grey-50);
+            border-radius: var(--radius);
+            border-left: 3px solid var(--primary);
+        }
+
+        .detail-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--grey-500);
+            margin-bottom: var(--space-1);
+            font-weight: 600;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--grey-800);
+            font-size: 0.95rem;
+        }
+
+        .detail-item.full-width {
+            grid-column: span 2;
+        }
+
+        .academic-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .academic-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: var(--space-3) var(--space-4);
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+        }
+
+        .academic-table td {
+            padding: var(--space-3) var(--space-4);
+            border-bottom: 1px solid var(--grey-200);
+        }
+
+        .academic-table tr:nth-child(even) {
+            background: var(--grey-50);
+        }
+
+        .academic-table tr:hover {
+            background: var(--primary-light);
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: var(--space-1) var(--space-3);
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background: var(--success-light);
+            color: var(--success);
+        }
+
+        .status-ongoing {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .verification-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            padding: var(--space-2) var(--space-4);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .method-tag {
+            display: inline-block;
+            background: var(--grey-100);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            margin-right: var(--space-2);
+            margin-bottom: var(--space-2);
+        }
+
+        .govt-note {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-left: 4px solid #f59e0b;
+            padding: var(--space-4);
+            border-radius: var(--radius);
+            margin-top: var(--space-4);
+        }
+
+        .govt-note p {
+            margin: 0;
+            color: #92400e;
+            font-size: 0.85rem;
+        }
+
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: var(--space-8);
+            align-items: start;
+        }
+
+        @media (max-width: 1024px) {
+            .two-column-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-grid.three-col {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🎓</div>
+                <span>USDI</span>
+            </a>
+            <nav class="nav">
+                <a href="dashboard.html" class="active">My ID</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard">
+        <div class="container">
+            <!-- Welcome Header -->
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">Welcome, <span id="student-name">Student</span></h1>
+                <p class="dashboard-subtitle">Your official digital student identity</p>
+            </div>
+
+            <div class="two-column-layout">
+                <!-- Left Column: ID Card -->
+                <div>
+                    <div class="section-header">
+                        <h3 class="section-title">Digital Student ID</h3>
+                    </div>
+
+                    <!-- ID Card -->
+                    <div class="id-card" id="id-card">
+                        <div class="id-card-header">
+                            <div class="id-card-logo">🎓</div>
+                            <div>
+                                <div class="id-card-title">UNIFIED STUDENT DIGITAL ID</div>
+                                <div class="id-card-subtitle">Government of India Initiative</div>
+                            </div>
+                        </div>
+                        <div class="id-card-body">
+                            <div class="id-card-photo">
+                                <div
+                                    style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--grey-200), var(--grey-300)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
+                                    👤
+                                </div>
+                            </div>
+                            <div class="id-card-info">
+                                <div class="id-card-name" id="card-name">Loading...</div>
+                                <div class="id-card-usn" id="card-usn">USN</div>
+                                <div class="id-card-details">
+                                    <div>
+                                        <span>Institution</span>
+                                        <div id="card-institution">-</div>
+                                    </div>
+                                    <div>
+                                        <span>Course</span>
+                                        <div id="card-course">-</div>
+                                    </div>
+                                    <div>
+                                        <span>Semester</span>
+                                        <div id="card-semester">-</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="id-card-footer">
+                            <div id="card-status"></div>
+                            <div class="id-card-qr" id="qr-code"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-4 mt-6">
+                        <button class="btn btn-primary" onclick="downloadPDF()">
+                            📥 Download PDF
+                        </button>
+                        <button class="btn btn-secondary" onclick="shareLink()">
+                            🔗 Share Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Column: All Details -->
+                <div>
+                    <!-- SECTION 1: Personal Details -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            👤 Personal Details
+                        </div>
+                        <div class="section-card-body">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Full Name</div>
+                                    <div class="detail-value" id="detail-name">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Date of Birth</div>
+                                    <div class="detail-value" id="detail-dob">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Gender</div>
+                                    <div class="detail-value" id="detail-gender">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Mobile Number</div>
+                                    <div class="detail-value" id="detail-mobile">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Email ID</div>
+                                    <div class="detail-value" id="detail-email">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Unique Student ID (USDI)</div>
+                                    <div class="detail-value" id="detail-usn"
+                                        style="color: var(--primary); font-weight: 700;">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Nationality</div>
+                                    <div class="detail-value" id="detail-nationality">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">State / District</div>
+                                    <div class="detail-value" id="detail-location">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 2: Current Institution -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            🏫 Current Institution
+                        </div>
+                        <div class="section-card-body">
+                            <div class="detail-grid">
+                                <div class="detail-item full-width">
+                                    <div class="detail-label">Institution Name</div>
+                                    <div class="detail-value" id="detail-institution">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Institution Type</div>
+                                    <div class="detail-value" id="detail-inst-type">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Affiliated Authority</div>
+                                    <div class="detail-value" id="detail-authority">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Course</div>
+                                    <div class="detail-value" id="detail-course">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Branch Code</div>
+                                    <div class="detail-value" id="detail-branch">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Mode of Study</div>
+                                    <div class="detail-value" id="detail-mode">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Admission Type</div>
+                                    <div class="detail-value" id="detail-admission-type">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Current Semester</div>
+                                    <div class="detail-value" id="detail-semester">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Academic Status</div>
+                                    <div class="detail-value" id="detail-status">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Batch</div>
+                                    <div class="detail-value" id="detail-batch">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Expected Completion</div>
+                                    <div class="detail-value" id="detail-completion">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: Institution Identifiers -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            🆔 Institution Identifiers
+                        </div>
+                        <div class="section-card-body">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">College Admission Number</div>
+                                    <div class="detail-value" id="detail-admission-no">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Polytechnic Register Number</div>
+                                    <div class="detail-value" id="detail-register-no">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Exam Registration Number</div>
+                                    <div class="detail-value" id="detail-exam-no">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Roll Number</div>
+                                    <div class="detail-value" id="detail-roll-no">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 4: Academic History Table -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            📚 Academic History
+                        </div>
+                        <div class="section-card-body" style="padding: 0;">
+                            <table class="academic-table" id="academic-table">
+                                <thead>
+                                    <tr>
+                                        <th>Qualification</th>
+                                        <th>Institution</th>
+                                        <th>Board / Authority</th>
+                                        <th>Year</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="academic-table-body">
+                                    <!-- Rows will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 5: USDI Verification Details -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            ✅ USDI Verification Details
+                        </div>
+                        <div class="section-card-body">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">USDI Account Status</div>
+                                    <div class="detail-value">
+                                        <span class="verification-badge" id="verification-status">✓ Verified</span>
+                                    </div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">QR Code Status</div>
+                                    <div class="detail-value" id="qr-status">-</div>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <div class="detail-label">Verification Methods Enabled</div>
+                                    <div class="detail-value" id="verification-methods">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Last Updated By</div>
+                                    <div class="detail-value" id="updated-by">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Last Updated Date</div>
+                                    <div class="detail-value" id="updated-date">-</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 6: Government Fields -->
+                    <div class="section-card">
+                        <div class="section-card-header">
+                            🏛️ Government Record Information
+                        </div>
+                        <div class="section-card-body">
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <div class="detail-label">Identity Type</div>
+                                    <div class="detail-value" id="identity-type">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Record Authority</div>
+                                    <div class="detail-value" id="record-authority">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Data Source</div>
+                                    <div class="detail-value" id="data-source">-</div>
+                                </div>
+                                <div class="detail-item">
+                                    <div class="detail-label">Data Usage</div>
+                                    <div class="detail-value" id="data-usage">-</div>
+                                </div>
+                            </div>
+                            <div class="govt-note">
+                                <p>⚠️ <strong>Note:</strong> All data shown is sample data for prototype demonstration
+                                    purposes. No real government database is connected. This data is for prototype,
+                                    presentation, and evaluation only.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Unified Student Digital ID System (USDI) - Prototype</p>
+        </div>
+    </footer>
+
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="share-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Share Verification Link</h3>
+                <button class="modal-close" onclick="closeShareModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="mb-4">Share this link with employers or verifiers to confirm your student status:</p>
+                <div style="display: flex; gap: var(--space-2);">
+                    <input type="text" id="share-link" class="form-input" readonly>
+                    <button class="btn btn-primary" onclick="copyLink()">Copy</button>
+                </div>
+                <p class="form-hint mt-4">This link allows anyone to verify your current academic status.</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        let currentStudent = null;
+
+        // Check authentication
+        function checkAuth() {
+            const isLoggedIn = sessionStorage.getItem('usdi_student_logged_in');
+            const usn = sessionStorage.getItem('usdi_student_usn');
+
+            if (!isLoggedIn || !usn) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            currentStudent = USDI_DATA.getStudentByUSN(usn);
+            if (!currentStudent) {
+                sessionStorage.clear();
+                window.location.href = 'login.html';
+                return;
+            }
+
+            renderDashboard();
+        }
+
+        function renderDashboard() {
+            const student = currentStudent;
+
+            // Welcome header
+            document.getElementById('student-name').textContent = student.fullName.split(' ')[0];
+
+            // ID Card
+            document.getElementById('card-name').textContent = student.fullName;
+            document.getElementById('card-usn').textContent = student.usn;
+            document.getElementById('card-institution').textContent = student.institutionShortName || student.institution;
+            document.getElementById('card-course').textContent = student.course;
+            document.getElementById('card-semester').textContent = student.semesterYear;
+
+            // Status badge on card
+            const statusBadge = document.getElementById('card-status');
+            statusBadge.innerHTML = `<span class="badge badge-${student.status.toLowerCase()}">${student.status}</span>`;
+
+            // Generate QR Code
+            const verifyUrl = `${window.location.origin}/usdi-system/verifier/verify.html?usn=${student.usn}`;
+            QRCode.toCanvas(document.createElement('canvas'), verifyUrl, { width: 72 }, (err, canvas) => {
+                if (!err) {
+                    document.getElementById('qr-code').innerHTML = '';
+                    document.getElementById('qr-code').appendChild(canvas);
+                }
+            });
+
+            // SECTION 1: Personal Details
+            document.getElementById('detail-name').textContent = student.fullName;
+            document.getElementById('detail-dob').textContent = student.dobFormatted || formatDate(student.dob);
+            document.getElementById('detail-gender').textContent = student.gender || '-';
+            document.getElementById('detail-mobile').textContent = student.mobile;
+            document.getElementById('detail-email').textContent = student.email || '-';
+            document.getElementById('detail-usn').textContent = student.usn;
+            document.getElementById('detail-nationality').textContent = student.nationality || 'Indian';
+            document.getElementById('detail-location').textContent = `${student.state || 'Kerala'}, ${student.district || '-'}`;
+
+            // SECTION 2: Current Institution
+            document.getElementById('detail-institution').textContent = student.institution;
+            document.getElementById('detail-inst-type').textContent = student.institutionType || '-';
+            document.getElementById('detail-authority').textContent = student.affiliatedAuthority || '-';
+            document.getElementById('detail-course').textContent = student.course;
+            document.getElementById('detail-branch').textContent = student.branchCode || '-';
+            document.getElementById('detail-mode').textContent = student.modeOfStudy || 'Regular';
+            document.getElementById('detail-admission-type').textContent = student.admissionType || '-';
+            document.getElementById('detail-semester').textContent = student.semesterYear;
+            document.getElementById('detail-status').innerHTML = `<span class="badge badge-${student.status.toLowerCase()}">${student.status}</span>`;
+            document.getElementById('detail-batch').textContent = student.batch || '-';
+            document.getElementById('detail-completion').textContent = student.expectedCompletionYear || '-';
+
+            // SECTION 3: Institution Identifiers
+            if (student.institutionIdentifiers) {
+                document.getElementById('detail-admission-no').textContent = student.institutionIdentifiers.collegeAdmissionNumber || '-';
+                document.getElementById('detail-register-no').textContent = student.institutionIdentifiers.polytechnicRegisterNumber || '-';
+                document.getElementById('detail-exam-no').textContent = student.institutionIdentifiers.examRegistrationNumber || '-';
+                document.getElementById('detail-roll-no').textContent = student.institutionIdentifiers.rollNumber || '-';
+            }
+
+            // SECTION 4: Academic History Table
+            const tableBody = document.getElementById('academic-table-body');
+            if (student.academicHistoryTable && student.academicHistoryTable.length > 0) {
+                tableBody.innerHTML = student.academicHistoryTable.map(item => `
+                    <tr>
+                        <td><strong>${item.qualification}</strong></td>
+                        <td>${item.institution}</td>
+                        <td>${item.board}</td>
+                        <td>${item.year}</td>
+                        <td><span class="status-pill status-${item.status.toLowerCase()}">${item.status}</span></td>
+                    </tr>
+                `).join('');
+            } else {
+                tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--grey-500);">No academic history available</td></tr>';
+            }
+
+            // SECTION 5: Verification Details
+            if (student.verification) {
+                document.getElementById('verification-status').innerHTML = `✓ ${student.verification.accountStatus}`;
+                document.getElementById('qr-status').textContent = student.verification.qrCodeStatus || 'Active';
+                document.getElementById('verification-methods').innerHTML = (student.verification.methods || []).map(m =>
+                    `<span class="method-tag">✓ ${m}</span>`
+                ).join('');
+                document.getElementById('updated-by').textContent = student.verification.lastUpdatedBy || '-';
+                document.getElementById('updated-date').textContent = student.verification.lastUpdatedDate || '-';
+            }
+
+            // SECTION 6: Government Fields
+            if (student.governmentFields) {
+                document.getElementById('identity-type').textContent = student.governmentFields.identityType || '-';
+                document.getElementById('record-authority').textContent = student.governmentFields.recordAuthority || '-';
+                document.getElementById('data-source').textContent = student.governmentFields.dataSource || '-';
+                document.getElementById('data-usage').textContent = student.governmentFields.dataUsage || '-';
+            }
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('id-card');
+            const opt = {
+                margin: 10,
+                filename: `USDI_${currentStudent.usn}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a5', orientation: 'landscape' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        function shareLink() {
+            const baseUrl = window.location.origin;
+            const verifyUrl = `${baseUrl}/usdi-system/verifier/verify.html?usn=${currentStudent.usn}`;
+            document.getElementById('share-link').value = verifyUrl;
+            document.getElementById('share-modal').classList.add('active');
+        }
+
+        function closeShareModal() {
+            document.getElementById('share-modal').classList.remove('active');
+        }
+
+        function copyLink() {
+            const linkInput = document.getElementById('share-link');
+            linkInput.select();
+            document.execCommand('copy');
+            alert('Link copied to clipboard!');
+        }
+
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        // Close modal on outside click
+        document.getElementById('share-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeShareModal();
+            }
+        });
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+
+</html>

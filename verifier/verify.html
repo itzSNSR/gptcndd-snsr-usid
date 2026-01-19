@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Student Verification Portal - Instantly verify student identity and status">
+    <title>Verify Student - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="../index.html" class="logo">
+                <div class="logo-icon">🎓</div>
+                <span>USDI</span>
+            </a>
+            <nav class="nav">
+                <a href="../student/login.html">Student</a>
+                <a href="../institution/login.html">Institution</a>
+                <a href="verify.html" class="active">Verifier</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="page-section">
+        <div class="container container-sm">
+            <!-- Verification Box -->
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2 style="margin: 0;">Student Verification</h2>
+                    <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Instantly verify student identity
+                        and academic status</p>
+                </div>
+                <div class="card-body">
+                    <!-- Search Form -->
+                    <div id="search-section">
+                        <div class="form-group">
+                            <label class="form-label">Enter Unique Student Number (USN)</label>
+                            <input type="text" id="usn-input" class="form-input form-input-lg"
+                                placeholder="e.g., USDI2024001" style="text-transform: uppercase;">
+                            <p class="form-hint">Enter the student's USN to verify their current status</p>
+                        </div>
+                        <button class="btn btn-primary btn-lg btn-block" onclick="verifyStudent()">
+                            🔍 Verify Student
+                        </button>
+
+                        <div class="text-center mt-6">
+                            <p class="text-muted text-sm mb-4">— OR —</p>
+                            <button class="btn btn-outline btn-block" onclick="simulateQRScan()">
+                                📷 Scan QR Code
+                            </button>
+                            <p class="form-hint mt-4">Scan the QR code on the student's digital ID card</p>
+                        </div>
+                    </div>
+
+                    <!-- Result Section -->
+                    <div id="result-section" class="hidden">
+                        <!-- Verified Result -->
+                        <div id="verified-result" class="hidden">
+                            <div class="verify-result">
+                                <div class="verify-icon success">✓</div>
+                                <div class="verify-status success">VERIFIED</div>
+                                <p class="text-muted">This student is registered in the USDI system</p>
+                            </div>
+
+                            <div
+                                style="background: var(--grey-50); border-radius: var(--radius-lg); padding: var(--space-6); margin-top: var(--space-6);">
+                                <h4 style="margin-bottom: var(--space-4);">Student Details</h4>
+                                <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+                                    <div>
+                                        <p class="text-xs text-muted"
+                                            style="text-transform: uppercase; letter-spacing: 0.5px;">Full Name</p>
+                                        <p id="result-name" style="font-weight: 600; font-size: 1.125rem;">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-muted"
+                                            style="text-transform: uppercase; letter-spacing: 0.5px;">USN</p>
+                                        <p id="result-usn" style="font-weight: 600;">-</p>
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <p class="text-xs text-muted"
+                                            style="text-transform: uppercase; letter-spacing: 0.5px;">Institution</p>
+                                        <p id="result-institution" style="font-weight: 500;">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-muted"
+                                            style="text-transform: uppercase; letter-spacing: 0.5px;">Course</p>
+                                        <p id="result-course" style="font-weight: 500;">-</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-xs text-muted"
+                                            style="text-transform: uppercase; letter-spacing: 0.5px;">Semester/Year</p>
+                                        <p id="result-semester" style="font-weight: 500;">-</p>
+                                    </div>
+                                    <div style="grid-column: span 2;">
+                                        <p class="text-xs text-muted"
+                                            style="text-transform: uppercase; letter-spacing: 0.5px;">Current Status</p>
+                                        <p id="result-status">-</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                style="background: var(--success-light); border-radius: var(--radius); padding: var(--space-4); margin-top: var(--space-4); text-align: center;">
+                                <p class="text-sm" style="color: var(--success);">
+                                    ✓ Verified on <span id="verify-timestamp">-</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Invalid Result -->
+                        <div id="invalid-result" class="hidden">
+                            <div class="verify-result">
+                                <div class="verify-icon error">✕</div>
+                                <div class="verify-status error">INVALID</div>
+                                <p class="text-muted">No student found with this USN</p>
+                            </div>
+
+                            <div
+                                style="background: var(--danger-light); border-radius: var(--radius); padding: var(--space-4); margin-top: var(--space-4); text-align: center;">
+                                <p class="text-sm" style="color: var(--danger);">
+                                    The entered USN does not exist in the system. Please check and try again.
+                                </p>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-secondary btn-block mt-6" onclick="resetSearch()">
+                            ← Verify Another Student
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Info Box -->
+            <div class="card mt-6">
+                <div class="card-body">
+                    <h4 style="margin-bottom: var(--space-4);">About Verification</h4>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: var(--space-3);">
+                        <li style="display: flex; gap: var(--space-3);">
+                            <span style="color: var(--success);">✓</span>
+                            <span class="text-sm">Verification is instant and reflects real-time student status</span>
+                        </li>
+                        <li style="display: flex; gap: var(--space-3);">
+                            <span style="color: var(--success);">✓</span>
+                            <span class="text-sm">No login required for verification</span>
+                        </li>
+                        <li style="display: flex; gap: var(--space-3);">
+                            <span style="color: var(--success);">✓</span>
+                            <span class="text-sm">Status updates by institutions reflect immediately</span>
+                        </li>
+                        <li style="display: flex; gap: var(--space-3);">
+                            <span style="color: var(--success);">✓</span>
+                            <span class="text-sm">QR codes on student ID cards link directly to verification</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Demo USNs -->
+            <div class="card mt-6">
+                <div class="card-body">
+                    <h4 style="margin-bottom: var(--space-4);">Demo USNs for Testing</h4>
+                    <div class="grid grid-2" style="gap: var(--space-3);">
+                        <div style="background: linear-gradient(135deg, var(--primary-light), #dbeafe); padding: var(--space-3); border-radius: var(--radius); cursor: pointer; border: 2px solid var(--primary);"
+                            onclick="fillUSN('USIDSN082006')">
+                            <code style="color: var(--primary); font-weight: 700;">USIDSN082006</code> - Sabarinadh S R
+                            (Active)
+                        </div>
+                        <div style="background: var(--grey-50); padding: var(--space-3); border-radius: var(--radius); cursor: pointer;"
+                            onclick="fillUSN('USDI2024001')">
+                            <code>USDI2024001</code> - Rahul Sharma (Active)
+                        </div>
+                        <div style="background: var(--grey-50); padding: var(--space-3); border-radius: var(--radius); cursor: pointer;"
+                            onclick="fillUSN('USDI2023015')">
+                            <code>USDI2023015</code> - Amit Kumar (Graduated)
+                        </div>
+                        <div style="background: var(--grey-50); padding: var(--space-3); border-radius: var(--radius); cursor: pointer;"
+                            onclick="fillUSN('USDI2024003')">
+                            <code>USDI2024003</code> - Sneha Reddy (Transferred)
+                        </div>
+                    </div>
+                    <p class="form-hint mt-4">Click any USDI above to auto-fill and verify</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>© 2024 Unified Student Digital ID System (USDI)</p>
+        </div>
+    </footer>
+
+    <!-- QR Scan Modal -->
+    <div class="modal-overlay" id="qr-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">Scan QR Code</h3>
+                <button class="modal-close" onclick="closeQRModal()">×</button>
+            </div>
+            <div class="modal-body text-center">
+                <div
+                    style="width: 200px; height: 200px; background: var(--grey-100); border-radius: var(--radius-lg); margin: 0 auto var(--space-4); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
+                    📷
+                </div>
+                <p class="text-muted mb-4">Point your camera at the QR code on the student's digital ID</p>
+                <p class="text-sm"
+                    style="background: var(--info-light); color: var(--info); padding: var(--space-3); border-radius: var(--radius);">
+                    Demo Mode: Click "Simulate Scan" to test with a sample student
+                </p>
+                <button class="btn btn-primary btn-block mt-4" onclick="doSimulatedScan()">
+                    Simulate Scan (Demo)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        // Check for USN in URL params (from shared link or QR code)
+        function checkURLParams() {
+            const params = new URLSearchParams(window.location.search);
+            const usn = params.get('usn');
+            if (usn) {
+                document.getElementById('usn-input').value = usn;
+                verifyStudent();
+            }
+        }
+
+        function verifyStudent() {
+            const usn = document.getElementById('usn-input').value.trim().toUpperCase();
+
+            if (!usn) {
+                alert('Please enter a USN to verify');
+                return;
+            }
+
+            const result = USDI_DATA.verifyStudent(usn);
+
+            document.getElementById('search-section').classList.add('hidden');
+            document.getElementById('result-section').classList.remove('hidden');
+
+            if (result.verified) {
+                showVerifiedResult(result.data);
+            } else {
+                showInvalidResult();
+            }
+        }
+
+        function showVerifiedResult(data) {
+            document.getElementById('verified-result').classList.remove('hidden');
+            document.getElementById('invalid-result').classList.add('hidden');
+
+            document.getElementById('result-name').textContent = data.fullName;
+            document.getElementById('result-usn').textContent = data.usn;
+            document.getElementById('result-institution').textContent = data.institution;
+            document.getElementById('result-course').textContent = data.course;
+            document.getElementById('result-semester').textContent = data.semesterYear;
+
+            const statusBadge = `<span class="badge badge-lg badge-${data.status.toLowerCase()}">${data.status}</span>`;
+            document.getElementById('result-status').innerHTML = statusBadge;
+
+            const now = new Date();
+            document.getElementById('verify-timestamp').textContent = now.toLocaleString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showInvalidResult() {
+            document.getElementById('verified-result').classList.add('hidden');
+            document.getElementById('invalid-result').classList.remove('hidden');
+        }
+
+        function resetSearch() {
+            document.getElementById('usn-input').value = '';
+            document.getElementById('search-section').classList.remove('hidden');
+            document.getElementById('result-section').classList.add('hidden');
+            document.getElementById('verified-result').classList.add('hidden');
+            document.getElementById('invalid-result').classList.add('hidden');
+
+            // Clear URL params
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        function fillUSN(usn) {
+            document.getElementById('usn-input').value = usn;
+            verifyStudent();
+        }
+
+        function simulateQRScan() {
+            document.getElementById('qr-modal').classList.add('active');
+        }
+
+        function closeQRModal() {
+            document.getElementById('qr-modal').classList.remove('active');
+        }
+
+        function doSimulatedScan() {
+            closeQRModal();
+            // Simulate scanning - use a random demo USN
+            const demoUSNs = ['USDI2024001', 'USDI2024002', 'USDI2023015'];
+            const randomUSN = demoUSNs[Math.floor(Math.random() * demoUSNs.length)];
+            document.getElementById('usn-input').value = randomUSN;
+            verifyStudent();
+        }
+
+        // Enter key handling
+        document.getElementById('usn-input').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') verifyStudent();
+        });
+
+        // Close modal on outside click
+        document.getElementById('qr-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeQRModal();
+            }
+        });
+
+        // Initialize
+        checkURLParams();
+    </script>
+</body>
+
+</html>

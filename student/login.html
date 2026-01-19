@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Student Login - Access your digital student ID">
+    <title>Student Login - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-icon">🎓</div>
+                <h2>Student Portal</h2>
+                <p class="text-muted">Access your Digital Student ID</p>
+            </div>
+            <div class="login-body">
+                <!-- Step 1: Mobile Number -->
+                <div id="step-mobile">
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="tel" id="mobile" class="form-input form-input-lg"
+                            placeholder="Enter 10-digit mobile number" maxlength="10">
+                        <p class="form-hint">Enter the mobile number registered with your institution</p>
+                    </div>
+                    <button id="btn-send-otp" class="btn btn-primary btn-lg btn-block" onclick="sendOTP()">
+                        Send OTP
+                    </button>
+                </div>
+
+                <!-- Step 2: OTP Verification -->
+                <div id="step-otp" class="hidden">
+                    <p class="text-center mb-6">Enter the 6-digit OTP sent to your mobile</p>
+                    <div class="otp-container mb-6">
+                        <input type="text" class="otp-input" maxlength="1" data-index="0">
+                        <input type="text" class="otp-input" maxlength="1" data-index="1">
+                        <input type="text" class="otp-input" maxlength="1" data-index="2">
+                        <input type="text" class="otp-input" maxlength="1" data-index="3">
+                        <input type="text" class="otp-input" maxlength="1" data-index="4">
+                        <input type="text" class="otp-input" maxlength="1" data-index="5">
+                    </div>
+                    <button id="btn-verify-otp" class="btn btn-primary btn-lg btn-block" onclick="verifyOTP()">
+                        Verify & Login
+                    </button>
+                    <p class="text-center mt-4">
+                        <a href="#" onclick="goBack()" class="text-sm">← Change mobile number</a>
+                    </p>
+                </div>
+
+                <!-- Error Message -->
+                <div id="error-message" class="hidden"
+                    style="background: var(--danger-light); color: var(--danger); padding: var(--space-3); border-radius: var(--radius); margin-top: var(--space-4); text-align: center;">
+                </div>
+
+                <!-- Demo Credentials -->
+                <div class="demo-credentials">
+                    <strong>Demo Credentials:</strong>
+                    <p><strong style="color: var(--primary);">USIDSN082006</strong> - Sabarinadh S R</p>
+                    <p>Mobile: <code>8590082365</code> | OTP: <code>082006</code></p>
+                    <hr style="margin: 8px 0; border-color: var(--grey-200);">
+                    <p><strong>USDI2024001</strong> - Rahul Sharma</p>
+                    <p>Mobile: <code>9876543210</code> | OTP: <code>123456</code></p>
+                </div>
+            </div>
+            <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--grey-200);">
+                <a href="../index.html" class="text-sm">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        const DEMO_OTP = '123456';
+        let currentMobile = '';
+
+        function sendOTP() {
+            const mobile = document.getElementById('mobile').value.trim();
+            const errorDiv = document.getElementById('error-message');
+
+            // Validate mobile number
+            if (!/^\d{10}$/.test(mobile)) {
+                showError('Please enter a valid 10-digit mobile number');
+                return;
+            }
+
+            // Check if student exists
+            const student = USDI_DATA.getStudentByMobile(mobile);
+            if (!student) {
+                showError('No student found with this mobile number. Please check and try again.');
+                return;
+            }
+
+            // Store mobile and show OTP step
+            currentMobile = mobile;
+            hideError();
+            document.getElementById('step-mobile').classList.add('hidden');
+            document.getElementById('step-otp').classList.remove('hidden');
+
+            // Focus first OTP input
+            document.querySelector('.otp-input').focus();
+
+            // Show success message (simulated OTP sent)
+            alert('OTP sent! For demo, use: 123456');
+        }
+
+        function verifyOTP() {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            let otp = '';
+            otpInputs.forEach(input => otp += input.value);
+
+            if (otp.length !== 6) {
+                showError('Please enter the complete 6-digit OTP');
+                return;
+            }
+
+            // Verify OTP - check student-specific OTP or fallback to demo OTP
+            const student = USDI_DATA.getStudentByMobile(currentMobile);
+            if (student) {
+                const validOTP = student.otp || '123456'; // Student-specific or default demo OTP
+                if (otp === validOTP) {
+                    // Store student USN in session
+                    sessionStorage.setItem('usdi_student_usn', student.usn);
+                    sessionStorage.setItem('usdi_student_logged_in', 'true');
+
+                    // Redirect to dashboard
+                    window.location.href = 'dashboard.html';
+                } else {
+                    showError('Invalid OTP. Please check and try again.');
+                }
+            } else {
+                showError('Verification failed. Please try again.');
+            }
+        }
+
+        function goBack() {
+            document.getElementById('step-otp').classList.add('hidden');
+            document.getElementById('step-mobile').classList.remove('hidden');
+            hideError();
+
+            // Clear OTP inputs
+            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error-message');
+            errorDiv.textContent = message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function hideError() {
+            document.getElementById('error-message').classList.add('hidden');
+        }
+
+        // OTP input handling
+        document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
+            input.addEventListener('input', (e) => {
+                const value = e.target.value;
+                if (value.length === 1 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            // Allow paste
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = e.clipboardData.getData('text').slice(0, 6);
+                paste.split('').forEach((char, i) => {
+                    if (inputs[i]) inputs[i].value = char;
+                });
+            });
+        });
+
+        // Enter key handling
+        document.getElementById('mobile').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') sendOTP();
+        });
+    </script>
+</body>
+
+</html>

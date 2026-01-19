@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Institution Admin Login">
+    <title>Institution Login - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-icon">🏛️</div>
+                <h2>Institution Portal</h2>
+                <p class="text-muted">Manage Student Records</p>
+            </div>
+            <div class="login-body">
+                <form id="login-form" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label class="form-label">Admin Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div id="error-message" class="hidden"
+                        style="background: var(--danger-light); color: var(--danger); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4); text-align: center;">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                        Login
+                    </button>
+                </form>
+
+                <!-- Demo Credentials -->
+                <div class="demo-credentials">
+                    <strong>Demo Credentials:</strong>
+                    <p>Username: <code>admin</code></p>
+                    <p>Password: <code>admin123</code></p>
+                </div>
+            </div>
+            <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--grey-200);">
+                <a href="../index.html" class="text-sm">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/data.js"></script>
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+
+            if (USDI_DATA.verifyAdmin(username, password)) {
+                sessionStorage.setItem('usdi_admin_logged_in', 'true');
+                sessionStorage.setItem('usdi_admin_user', username);
+                window.location.href = 'dashboard.html';
+            } else {
+                errorDiv.textContent = 'Invalid username or password';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Check if already logged in
+        if (sessionStorage.getItem('usdi_admin_logged_in') === 'true') {
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Unified Student Digital ID System - A centralized platform to manage and verify student identity in real time">
+    <title>USDI - Unified Student Digital ID System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">🎓</div>
+                <span>USDI</span>
+            </a>
+            <nav class="nav">
+                <a href="student/login.html">Student</a>
+                <a href="institution/login.html">Institution</a>
+                <a href="verifier/verify.html">Verifier</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Unified Student Digital ID System</h1>
+            <p>A centralized digital platform to manage and verify student identity in real time. One ID, Complete
+                Trust.</p>
+            <div class="flex gap-4 justify-center">
+                <a href="verifier/verify.html" class="btn btn-white btn-lg">Verify Student</a>
+                <a href="#portals" class="btn btn-outline btn-lg" style="border-color: white; color: white;">Learn
+                    More</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="text-center mb-8">
+                <h2>Why USDI?</h2>
+                <p class="text-muted">Modernizing student identity verification for the digital age</p>
+            </div>
+            <div class="grid grid-3">
+                <div class="feature-card">
+                    <div class="feature-icon">🆔</div>
+                    <h3>Digital Identity</h3>
+                    <p>Each student receives a unique, permanent Unique Student Number (USN) that serves as their
+                        digital identity throughout their academic journey.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Instant Verification</h3>
+                    <p>Employers and government offices can instantly verify student credentials using USN or QR code
+                        scan, eliminating fraud and delays.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🔄</div>
+                    <h3>Real-time Updates</h3>
+                    <p>Academic status updates reflect immediately across all portals. When an institution updates a
+                        record, verifiers see it instantly.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portal Cards Section -->
+    <section class="portal-cards" id="portals">
+        <div class="container">
+            <div class="text-center mb-8">
+                <h2>Access Portals</h2>
+                <p class="text-muted">Choose your portal based on your role in the system</p>
+            </div>
+            <div class="grid grid-3">
+                <!-- Student Portal -->
+                <div class="portal-card">
+                    <div class="portal-card-icon">👨‍🎓</div>
+                    <h3>Student Portal</h3>
+                    <p>View your official digital student ID, download as PDF, share verification links, and access your
+                        complete academic history.</p>
+                    <ul
+                        style="list-style: none; margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--grey-600);">
+                        <li>✓ View Digital ID Card</li>
+                        <li>✓ QR Code for Verification</li>
+                        <li>✓ Download PDF</li>
+                        <li>✓ Academic History</li>
+                    </ul>
+                    <a href="student/login.html" class="btn btn-primary btn-block">Access Student Portal</a>
+                </div>
+
+                <!-- Institution Portal -->
+                <div class="portal-card">
+                    <div class="portal-card-icon">🏛️</div>
+                    <h3>Institution Portal</h3>
+                    <p>Manage student records, update academic status, add new students, and maintain complete academic
+                        histories.</p>
+                    <ul
+                        style="list-style: none; margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--grey-600);">
+                        <li>✓ Add New Students</li>
+                        <li>✓ Auto-generate USN</li>
+                        <li>✓ Update Status</li>
+                        <li>✓ Manage Records</li>
+                    </ul>
+                    <a href="institution/login.html" class="btn btn-primary btn-block">Access Institution Portal</a>
+                </div>
+
+                <!-- Verifier Portal -->
+                <div class="portal-card">
+                    <div class="portal-card-icon">✅</div>
+                    <h3>Verifier Portal</h3>
+                    <p>Instantly verify student identity and current academic status. Quick, secure, and reliable
+                        verification.</p>
+                    <ul
+                        style="list-style: none; margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--grey-600);">
+                        <li>✓ Enter USN to Verify</li>
+                        <li>✓ Scan QR Code</li>
+                        <li>✓ Instant Results</li>
+                        <li>✓ No Login Required</li>
+                    </ul>
+                    <a href="verifier/verify.html" class="btn btn-success btn-block">Verify Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="features">
+        <div class="container">
+            <div class="text-center mb-8">
+                <h2>How It Works</h2>
+                <p class="text-muted">A seamless flow from enrollment to verification</p>
+            </div>
+            <div class="grid grid-4" style="text-align: center;">
+                <div>
+                    <div
+                        style="width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.5rem; font-weight: 700;">
+                        1</div>
+                    <h4>Enrollment</h4>
+                    <p class="text-sm text-muted">Institution adds student with auto-generated USN</p>
+                </div>
+                <div>
+                    <div
+                        style="width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.5rem; font-weight: 700;">
+                        2</div>
+                    <h4>Digital ID</h4>
+                    <p class="text-sm text-muted">Student receives digital ID with QR code</p>
+                </div>
+                <div>
+                    <div
+                        style="width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.5rem; font-weight: 700;">
+                        3</div>
+                    <h4>Updates</h4>
+                    <p class="text-sm text-muted">Institution updates status in real-time</p>
+                </div>
+                <div>
+                    <div
+                        style="width: 60px; height: 60px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto var(--space-4); font-size: 1.5rem; font-weight: 700;">
+                        4</div>
+                    <h4>Verification</h4>
+                    <p class="text-sm text-muted">Any verifier can instantly confirm status</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section class="portal-cards" id="courses" style="background: linear-gradient(135deg, #f0f9ff, #e0f2fe);">
+        <div class="container">
+            <div class="text-center mb-8">
+                <h2>Featured Courses</h2>
+                <p class="text-muted">Explore courses available under the USDI system</p>
+            </div>
+            <div class="grid grid-3">
+                <!-- Diploma in Computer Engineering -->
+                <div class="portal-card" style="border: 2px solid var(--primary); position: relative;">
+                    <div
+                        style="position: absolute; top: -12px; left: 20px; background: var(--primary); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;">
+                        FEATURED</div>
+                    <div class="portal-card-icon">💻</div>
+                    <h3>Diploma in Computer Engineering</h3>
+                    <p>A 3-year polytechnic program covering software development, hardware, networking, and modern
+                        computing technologies.</p>
+                    <ul
+                        style="list-style: none; margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--grey-600);">
+                        <li>✓ Duration: 3 Years (6 Semesters)</li>
+                        <li>✓ Authority: DTE Kerala</li>
+                        <li>✓ Mode: Regular / Full-time</li>
+                        <li>✓ Eligibility: SSLC / 10th Pass</li>
+                    </ul>
+                    <a href="student/login.html" class="btn btn-primary btn-block">View Student Portal</a>
+                </div>
+
+                <!-- B.Tech Computer Science -->
+                <div class="portal-card">
+                    <div class="portal-card-icon">🖥️</div>
+                    <h3>B.Tech Computer Science</h3>
+                    <p>A 4-year undergraduate engineering program focusing on computer science fundamentals and advanced
+                        technologies.</p>
+                    <ul
+                        style="list-style: none; margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--grey-600);">
+                        <li>✓ Duration: 4 Years (8 Semesters)</li>
+                        <li>✓ Affiliated Universities</li>
+                        <li>✓ Mode: Regular / Full-time</li>
+                        <li>✓ Eligibility: Plus Two (Science)</li>
+                    </ul>
+                    <a href="student/login.html" class="btn btn-secondary btn-block">View Portal</a>
+                </div>
+
+                <!-- B.Tech Electronics -->
+                <div class="portal-card">
+                    <div class="portal-card-icon">⚡</div>
+                    <h3>B.Tech Electronics</h3>
+                    <p>A 4-year undergraduate engineering program in electronics, communication systems, and embedded
+                        technologies.</p>
+                    <ul
+                        style="list-style: none; margin-bottom: var(--space-4); font-size: 0.875rem; color: var(--grey-600);">
+                        <li>✓ Duration: 4 Years (8 Semesters)</li>
+                        <li>✓ Affiliated Universities</li>
+                        <li>✓ Mode: Regular / Full-time</li>
+                        <li>✓ Eligibility: Plus Two (Science)</li>
+                    </ul>
+                    <a href="student/login.html" class="btn btn-secondary btn-block">View Portal</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="features" id="contact" style="background: var(--grey-800);">
+        <div class="container">
+            <div class="text-center mb-8">
+                <h2 style="color: white;">Contact Us</h2>
+                <p style="color: var(--grey-400);">Have questions? Get in touch with the USDI team</p>
+            </div>
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div class="card">
+                    <div class="card-body">
+                        <form id="contact-form" onsubmit="handleContactSubmit(event)">
+                            <div class="form-group">
+                                <label class="form-label">Your Name</label>
+                                <input type="text" id="contact-name" class="form-input"
+                                    placeholder="Enter your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="contact-email" class="form-input" placeholder="Enter your email"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Message</label>
+                                <textarea id="contact-message" class="form-input" rows="5"
+                                    placeholder="Write your message here..." required
+                                    style="resize: vertical;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block">
+                                📩 Send Message
+                            </button>
+                        </form>
+                        <div id="contact-success" class="hidden"
+                            style="background: var(--success-light); color: var(--success); padding: var(--space-4); border-radius: var(--radius); margin-top: var(--space-4); text-align: center;">
+                            ✓ Thank you for your message! We'll get back to you soon.
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: var(--space-6);">
+                    <p style="color: var(--grey-400); font-size: 0.9rem;">
+                        📧 Email: <a href="mailto:support@usdi.gov.in"
+                            style="color: var(--primary-light);">support@usdi.gov.in</a>
+                    </p>
+                    <p style="color: var(--grey-400); font-size: 0.9rem; margin-top: var(--space-2);">
+                        📞 Helpline: <a href="tel:1800123456" style="color: var(--primary-light);">1800-123-456</a>
+                        (Toll Free)
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8); margin-bottom: var(--space-6);">
+                <div>
+                    <h4 style="color: white; margin-bottom: var(--space-3);">Quick Links</h4>
+                    <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                        <a href="student/login.html" style="color: var(--grey-400); text-decoration: none;">Student
+                            Portal</a>
+                        <a href="institution/login.html"
+                            style="color: var(--grey-400); text-decoration: none;">Institution Portal</a>
+                        <a href="verifier/verify.html" style="color: var(--grey-400); text-decoration: none;">Verify
+                            Student</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: var(--space-3);">Featured Courses</h4>
+                    <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                        <a href="#courses" style="color: var(--grey-400); text-decoration: none;">Diploma in Computer
+                            Engineering</a>
+                        <a href="#courses" style="color: var(--grey-400); text-decoration: none;">B.Tech Computer
+                            Science</a>
+                        <a href="#courses" style="color: var(--grey-400); text-decoration: none;">B.Tech Electronics</a>
+                    </div>
+                </div>
+                <div>
+                    <h4 style="color: white; margin-bottom: var(--space-3);">Contact</h4>
+                    <div style="display: flex; flex-direction: column; gap: var(--space-2);">
+                        <span style="color: var(--grey-400);">📧 support@usdi.gov.in</span>
+                        <span style="color: var(--grey-400);">📞 1800-123-456</span>
+                        <a href="#contact" style="color: var(--primary-light); text-decoration: none;">Send Message</a>
+                    </div>
+                </div>
+            </div>
+            <div style="border-top: 1px solid var(--grey-700); padding-top: var(--space-4);">
+                <p>© 2026 Unified Student Digital ID System (USDI). All rights reserved.</p>
+                <p class="text-sm mt-4">This is a prototype for demonstration purposes only.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function handleContactSubmit(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('contact-name').value;
+            const email = document.getElementById('contact-email').value;
+            const message = document.getElementById('contact-message').value;
+
+            // For demo: just show success message
+            console.log('Contact Form Submitted:', { name, email, message });
+
+            // Hide form and show success
+            document.getElementById('contact-form').style.display = 'none';
+            document.getElementById('contact-success').classList.remove('hidden');
+
+            // Reset form after 5 seconds
+            setTimeout(() => {
+                document.getElementById('contact-form').reset();
+                document.getElementById('contact-form').style.display = 'block';
+                document.getElementById('contact-success').classList.add('hidden');
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>
