@@ -12,28 +12,63 @@
 <body>
     <div class="login-page">
         <div class="login-card">
+            <!-- Language Selector -->
+            <div style="position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.5rem; align-items: center;">
+                <div class="language-wrapper" style="margin: 0;">
+                    <div class="custom-dropdown" id="language-dropdown">
+                        <div class="dropdown-trigger" role="button" aria-haspopup="listbox" aria-expanded="false"
+                            tabindex="0">
+                            <span>🇺🇸 English</span>
+                            <span class="dropdown-icon">▼</span>
+                        </div>
+                        <div class="dropdown-options" role="listbox">
+                            <div class="dropdown-option selected" data-value="en" role="option" aria-selected="true"
+                                tabindex="0">
+                                <span>🇺🇸 English</span>
+                            </div>
+                            <div class="dropdown-option" data-value="ml" role="option" aria-selected="false"
+                                tabindex="0">
+                                <span>🇮🇳 മലയാളം</span>
+                            </div>
+                            <div class="dropdown-option" data-value="hi" role="option" aria-selected="false"
+                                tabindex="0">
+                                <span>🇮🇳 हिन्दी</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme"
+                    style="padding: 0.4rem 0.6rem;">
+                    <span class="theme-icon moon">🌙</span>
+                    <span class="theme-icon sun">☀️</span>
+                </button>
+            </div>
+
             <div class="login-header">
                 <div class="logo-icon">🏛️</div>
-                <h2>Institution Portal</h2>
-                <p class="text-muted">Manage Student Records</p>
+                <h2 data-i18n="institution_portal_title">Institution Portal</h2>
+                <p class="text-muted" data-i18n="institution_portal_desc">Manage Student Records</p>
             </div>
             <div class="login-body">
                 <form id="login-form" onsubmit="handleLogin(event)">
                     <div class="form-group">
-                        <label class="form-label">Admin Username</label>
-                        <input type="text" id="username" class="form-input" placeholder="Enter username" required>
+                        <label class="form-label" data-i18n="lbl_admin_username">Admin Username</label>
+                        <input type="text" id="username" class="form-input" placeholder="Enter username" required
+                            data-i18n="ph_username">
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Password</label>
-                        <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                        <label class="form-label" data-i18n="lbl_password">Password</label>
+                        <input type="password" id="password" class="form-input" placeholder="Enter password" required
+                            data-i18n="ph_password">
                     </div>
 
                     <!-- Error Message -->
                     <div id="error-message" class="hidden"
-                        style="background: var(--danger-light); color: var(--danger); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4); text-align: center;">
+                        style="background: var(--danger-light); color: var(--danger); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4); text-align: center;"
+                        data-i18n="err_login">
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg btn-block">
+                    <button type="submit" class="btn btn-primary btn-lg btn-block" data-i18n="login_btn">
                         Login
                     </button>
                 </form>
@@ -46,12 +81,15 @@
                 </div>
             </div>
             <div style="padding: var(--space-4); text-align: center; border-top: 1px solid var(--grey-200);">
-                <a href="../index.html" class="text-sm">← Back to Home</a>
+                <a href="../index.html" class="text-sm" data-i18n="link_back_home">← Back to Home</a>
             </div>
         </div>
     </div>
 
     <script src="../js/data.js"></script>
+    <script src="../js/theme.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/language.js"></script>
     <script>
         function handleLogin(e) {
             e.preventDefault();

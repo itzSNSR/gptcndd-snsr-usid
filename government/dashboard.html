@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Government Dashboard - Manage Academic Records">
+    <title>Government Dashboard - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        .gov-header {
+            background: linear-gradient(135deg, #1e3a5f, #0d1b2a);
+        }
+
+        .gov-badge {
+            background: #FFD700;
+            color: #1e3a5f;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .request-card {
+            border: 1px solid var(--grey-200);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+            margin-bottom: var(--space-4);
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .request-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .request-card.pending {
+            border-left: 4px solid var(--warning);
+        }
+
+        .request-card.approved {
+            border-left: 4px solid var(--success);
+        }
+
+        .request-card.rejected {
+            border-left: 4px solid var(--danger);
+        }
+
+        .academic-row {
+            display: grid;
+            grid-template-columns: 2fr 2fr 2fr 1fr 1fr auto;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--grey-100);
+            align-items: center;
+        }
+
+        .academic-row:hover {
+            background: var(--grey-50);
+        }
+
+        .tab-buttons {
+            display: flex;
+            gap: var(--space-2);
+            margin-bottom: var(--space-6);
+        }
+
+        .tab-btn {
+            padding: var(--space-3) var(--space-4);
+            border: 2px solid var(--grey-200);
+            background: white;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #1e3a5f;
+            color: white;
+            border-color: #1e3a5f;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header gov-header">
+        <div class="container">
+            <a href="../index.html" class="logo" style="color: white;">
+                <div class="logo-icon">🏛️</div>
+                <span>USDI <span class="gov-badge">GOV</span></span>
+            </a>
+            <nav class="nav">
+                <a href="dashboard.html" class="active" style="color: white;">Dashboard</a>
+                <a href="#" onclick="logout()" style="color: white;">Logout</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="dashboard">
+        <div class="container">
+            <!-- Header -->
+            <div class="dashboard-header flex justify-between items-center">
+                <div>
+                    <h1 class="dashboard-title" style="color: #1e3a5f;">🏛️ Government Portal</h1>
+                    <p class="dashboard-subtitle">Unified Student Digital ID System - Administrative Dashboard</p>
+                </div>
+                <div style="text-align: right;">
+                    <span class="gov-badge" style="font-size: 0.9rem; padding: 8px 16px;">Official ID: <span
+                            id="gov-user">GOV001</span></span>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-4 mb-8">
+                <div class="stat-card" style="border-top: 3px solid #1e3a5f;">
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-label">Total Students</div>
+                </div>
+                <div class="stat-card warning" style="border-top: 3px solid var(--warning);">
+                    <div class="stat-value" id="stat-pending">0</div>
+                    <div class="stat-label">Pending Requests</div>
+                </div>
+                <div class="stat-card success" style="border-top: 3px solid var(--success);">
+                    <div class="stat-value" id="stat-approved">0</div>
+                    <div class="stat-label">Approved Today</div>
+                </div>
+                <div class="stat-card" style="border-top: 3px solid var(--danger);">
+                    <div class="stat-value" id="stat-rejected">0</div>
+                    <div class="stat-label">Rejected Today</div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('requests')">📋 Edit Requests</button>
+                <button class="tab-btn" onclick="showTab('history')">📚 Academic History Editor</button>
+                <button class="tab-btn" onclick="showTab('students')">👥 All Students</button>
+            </div>
+
+            <!-- Tab 1: Edit Requests -->
+            <div id="tab-requests" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0;">📋 Student Edit Requests</h3>
+                        <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Review and approve/reject
+                            student requests to update their details</p>
+                    </div>
+                    <div class="card-body" id="requests-container">
+                        <!-- Requests will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 2: Academic History Editor -->
+            <div id="tab-history" class="tab-content">
+                <div class="card">
+                    <div class="card-header flex justify-between items-center">
+                        <div>
+                            <h3 style="margin: 0;">📚 Edit Academic History (SSLC, Plus Two, etc.)</h3>
+                            <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Search for a student and
+                                edit their prior education history</p>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label class="form-label">Search Student by USN or Name</label>
+                            <div style="display: flex; gap: var(--space-3);">
+                                <input type="text" id="history-search" class="form-input"
+                                    placeholder="Enter USN or Name..." style="flex: 1;">
+                                <button class="btn btn-primary" onclick="searchStudent()">🔍 Search</button>
+                            </div>
+                        </div>
+
+                        <div id="student-history-result" class="hidden" style="margin-top: var(--space-6);">
+                            <!-- Student academic history will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: All Students -->
+            <div id="tab-students" class="tab-content">
+                <div class="card">
+                    <div class="card-header flex justify-between items-center">
+                        <h3 style="margin: 0;">👥 All Registered Students</h3>
+                        <div class="search-box" style="width: 300px;">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="student-search" class="form-input" placeholder="Search students..."
+                                oninput="filterStudents()">
+                        </div>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>USN</th>
+                                        <th>Name</th>
+                                        <th>Institution</th>
+                                        <th>Course</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="students-table">
+                                    <!-- Student rows will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Academic History Modal -->
+    <div class="modal-overlay" id="history-modal">
+        <div class="modal" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1e3a5f, #0d1b2a); color: white;">
+                <h3 class="modal-title">📚 Edit Academic History</h3>
+                <button class="modal-close" onclick="closeHistoryModal()" style="color: white;">×</button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="background: var(--info-light); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4);">
+                    <strong>Student:</strong> <span id="modal-student-name">-</span> |
+                    <strong>USN:</strong> <span id="modal-student-usn">-</span>
+                </div>
+
+                <input type="hidden" id="modal-usn">
+
+                <h4 style="margin-bottom: var(--space-3);">📜 Education History</h4>
+                <div id="history-entries">
+                    <!-- History entries will be loaded here -->
+                </div>
+
+                <button class="btn btn-secondary" onclick="addHistoryEntry()" style="margin-top: var(--space-4);">
+                    + Add New Entry
+                </button>
+
+                <div class="modal-footer"
+                    style="padding: var(--space-4) 0 0; border: 0; margin-top: var(--space-4); display: flex; justify-content: space-between;">
+                    <button type="button" class="btn btn-secondary" onclick="closeHistoryModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary btn-lg" onclick="saveAcademicHistory()"
+                        style="background: linear-gradient(135deg, #1e3a5f, #2d5a8b);">
+                        💾 Save Academic History
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Request Modal -->
+    <div class="modal-overlay" id="request-modal">
+        <div class="modal" style="max-width: 700px;">
+            <div class="modal-header" style="background: var(--warning-light);">
+                <h3 class="modal-title">📋 Review Edit Request</h3>
+                <button class="modal-close" onclick="closeRequestModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="background: var(--grey-100); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4);">
+                    <strong>Request ID:</strong> <span id="req-id">-</span> |
+                    <strong>Student:</strong> <span id="req-student">-</span> |
+                    <strong>Date:</strong> <span id="req-date">-</span>
+                </div>
+
+                <h4 style="margin-bottom: var(--space-3);">Requested Changes:</h4>
+                <div id="req-changes"
+                    style="background: var(--grey-50); padding: var(--space-4); border-radius: var(--radius);">
+                    <!-- Changes will be shown here -->
+                </div>
+
+                <div class="form-group" style="margin-top: var(--space-4);">
+                    <label class="form-label">Admin Notes (Optional)</label>
+                    <textarea id="admin-notes" class="form-input" rows="3"
+                        placeholder="Add notes for approval/rejection..."></textarea>
+                </div>
+
+                <input type="hidden" id="req-index">
+
+                <div class="modal-footer"
+                    style="padding: var(--space-4) 0 0; border: 0; margin-top: var(--space-4); display: flex; justify-content: space-between;">
+                    <button type="button" class="btn btn-danger btn-lg" onclick="rejectRequest()">
+                        ✕ Reject Request
+                    </button>
+                    <button type="button" class="btn btn-success btn-lg" onclick="approveRequest()">
+                        ✓ Approve & Apply
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/data.js"></script>
+    <script>
+        let allStudents = [];
+        let editRequests = [];
+
+        // Check authentication
+        function checkAuth() {
+            if (sessionStorage.getItem('usdi_gov_logged_in') !== 'true') {
+                window.location.href = 'login.html';
+                return;
+            }
+            document.getElementById('gov-user').textContent = sessionStorage.getItem('usdi_gov_user') || 'GOV001';
+            loadDashboard();
+        }
+
+        function loadDashboard() {
+            allStudents = USDI_DATA.getAllStudents();
+            editRequests = USDI_DATA.getEditRequests ? USDI_DATA.getEditRequests() : [];
+
+            // Stats
+            document.getElementById('stat-total').textContent = allStudents.length;
+            document.getElementById('stat-pending').textContent = editRequests.filter(r => r.status === 'pending').length;
+            document.getElementById('stat-approved').textContent = editRequests.filter(r => r.status === 'approved').length;
+            document.getElementById('stat-rejected').textContent = editRequests.filter(r => r.status === 'rejected').length;
+
+            renderRequests();
+            renderStudentsTable(allStudents);
+        }
+
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            // Show selected tab
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Requests Tab
+        function renderRequests() {
+            const container = document.getElementById('requests-container');
+            const pendingRequests = editRequests.filter(r => r.status === 'pending');
+
+            if (pendingRequests.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: var(--space-8); color: var(--grey-500);">
+                        <div style="font-size: 3rem; margin-bottom: var(--space-4);">✅</div>
+                        <p>No pending edit requests</p>
+                        <p class="text-sm">All student requests have been processed</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = pendingRequests.map((req, idx) => `
+                <div class="request-card pending">
+                    <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div>
+                            <h4 style="margin: 0 0 var(--space-2);">${req.studentName} <span class="badge badge-warning">Pending</span></h4>
+                            <p class="text-sm text-muted">USN: ${req.usn} | Requested: ${formatDate(req.requestDate)}</p>
+                            <p style="margin-top: var(--space-2);"><strong>Request:</strong> ${req.description}</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="openRequestModal(${idx})">Review</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Students Tab
+        function renderStudentsTable(students) {
+            const tbody = document.getElementById('students-table');
+
+            if (students.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: var(--space-8); color: var(--grey-500);">
+                            No students found
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = students.map(student => `
+                <tr>
+                    <td><strong>${student.usn}</strong></td>
+                    <td>${student.fullName}</td>
+                    <td>${student.institution}</td>
+                    <td>${student.course}</td>
+                    <td><span class="badge badge-${student.status.toLowerCase()}">${student.status}</span></td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="openHistoryEditor('${student.usn}')">Edit History</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterStudents() {
+            const query = document.getElementById('student-search').value.toLowerCase();
+            const filtered = allStudents.filter(s =>
+                s.fullName.toLowerCase().includes(query) ||
+                s.usn.toLowerCase().includes(query) ||
+                s.institution.toLowerCase().includes(query)
+            );
+            renderStudentsTable(filtered);
+        }
+
+        // Academic History Editor
+        function searchStudent() {
+            const query = document.getElementById('history-search').value.trim();
+            if (!query) return;
+
+            const student = allStudents.find(s =>
+                s.usn.toLowerCase() === query.toLowerCase() ||
+                s.fullName.toLowerCase().includes(query.toLowerCase())
+            );
+
+            if (student) {
+                openHistoryEditor(student.usn);
+            } else {
+                showWarning('No student found with that USN or name.');
+            }
+        }
+
+        function openHistoryEditor(usn) {
+            const student = USDI_DATA.getStudentByUSN(usn);
+            if (!student) return;
+
+            document.getElementById('modal-student-name').textContent = student.fullName;
+            document.getElementById('modal-student-usn').textContent = student.usn;
+            document.getElementById('modal-usn').value = student.usn;
+
+            renderHistoryEntries(student);
+            document.getElementById('history-modal').classList.add('active');
+        }
+
+        function renderHistoryEntries(student) {
+            const container = document.getElementById('history-entries');
+            const history = student.academicHistoryTable || student.academicHistory || [];
+
+            if (history.length === 0 || (history[0] && history[0].date)) {
+                // Old format or empty - show default entries
+                container.innerHTML = `
+                    <div class="academic-row" style="background: var(--grey-100); font-weight: 600;">
+                        <div>Qualification</div>
+                        <div>Institution</div>
+                        <div>Board/University</div>
+                        <div>Year</div>
+                        <div>Status</div>
+                        <div></div>
+                    </div>
+                    <div id="history-rows">
+                        ${renderHistoryRow({ qualification: 'SSLC', institution: '', board: 'Kerala State Board', year: '', status: 'Completed' }, 0)}
+                        ${renderHistoryRow({ qualification: 'Higher Secondary (Plus Two)', institution: '', board: 'Kerala Higher Secondary Board', year: '', status: 'Completed' }, 1)}
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="academic-row" style="background: var(--grey-100); font-weight: 600;">
+                        <div>Qualification</div>
+                        <div>Institution</div>
+                        <div>Board/University</div>
+                        <div>Year</div>
+                        <div>Status</div>
+                        <div></div>
+                    </div>
+                    <div id="history-rows">
+                        ${history.map((h, i) => renderHistoryRow(h, i)).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        function renderHistoryRow(entry, index) {
+            return `
+                <div class="academic-row" data-index="${index}">
+                    <input type="text" class="form-input history-qual" value="${entry.qualification || ''}" placeholder="e.g., SSLC">
+                    <input type="text" class="form-input history-inst" value="${entry.institution || ''}" placeholder="Institution name">
+                    <input type="text" class="form-input history-board" value="${entry.board || ''}" placeholder="Board/University">
+                    <input type="text" class="form-input history-year" value="${entry.year || ''}" placeholder="Year">
+                    <select class="form-select history-status">
+                        <option value="Completed" ${entry.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        <option value="Ongoing" ${entry.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
+                        <option value="Discontinued" ${entry.status === 'Discontinued' ? 'selected' : ''}>Discontinued</option>
+                    </select>
+                    <button class="btn btn-sm btn-danger" onclick="removeHistoryRow(this)">✕</button>
+                </div>
+            `;
+        }
+
+        function addHistoryEntry() {
+            const container = document.getElementById('history-rows');
+            const index = container.children.length;
+            container.insertAdjacentHTML('beforeend', renderHistoryRow({}, index));
+        }
+
+        function removeHistoryRow(btn) {
+            btn.closest('.academic-row').remove();
+        }
+
+        function saveAcademicHistory() {
+            const usn = document.getElementById('modal-usn').value;
+            const rows = document.querySelectorAll('#history-rows .academic-row');
+
+            const historyTable = Array.from(rows).map(row => ({
+                qualification: row.querySelector('.history-qual').value.trim(),
+                institution: row.querySelector('.history-inst').value.trim(),
+                board: row.querySelector('.history-board').value.trim(),
+                year: row.querySelector('.history-year').value.trim(),
+                status: row.querySelector('.history-status').value
+            })).filter(h => h.qualification); // Only keep rows with qualification filled
+
+            USDI_DATA.updateStudent(usn, { academicHistoryTable: historyTable });
+
+            showSuccess('Academic history updated successfully!');
+            closeHistoryModal();
+            loadDashboard();
+        }
+
+        function closeHistoryModal() {
+            document.getElementById('history-modal').classList.remove('active');
+        }
+
+        // Request Modal
+        function openRequestModal(index) {
+            const req = editRequests.filter(r => r.status === 'pending')[index];
+            if (!req) return;
+
+            document.getElementById('req-id').textContent = req.id || `REQ-${index + 1}`;
+            document.getElementById('req-student').textContent = `${req.studentName} (${req.usn})`;
+            document.getElementById('req-date').textContent = formatDate(req.requestDate);
+            document.getElementById('req-index').value = index;
+
+            // Show changes
+            let changesHTML = '<ul style="list-style: none; padding: 0;">';
+            for (const [key, value] of Object.entries(req.changes || {})) {
+                changesHTML += `<li style="padding: var(--space-2) 0; border-bottom: 1px solid var(--grey-200);">
+                    <strong>${formatFieldName(key)}:</strong> ${value.old || 'N/A'} → <strong style="color: var(--success);">${value.new}</strong>
+                </li>`;
+            }
+            changesHTML += '</ul>';
+            document.getElementById('req-changes').innerHTML = changesHTML;
+
+            document.getElementById('request-modal').classList.add('active');
+        }
+
+        function closeRequestModal() {
+            document.getElementById('request-modal').classList.remove('active');
+        }
+
+        function approveRequest() {
+            const index = parseInt(document.getElementById('req-index').value);
+            const req = editRequests.filter(r => r.status === 'pending')[index];
+
+            if (req && USDI_DATA.processEditRequest) {
+                USDI_DATA.processEditRequest(req.id, 'approved', document.getElementById('admin-notes').value);
+                showSuccess('Request approved and changes applied!');
+            } else {
+                // Fallback: directly update
+                req.status = 'approved';
+                if (req.changes) {
+                    const updates = {};
+                    for (const [key, value] of Object.entries(req.changes)) {
+                        updates[key] = value.new;
+                    }
+                    USDI_DATA.updateStudent(req.usn, updates);
+                }
+                showSuccess('Request approved and changes applied!');
+            }
+
+            closeRequestModal();
+            loadDashboard();
+        }
+
+        function rejectRequest() {
+            const index = parseInt(document.getElementById('req-index').value);
+            const req = editRequests.filter(r => r.status === 'pending')[index];
+
+            if (req && USDI_DATA.processEditRequest) {
+                USDI_DATA.processEditRequest(req.id, 'rejected', document.getElementById('admin-notes').value);
+            } else {
+                req.status = 'rejected';
+            }
+
+            showError('Request rejected.');
+            closeRequestModal();
+            loadDashboard();
+        }
+
+        function formatFieldName(field) {
+            return field.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '-';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('usdi_gov_logged_in');
+            sessionStorage.removeItem('usdi_gov_user');
+            window.location.href = 'login.html';
+        }
+
+        // Close modals on outside click
+        document.querySelectorAll('.modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', (e) => {
+                if (e.target.classList.contains('modal-overlay')) {
+                    overlay.classList.remove('active');
+                }
+            });
+        });
+
+        // Initialize
+        checkAuth();
+    </script>
+</body>
+
+</html>

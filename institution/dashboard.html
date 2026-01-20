@@ -62,10 +62,16 @@
             <div class="card">
                 <div class="card-header flex justify-between items-center">
                     <h3 style="margin: 0;">Student Records</h3>
-                    <div class="search-box" style="width: 300px;">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" id="search-input" class="form-input" placeholder="Search by name or USN..."
-                            oninput="filterStudents()">
+                    <div style="display: flex; gap: var(--space-3); align-items: center;">
+                        <button class="btn btn-secondary" onclick="exportToCSV()"
+                            style="background: #059669; color: #fff;">
+                            📊 Export CSV
+                        </button>
+                        <div class="search-box" style="width: 300px;">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="search-input" class="form-input"
+                                placeholder="Search by name or USN..." oninput="filterStudents()">
+                        </div>
                     </div>
                 </div>
                 <div class="card-body" style="padding: 0;">
@@ -159,25 +165,99 @@
         </div>
     </div>
 
-    <!-- Edit Student Modal -->
+    <!-- Edit Student Modal (Full Academic Details) -->
     <div class="modal-overlay" id="edit-modal">
-        <div class="modal" style="max-width: 600px;">
+        <div class="modal" style="max-width: 800px; max-height: 90vh; overflow-y: auto;">
             <div class="modal-header">
-                <h3 class="modal-title">Edit Student</h3>
+                <h3 class="modal-title">📝 Edit Student - Full Academic Details</h3>
                 <button class="modal-close" onclick="closeEditModal()">×</button>
             </div>
             <div class="modal-body">
                 <div
-                    style="background: var(--grey-100); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4);">
+                    style="background: var(--primary-light); color: var(--primary); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4);">
                     <strong>USN:</strong> <span id="edit-usn-display">-</span> |
-                    <strong>Name:</strong> <span id="edit-name-display">-</span>
+                    <strong>Student:</strong> <span id="edit-name-display">-</span>
                 </div>
                 <form id="edit-form" onsubmit="handleEditStudent(event)">
                     <input type="hidden" id="edit-usn">
-                    <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-4);">
+
+                    <!-- Personal Details Section -->
+                    <h4
+                        style="margin-bottom: var(--space-3); color: var(--grey-700); border-bottom: 2px solid var(--grey-200); padding-bottom: var(--space-2);">
+                        👤 Personal Details</h4>
+                    <div class="grid"
+                        style="grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
                         <div class="form-group">
-                            <label class="form-label">Course</label>
-                            <select id="edit-course" class="form-select">
+                            <label class="form-label">Full Name *</label>
+                            <input type="text" id="edit-fullname" class="form-input" placeholder="Enter full name"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" id="edit-dob" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select id="edit-gender" class="form-select">
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mobile Number</label>
+                            <input type="tel" id="edit-mobile" class="form-input" placeholder="10-digit mobile"
+                                maxlength="10">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email ID</label>
+                            <input type="email" id="edit-email" class="form-input" placeholder="Email address">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Category</label>
+                            <select id="edit-category" class="form-select">
+                                <option value="General">General</option>
+                                <option value="OBC">OBC</option>
+                                <option value="SC">SC</option>
+                                <option value="ST">ST</option>
+                                <option value="EWS">EWS</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Institution Details Section -->
+                    <h4
+                        style="margin-bottom: var(--space-3); color: var(--grey-700); border-bottom: 2px solid var(--grey-200); padding-bottom: var(--space-2);">
+                        🏫 Institution & Course Details</h4>
+                    <div class="grid"
+                        style="grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+                        <div class="form-group" style="grid-column: span 2;">
+                            <label class="form-label">Institution Name</label>
+                            <input type="text" id="edit-institution" class="form-input" placeholder="Institution name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Institution Type</label>
+                            <select id="edit-inst-type" class="form-select">
+                                <option value="Government Polytechnic">Government Polytechnic</option>
+                                <option value="Private Polytechnic">Private Polytechnic</option>
+                                <option value="Government Engineering College">Government Engineering College</option>
+                                <option value="Private Engineering College">Private Engineering College</option>
+                                <option value="University">University</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Affiliated Authority</label>
+                            <input type="text" id="edit-authority" class="form-input" placeholder="e.g., DTE Kerala">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Course *</label>
+                            <select id="edit-course" class="form-select" required>
+                                <option value="Diploma in Computer Engineering">Diploma in Computer Engineering</option>
+                                <option value="Diploma in Electronics">Diploma in Electronics</option>
+                                <option value="Diploma in Mechanical">Diploma in Mechanical</option>
+                                <option value="Diploma in Civil">Diploma in Civil</option>
+                                <option value="Diploma in Electrical">Diploma in Electrical</option>
                                 <option value="B.Tech Computer Science">B.Tech Computer Science</option>
                                 <option value="B.Tech Electronics">B.Tech Electronics</option>
                                 <option value="B.Tech Mechanical">B.Tech Mechanical</option>
@@ -189,45 +269,104 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Semester/Year</label>
-                            <select id="edit-semester" class="form-select">
-                                <option value="1st Semester">1st Semester</option>
-                                <option value="2nd Semester">2nd Semester</option>
-                                <option value="3rd Semester">3rd Semester</option>
-                                <option value="4th Semester">4th Semester</option>
-                                <option value="5th Semester">5th Semester</option>
-                                <option value="6th Semester">6th Semester</option>
-                                <option value="7th Semester">7th Semester</option>
-                                <option value="8th Semester">8th Semester</option>
+                            <label class="form-label">Branch Code</label>
+                            <input type="text" id="edit-branch" class="form-input" placeholder="e.g., DC, CS">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Current Semester/Year *</label>
+                            <select id="edit-semester" class="form-select" required>
+                                <option value="Semester 1">Semester 1</option>
+                                <option value="Semester 2">Semester 2</option>
+                                <option value="Semester 3">Semester 3</option>
+                                <option value="Semester 4">Semester 4</option>
+                                <option value="Semester 5">Semester 5</option>
+                                <option value="Semester 6">Semester 6</option>
+                                <option value="Semester 7">Semester 7</option>
+                                <option value="Semester 8">Semester 8</option>
                                 <option value="Completed">Completed</option>
                             </select>
                         </div>
-                        <div class="form-group" style="grid-column: span 2;">
-                            <label class="form-label">Student Status</label>
-                            <div class="grid grid-4" style="gap: var(--space-3);">
-                                <label
-                                    style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--grey-200); border-radius: var(--radius); cursor: pointer;">
-                                    <input type="radio" name="status" value="Active"> Active
-                                </label>
-                                <label
-                                    style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--grey-200); border-radius: var(--radius); cursor: pointer;">
-                                    <input type="radio" name="status" value="Graduated"> Graduated
-                                </label>
-                                <label
-                                    style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--grey-200); border-radius: var(--radius); cursor: pointer;">
-                                    <input type="radio" name="status" value="Transferred"> Transferred
-                                </label>
-                                <label
-                                    style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--grey-200); border-radius: var(--radius); cursor: pointer;">
-                                    <input type="radio" name="status" value="Discontinued"> Discontinued
-                                </label>
-                            </div>
+                        <div class="form-group">
+                            <label class="form-label">Mode of Study</label>
+                            <select id="edit-mode" class="form-select">
+                                <option value="Regular">Regular</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Distance">Distance</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Admission Type</label>
+                            <select id="edit-admission-type" class="form-select">
+                                <option value="Merit">Merit</option>
+                                <option value="Management">Management</option>
+                                <option value="Reservation">Reservation</option>
+                                <option value="Lateral Entry">Lateral Entry</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Batch</label>
+                            <input type="text" id="edit-batch" class="form-input" placeholder="e.g., 2023-2026">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Expected Completion Year</label>
+                            <input type="text" id="edit-completion" class="form-input" placeholder="e.g., 2026">
                         </div>
                     </div>
+
+                    <!-- Institution Identifiers Section -->
+                    <h4
+                        style="margin-bottom: var(--space-3); color: var(--grey-700); border-bottom: 2px solid var(--grey-200); padding-bottom: var(--space-2);">
+                        🆔 Institution Identifiers</h4>
+                    <div class="grid"
+                        style="grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-6);">
+                        <div class="form-group">
+                            <label class="form-label">College Admission Number</label>
+                            <input type="text" id="edit-admission-no" class="form-input" placeholder="Admission No">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Polytechnic Register Number</label>
+                            <input type="text" id="edit-register-no" class="form-input" placeholder="Register No">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Exam Registration Number</label>
+                            <input type="text" id="edit-exam-no" class="form-input" placeholder="Exam Reg No">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Roll Number</label>
+                            <input type="text" id="edit-roll-no" class="form-input" placeholder="Roll No">
+                        </div>
+                    </div>
+
+                    <!-- Status Section -->
+                    <h4
+                        style="margin-bottom: var(--space-3); color: var(--grey-700); border-bottom: 2px solid var(--grey-200); padding-bottom: var(--space-2);">
+                        📊 Academic Status</h4>
+                    <div class="form-group" style="margin-bottom: var(--space-4);">
+                        <label class="form-label">Student Status *</label>
+                        <div class="grid grid-4" style="gap: var(--space-3);">
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--success); border-radius: var(--radius); cursor: pointer; background: var(--success-light);">
+                                <input type="radio" name="status" value="Active"> ✓ Active
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--info); border-radius: var(--radius); cursor: pointer; background: var(--info-light);">
+                                <input type="radio" name="status" value="Graduated"> 🎓 Graduated
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--warning); border-radius: var(--radius); cursor: pointer; background: var(--warning-light);">
+                                <input type="radio" name="status" value="Transferred"> ↗ Transferred
+                            </label>
+                            <label
+                                style="display: flex; align-items: center; gap: var(--space-2); padding: var(--space-3); border: 2px solid var(--danger); border-radius: var(--radius); cursor: pointer; background: var(--danger-light);">
+                                <input type="radio" name="status" value="Discontinued"> ✕ Discontinued
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="modal-footer"
-                        style="padding: var(--space-4) 0 0; border: 0; margin-top: var(--space-4);">
+                        style="padding: var(--space-4) 0 0; border: 0; margin-top: var(--space-4); display: flex; justify-content: space-between;">
                         <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" class="btn btn-primary btn-lg">💾 Save All Changes</button>
                     </div>
                 </form>
             </div>
@@ -253,6 +392,8 @@
         </div>
     </div>
 
+    <script src="../js/theme.js"></script>
+    <script src="../js/toast.js"></script>
     <script src="../js/data.js"></script>
     <script>
         let allStudents = [];
@@ -324,6 +465,52 @@
             renderStudentsTable(filtered);
         }
 
+        // Export to CSV Function
+        function exportToCSV() {
+            if (allStudents.length === 0) {
+                showWarning('No students to export');
+                return;
+            }
+
+            // Define CSV headers
+            const headers = ['USN', 'Full Name', 'Date of Birth', 'Mobile', 'Course', 'Semester/Year', 'Status', 'Institution'];
+
+            // Convert students to CSV rows
+            const rows = allStudents.map(student => [
+                student.usn,
+                student.fullName,
+                student.dob || '',
+                student.mobile || '',
+                student.course || '',
+                student.semesterYear || '',
+                student.status || '',
+                student.institution || ''
+            ]);
+
+            // Build CSV content
+            let csvContent = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csvContent += row.map(cell => {
+                    // Escape double quotes and wrap in quotes if contains comma
+                    const escaped = String(cell).replace(/"/g, '""');
+                    return escaped.includes(',') ? `"${escaped}"` : escaped;
+                }).join(',') + '\n';
+            });
+
+            // Create and download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `students_export_${new Date().toISOString().split('T')[0]}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            showSuccess(`Exported ${allStudents.length} students to CSV!`);
+        }
+
         // Add Student Modal
         function openAddModal() {
             document.getElementById('add-form').reset();
@@ -352,18 +539,18 @@
 
             // Validate mobile
             if (!/^\d{10}$/.test(newStudent.mobile)) {
-                alert('Please enter a valid 10-digit mobile number');
+                showError('Please enter a valid 10-digit mobile number');
                 return;
             }
 
             // Check if mobile already exists
             if (USDI_DATA.getStudentByMobile(newStudent.mobile)) {
-                alert('A student with this mobile number already exists');
+                showError('A student with this mobile number already exists');
                 return;
             }
 
             const added = USDI_DATA.addStudent(newStudent);
-            alert(`Student added successfully!\nUSN: ${added.usn}`);
+            showSuccess(`Student added successfully! USN: ${added.usn}`);
             closeAddModal();
             loadDashboard();
         }
@@ -373,11 +560,37 @@
             const student = USDI_DATA.getStudentByUSN(usn);
             if (!student) return;
 
+            // Basic info
             document.getElementById('edit-usn').value = student.usn;
             document.getElementById('edit-usn-display').textContent = student.usn;
             document.getElementById('edit-name-display').textContent = student.fullName;
-            document.getElementById('edit-course').value = student.course;
-            document.getElementById('edit-semester').value = student.semesterYear;
+
+            // Personal Details
+            document.getElementById('edit-fullname').value = student.fullName || '';
+            document.getElementById('edit-dob').value = student.dob || '';
+            document.getElementById('edit-gender').value = student.gender || 'Male';
+            document.getElementById('edit-mobile').value = student.mobile || '';
+            document.getElementById('edit-email').value = student.email || '';
+            document.getElementById('edit-category').value = student.category || 'General';
+
+            // Institution Details
+            document.getElementById('edit-institution').value = student.institution || '';
+            document.getElementById('edit-inst-type').value = student.institutionType || 'Government Polytechnic';
+            document.getElementById('edit-authority').value = student.affiliatedAuthority || '';
+            document.getElementById('edit-course').value = student.course || '';
+            document.getElementById('edit-branch').value = student.branchCode || '';
+            document.getElementById('edit-semester').value = student.semesterYear || '';
+            document.getElementById('edit-mode').value = student.modeOfStudy || 'Regular';
+            document.getElementById('edit-admission-type').value = student.admissionType || 'Merit';
+            document.getElementById('edit-batch').value = student.batch || '';
+            document.getElementById('edit-completion').value = student.expectedCompletionYear || '';
+
+            // Institution Identifiers
+            const identifiers = student.institutionIdentifiers || {};
+            document.getElementById('edit-admission-no').value = identifiers.collegeAdmissionNumber || student.admissionNumber || '';
+            document.getElementById('edit-register-no').value = identifiers.polytechnicRegisterNumber || student.polytechnicRegisterNumber || '';
+            document.getElementById('edit-exam-no').value = identifiers.examRegistrationNumber || student.examRegistrationNumber || '';
+            document.getElementById('edit-roll-no').value = identifiers.rollNumber || student.rollNumber || '';
 
             // Set status radio
             const statusRadios = document.querySelectorAll('input[name="status"]');
@@ -399,16 +612,44 @@
             const selectedStatus = document.querySelector('input[name="status"]:checked');
 
             const updates = {
+                // Personal Details
+                fullName: document.getElementById('edit-fullname').value.trim(),
+                dob: document.getElementById('edit-dob').value,
+                gender: document.getElementById('edit-gender').value,
+                mobile: document.getElementById('edit-mobile').value.trim(),
+                email: document.getElementById('edit-email').value.trim(),
+                category: document.getElementById('edit-category').value,
+
+                // Institution Details
+                institution: document.getElementById('edit-institution').value.trim(),
+                institutionType: document.getElementById('edit-inst-type').value,
+                affiliatedAuthority: document.getElementById('edit-authority').value.trim(),
                 course: document.getElementById('edit-course').value,
+                branchCode: document.getElementById('edit-branch').value.trim(),
                 semesterYear: document.getElementById('edit-semester').value,
+                modeOfStudy: document.getElementById('edit-mode').value,
+                admissionType: document.getElementById('edit-admission-type').value,
+                batch: document.getElementById('edit-batch').value.trim(),
+                expectedCompletionYear: document.getElementById('edit-completion').value.trim(),
+
+                // Institution Identifiers
+                institutionIdentifiers: {
+                    collegeAdmissionNumber: document.getElementById('edit-admission-no').value.trim(),
+                    polytechnicRegisterNumber: document.getElementById('edit-register-no').value.trim(),
+                    examRegistrationNumber: document.getElementById('edit-exam-no').value.trim(),
+                    rollNumber: document.getElementById('edit-roll-no').value.trim()
+                },
+
+                // Status
                 status: selectedStatus ? selectedStatus.value : 'Active'
             };
 
             USDI_DATA.updateStudent(usn, updates);
-            alert('Student record updated successfully!');
+            showSuccess('Student record updated successfully!');
             closeEditModal();
             loadDashboard();
         }
+
 
         // History Modal
         function viewHistory(usn) {

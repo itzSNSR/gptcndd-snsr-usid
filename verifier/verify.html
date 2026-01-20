@@ -18,12 +18,45 @@
                 <span>USDI</span>
             </a>
             <nav class="nav">
-                <a href="../student/login.html">Student</a>
-                <a href="../institution/login.html">Institution</a>
-                <a href="verify.html" class="active">Verifier</a>
+                <a href="../student/login.html" data-i18n="nav_student">Student</a>
+                <a href="../institution/login.html" data-i18n="nav_institution">Institution</a>
+                <a href="verify.html" class="active" data-i18n="nav_verifier">Verifier</a>
+                <div class="language-wrapper">
+                    <div class="custom-dropdown" id="language-dropdown">
+                        <div class="dropdown-trigger" role="button" aria-haspopup="listbox" aria-expanded="false"
+                            tabindex="0">
+                            <span>🇺🇸 English</span>
+                            <span class="dropdown-icon">▼</span>
+                        </div>
+                        <div class="dropdown-options" role="listbox">
+                            <div class="dropdown-option selected" data-value="en" role="option" aria-selected="true"
+                                tabindex="0">
+                                <span>🇺🇸 English</span>
+                            </div>
+                            <div class="dropdown-option" data-value="ml" role="option" aria-selected="false"
+                                tabindex="0">
+                                <span>🇮🇳 മലയാളം</span>
+                            </div>
+                            <div class="dropdown-option" data-value="hi" role="option" aria-selected="false"
+                                tabindex="0">
+                                <span>🇮🇳 हिन्दी</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <span class="theme-icon moon">🌙</span>
+                    <span class="theme-icon sun">☀️</span>
+                </button>
             </nav>
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
+    <div class="mobile-overlay" onclick="closeMobileMenu()"></div>
 
     <!-- Main Content -->
     <main class="page-section">
@@ -31,29 +64,34 @@
             <!-- Verification Box -->
             <div class="card">
                 <div class="card-header text-center">
-                    <h2 style="margin: 0;">Student Verification</h2>
-                    <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Instantly verify student identity
+                    <h2 style="margin: 0;" data-i18n="verifier_page_title">Student Verification</h2>
+                    <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;"
+                        data-i18n="verifier_page_subtitle">Instantly verify student identity
                         and academic status</p>
                 </div>
                 <div class="card-body">
                     <!-- Search Form -->
                     <div id="search-section">
                         <div class="form-group">
-                            <label class="form-label">Enter Unique Student Number (USN)</label>
+                            <label class="form-label" data-i18n="lbl_usn">Enter Unique Student Number (USN)</label>
                             <input type="text" id="usn-input" class="form-input form-input-lg"
-                                placeholder="e.g., USDI2024001" style="text-transform: uppercase;">
-                            <p class="form-hint">Enter the student's USN to verify their current status</p>
+                                placeholder="e.g., USDI2024001" style="text-transform: uppercase;" data-i18n="ph_usn">
+                            <p class="form-hint" data-i18n="hint_mobile">Enter the student's USN to verify their current
+                                status</p>
                         </div>
-                        <button class="btn btn-primary btn-lg btn-block" onclick="verifyStudent()">
+                        <button class="btn btn-primary btn-lg btn-block" onclick="verifyStudent()"
+                            data-i18n="btn_verify_check">
                             🔍 Verify Student
                         </button>
 
                         <div class="text-center mt-6">
                             <p class="text-muted text-sm mb-4">— OR —</p>
-                            <button class="btn btn-outline btn-block" onclick="simulateQRScan()">
+                            <button class="btn btn-outline btn-block" onclick="simulateQRScan()"
+                                data-i18n="lbl_scan_qr">
                                 📷 Scan QR Code
                             </button>
-                            <p class="form-hint mt-4">Scan the QR code on the student's digital ID card</p>
+                            <p class="form-hint mt-4" data-i18n="verify_feat_2">Scan the QR code on the student's
+                                digital ID card</p>
                         </div>
                     </div>
 
@@ -63,13 +101,16 @@
                         <div id="verified-result" class="hidden">
                             <div class="verify-result">
                                 <div class="verify-icon success">✓</div>
-                                <div class="verify-status success">VERIFIED</div>
-                                <p class="text-muted">This student is registered in the USDI system</p>
+                                <div class="verify-status success" data-i18n="verify_success"
+                                    style="margin-bottom: 5px;">VERIFIED</div>
+                                <p class="text-muted" data-i18n="msg_verified_desc">This student is registered in the
+                                    USDI system</p>
                             </div>
 
                             <div
                                 style="background: var(--grey-50); border-radius: var(--radius-lg); padding: var(--space-6); margin-top: var(--space-6);">
-                                <h4 style="margin-bottom: var(--space-4);">Student Details</h4>
+                                <h4 style="margin-bottom: var(--space-4);" data-i18n="lbl_student_details">Student
+                                    Details</h4>
                                 <div class="grid" style="grid-template-columns: 1fr 1fr; gap: var(--space-4);">
                                     <div>
                                         <p class="text-xs text-muted"
@@ -198,29 +239,44 @@
 
     <!-- QR Scan Modal -->
     <div class="modal-overlay" id="qr-modal">
-        <div class="modal">
+        <div class="modal" style="max-width: 450px;">
             <div class="modal-header">
-                <h3 class="modal-title">Scan QR Code</h3>
+                <h3 class="modal-title">📷 Scan QR Code</h3>
                 <button class="modal-close" onclick="closeQRModal()">×</button>
             </div>
             <div class="modal-body text-center">
-                <div
-                    style="width: 200px; height: 200px; background: var(--grey-100); border-radius: var(--radius-lg); margin: 0 auto var(--space-4); display: flex; align-items: center; justify-content: center; font-size: 3rem;">
-                    📷
-                </div>
-                <p class="text-muted mb-4">Point your camera at the QR code on the student's digital ID</p>
-                <p class="text-sm"
-                    style="background: var(--info-light); color: var(--info); padding: var(--space-3); border-radius: var(--radius);">
-                    Demo Mode: Click "Simulate Scan" to test with a sample student
+                <div id="qr-reader" style="width: 100%; min-height: 250px;"></div>
+                <p id="qr-status" class="text-muted mb-4" style="margin-top: var(--space-3);">
+                    Point your camera at the QR code on the student's digital ID
                 </p>
-                <button class="btn btn-primary btn-block mt-4" onclick="doSimulatedScan()">
-                    Simulate Scan (Demo)
+                <div style="display: flex; gap: var(--space-3); justify-content: center; margin-top: var(--space-4);">
+                    <button class="btn btn-primary" id="start-scan-btn" onclick="startQRScanner()">
+                        📷 Start Camera
+                    </button>
+                    <button class="btn btn-secondary" id="stop-scan-btn" onclick="stopQRScanner()"
+                        style="display: none;">
+                        ⏹ Stop Camera
+                    </button>
+                </div>
+                <p class="text-sm mt-4"
+                    style="background: var(--info-light); color: var(--info); padding: var(--space-3); border-radius: var(--radius);">
+                    📱 Allow camera access when prompted. QR codes link directly to student verification.
+                </p>
+                <button class="btn btn-outline btn-block mt-4" onclick="doSimulatedScan()">
+                    🎭 Simulate Scan (Demo Mode)
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- html5-qrcode library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/toast.js"></script>
     <script src="../js/data.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/language.js"></script>
     <script>
         // Check for USN in URL params (from shared link or QR code)
         function checkURLParams() {
@@ -236,7 +292,7 @@
             const usn = document.getElementById('usn-input').value.trim().toUpperCase();
 
             if (!usn) {
-                alert('Please enter a USN to verify');
+                showWarning('Please enter a USN to verify');
                 return;
             }
 
@@ -305,12 +361,91 @@
         }
 
         function doSimulatedScan() {
+            stopQRScanner(); // Stop scanner if running
             closeQRModal();
             // Simulate scanning - use a random demo USN
-            const demoUSNs = ['USDI2024001', 'USDI2024002', 'USDI2023015'];
+            const demoUSNs = ['USDI2024001', 'USDI2024002', 'USIDSN082006'];
             const randomUSN = demoUSNs[Math.floor(Math.random() * demoUSNs.length)];
             document.getElementById('usn-input').value = randomUSN;
+            showSuccess(`Simulated scan: ${randomUSN}`);
             verifyStudent();
+        }
+
+        // Real QR Scanner using html5-qrcode
+        let html5QrCode = null;
+
+        function startQRScanner() {
+            const qrReaderDiv = document.getElementById('qr-reader');
+
+            // Clear any existing content
+            qrReaderDiv.innerHTML = '';
+
+            // Create new scanner instance
+            html5QrCode = new Html5Qrcode('qr-reader');
+
+            const config = {
+                fps: 10,
+                qrbox: { width: 200, height: 200 },
+                aspectRatio: 1.0
+            };
+
+            html5QrCode.start(
+                { facingMode: 'environment' }, // Back camera
+                config,
+                onScanSuccess,
+                onScanError
+            ).then(() => {
+                document.getElementById('start-scan-btn').style.display = 'none';
+                document.getElementById('stop-scan-btn').style.display = 'inline-flex';
+                document.getElementById('qr-status').textContent = '🎥 Camera active - scanning for QR codes...';
+            }).catch(err => {
+                console.error('Camera start error:', err);
+                showError('Could not access camera. Please check permissions.');
+            });
+        }
+
+        function stopQRScanner() {
+            if (html5QrCode && html5QrCode.isScanning) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('start-scan-btn').style.display = 'inline-flex';
+                    document.getElementById('stop-scan-btn').style.display = 'none';
+                    document.getElementById('qr-status').textContent = 'Point your camera at the QR code on the student\'s digital ID';
+                }).catch(err => {
+                    console.error('Stop error:', err);
+                });
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            console.log('QR Scanned:', decodedText);
+
+            // Try to extract USN from the scanned text
+            let usn = null;
+
+            // Check if it's a URL with usn parameter
+            try {
+                const url = new URL(decodedText);
+                usn = url.searchParams.get('usn');
+            } catch (e) {
+                // Not a URL, check if it's a direct USN
+                if (decodedText.match(/^USDI?[A-Z0-9]+$/i)) {
+                    usn = decodedText.toUpperCase();
+                }
+            }
+
+            if (usn) {
+                showSuccess(`QR Code scanned: ${usn}`);
+                stopQRScanner();
+                closeQRModal();
+                document.getElementById('usn-input').value = usn;
+                verifyStudent();
+            } else {
+                showWarning('Invalid QR code format. Looking for USDI format...');
+            }
+        }
+
+        function onScanError(error) {
+            // Ignore scan errors - they happen constantly when no QR is in view
         }
 
         // Enter key handling
@@ -327,6 +462,19 @@
 
         // Initialize
         checkURLParams();
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            document.querySelector('.nav').classList.toggle('open');
+            document.querySelector('.menu-toggle').classList.toggle('active');
+            document.querySelector('.mobile-overlay').classList.toggle('active');
+        }
+
+        function closeMobileMenu() {
+            document.querySelector('.nav').classList.remove('open');
+            document.querySelector('.menu-toggle').classList.remove('active');
+            document.querySelector('.mobile-overlay').classList.remove('active');
+        }
     </script>
 </body>
 

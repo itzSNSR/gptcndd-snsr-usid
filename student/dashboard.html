@@ -185,8 +185,19 @@
                 <span>USDI</span>
             </a>
             <nav class="nav">
-                <a href="dashboard.html" class="active">My ID</a>
-                <a href="#" onclick="logout()">Logout</a>
+                <a href="dashboard.html" class="active" data-i18n="lbl_my_profile">My ID</a>
+                <a href="#" onclick="logout()" data-i18n="btn_logout">Logout</a>
+                <div class="language-wrapper">
+                    <select id="language-selector" class="language-select">
+                        <option value="en">🇺🇸 English</option>
+                        <option value="ml">🇮🇳 മലയാളം</option>
+                        <option value="hi">🇮🇳 हिन्दी</option>
+                    </select>
+                </div>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <span class="theme-icon moon">🌙</span>
+                    <span class="theme-icon sun">☀️</span>
+                </button>
             </nav>
         </div>
     </header>
@@ -204,7 +215,7 @@
                 <!-- Left Column: ID Card -->
                 <div>
                     <div class="section-header">
-                        <h3 class="section-title">Digital Student ID</h3>
+                        <h3 class="section-title" data-i18n="lbl_student_id_card">Digital Student ID</h3>
                     </div>
 
                     <!-- ID Card -->
@@ -217,10 +228,19 @@
                             </div>
                         </div>
                         <div class="id-card-body">
-                            <div class="id-card-photo">
-                                <div
-                                    style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--grey-200), var(--grey-300)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">
-                                    👤
+                            <div class="id-card-photo" onclick="document.getElementById('photo-input').click()"
+                                style="cursor: pointer; position: relative;" title="Click to upload photo">
+                                <input type="file" id="photo-input" accept="image/*" onchange="handlePhotoUpload(event)"
+                                    style="display: none;">
+                                <div id="photo-preview"
+                                    style="width: 100%; height: 100%; background: linear-gradient(135deg, var(--grey-200), var(--grey-300)); display: flex; align-items: center; justify-content: center; font-size: 2.5rem; position: relative;">
+                                    <span id="photo-placeholder">📷</span>
+                                    <img id="photo-image" src="" alt="Student Photo"
+                                        style="display: none; width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">
+                                </div>
+                                <div class="photo-upload-hint"
+                                    style="position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.6rem; text-align: center; padding: 2px;">
+                                    Click to upload
                                 </div>
                             </div>
                             <div class="id-card-info">
@@ -249,12 +269,19 @@
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex gap-4 mt-6">
-                        <button class="btn btn-primary" onclick="downloadPDF()">
+                    <div class="flex gap-4 mt-6" style="flex-wrap: wrap;">
+                        <button class="btn btn-primary" onclick="printIDCard()" style="background: #059669;">
+                            🖨️ Print ID Card
+                        </button>
+                        <button class="btn btn-primary" onclick="downloadPDF()" data-i18n="lbl_download_pdf">
                             📥 Download PDF
                         </button>
-                        <button class="btn btn-secondary" onclick="shareLink()">
+                        <button class="btn btn-secondary" onclick="shareLink()" data-i18n="lbl_share_link">
                             🔗 Share Link
+                        </button>
+                        <button class="btn btn-outline" onclick="openEditRequestModal()"
+                            style="border-color: #FFD700; color: #b8860b;" data-i18n="lbl_request_edit">
+                            ✏️ Request Edit
                         </button>
                     </div>
                 </div>
@@ -264,32 +291,32 @@
                     <!-- SECTION 1: Personal Details -->
                     <div class="section-card">
                         <div class="section-card-header">
-                            👤 Personal Details
+                            👤 <span data-i18n="lbl_personal_details">Personal Details</span>
                         </div>
                         <div class="section-card-body">
                             <div class="detail-grid">
                                 <div class="detail-item">
-                                    <div class="detail-label">Full Name</div>
+                                    <div class="detail-label" data-i18n="lbl_name">Full Name</div>
                                     <div class="detail-value" id="detail-name">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Date of Birth</div>
+                                    <div class="detail-label" data-i18n="lbl_dob">Date of Birth</div>
                                     <div class="detail-value" id="detail-dob">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Gender</div>
+                                    <div class="detail-label" data-i18n="lbl_gender">Gender</div>
                                     <div class="detail-value" id="detail-gender">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Mobile Number</div>
+                                    <div class="detail-label" data-i18n="lbl_mobile_no">Mobile Number</div>
                                     <div class="detail-value" id="detail-mobile">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Email ID</div>
+                                    <div class="detail-label" data-i18n="lbl_email">Email ID</div>
                                     <div class="detail-value" id="detail-email">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Unique Student ID (USDI)</div>
+                                    <div class="detail-label" data-i18n="lbl_usn">Unique Student ID (USDI)</div>
                                     <div class="detail-value" id="detail-usn"
                                         style="color: var(--primary); font-weight: 700;">-</div>
                                 </div>
@@ -308,52 +335,52 @@
                     <!-- SECTION 2: Current Institution -->
                     <div class="section-card">
                         <div class="section-card-header">
-                            🏫 Current Institution
+                            🏫 <span data-i18n="lbl_institution">Current Institution</span>
                         </div>
                         <div class="section-card-body">
                             <div class="detail-grid">
                                 <div class="detail-item full-width">
-                                    <div class="detail-label">Institution Name</div>
+                                    <div class="detail-label" data-i18n="lbl_institution">Institution Name</div>
                                     <div class="detail-value" id="detail-institution">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Institution Type</div>
+                                    <div class="detail-label" data-i18n="lbl_inst_type">Institution Type</div>
                                     <div class="detail-value" id="detail-inst-type">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Affiliated Authority</div>
+                                    <div class="detail-label" data-i18n="lbl_authority">Affiliated Authority</div>
                                     <div class="detail-value" id="detail-authority">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Course</div>
+                                    <div class="detail-label" data-i18n="lbl_course">Course</div>
                                     <div class="detail-value" id="detail-course">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Branch Code</div>
+                                    <div class="detail-label" data-i18n="lbl_branch">Branch Code</div>
                                     <div class="detail-value" id="detail-branch">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Mode of Study</div>
+                                    <div class="detail-label" data-i18n="lbl_mode">Mode of Study</div>
                                     <div class="detail-value" id="detail-mode">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Admission Type</div>
+                                    <div class="detail-label" data-i18n="lbl_admission_type">Admission Type</div>
                                     <div class="detail-value" id="detail-admission-type">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Current Semester</div>
+                                    <div class="detail-label" data-i18n="lbl_semester">Current Semester</div>
                                     <div class="detail-value" id="detail-semester">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Academic Status</div>
+                                    <div class="detail-label" data-i18n="lbl_status">Academic Status</div>
                                     <div class="detail-value" id="detail-status">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Batch</div>
+                                    <div class="detail-label" data-i18n="lbl_batch">Batch</div>
                                     <div class="detail-value" id="detail-batch">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Expected Completion</div>
+                                    <div class="detail-label" data-i18n="lbl_completion">Expected Completion</div>
                                     <div class="detail-value" id="detail-completion">-</div>
                                 </div>
                             </div>
@@ -363,24 +390,26 @@
                     <!-- SECTION 3: Institution Identifiers -->
                     <div class="section-card">
                         <div class="section-card-header">
-                            🆔 Institution Identifiers
+                            🆔 <span data-i18n="lbl_inst_identifiers">Institution Identifiers</span>
                         </div>
                         <div class="section-card-body">
                             <div class="detail-grid">
                                 <div class="detail-item">
-                                    <div class="detail-label">College Admission Number</div>
+                                    <div class="detail-label" data-i18n="lbl_admission_no">College Admission Number
+                                    </div>
                                     <div class="detail-value" id="detail-admission-no">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Polytechnic Register Number</div>
+                                    <div class="detail-label" data-i18n="lbl_register_no">Polytechnic Register Number
+                                    </div>
                                     <div class="detail-value" id="detail-register-no">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Exam Registration Number</div>
+                                    <div class="detail-label" data-i18n="lbl_exam_no">Exam Registration Number</div>
                                     <div class="detail-value" id="detail-exam-no">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Roll Number</div>
+                                    <div class="detail-label" data-i18n="lbl_roll_no">Roll Number</div>
                                     <div class="detail-value" id="detail-roll-no">-</div>
                                 </div>
                             </div>
@@ -390,17 +419,17 @@
                     <!-- SECTION 4: Academic History Table -->
                     <div class="section-card">
                         <div class="section-card-header">
-                            📚 Academic History
+                            📚 <span data-i18n="lbl_academic_history">Academic History</span>
                         </div>
                         <div class="section-card-body" style="padding: 0;">
                             <table class="academic-table" id="academic-table">
                                 <thead>
                                     <tr>
-                                        <th>Qualification</th>
-                                        <th>Institution</th>
-                                        <th>Board / Authority</th>
-                                        <th>Year</th>
-                                        <th>Status</th>
+                                        <th data-i18n="tbl_qual">Qualification</th>
+                                        <th data-i18n="tbl_inst">Institution</th>
+                                        <th data-i18n="tbl_board">Board / Authority</th>
+                                        <th data-i18n="tbl_year">Year</th>
+                                        <th data-i18n="tbl_status">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody id="academic-table-body">
@@ -413,30 +442,31 @@
                     <!-- SECTION 5: USDI Verification Details -->
                     <div class="section-card">
                         <div class="section-card-header">
-                            ✅ USDI Verification Details
+                            ✅ <span data-i18n="lbl_verification_details">USDI Verification Details</span>
                         </div>
                         <div class="section-card-body">
                             <div class="detail-grid">
                                 <div class="detail-item">
-                                    <div class="detail-label">USDI Account Status</div>
+                                    <div class="detail-label" data-i18n="lbl_account_status">USDI Account Status</div>
                                     <div class="detail-value">
                                         <span class="verification-badge" id="verification-status">✓ Verified</span>
                                     </div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">QR Code Status</div>
+                                    <div class="detail-label" data-i18n="lbl_qr_status">QR Code Status</div>
                                     <div class="detail-value" id="qr-status">-</div>
                                 </div>
                                 <div class="detail-item full-width">
-                                    <div class="detail-label">Verification Methods Enabled</div>
+                                    <div class="detail-label" data-i18n="lbl_verify_methods">Verification Methods
+                                        Enabled</div>
                                     <div class="detail-value" id="verification-methods">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Last Updated By</div>
+                                    <div class="detail-label" data-i18n="lbl_updated_by">Last Updated By</div>
                                     <div class="detail-value" id="updated-by">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Last Updated Date</div>
+                                    <div class="detail-label" data-i18n="lbl_updated_date">Last Updated Date</div>
                                     <div class="detail-value" id="updated-date">-</div>
                                 </div>
                             </div>
@@ -446,29 +476,30 @@
                     <!-- SECTION 6: Government Fields -->
                     <div class="section-card">
                         <div class="section-card-header">
-                            🏛️ Government Record Information
+                            🏛️ <span data-i18n="lbl_gov_fields">Government Record Information</span>
                         </div>
                         <div class="section-card-body">
                             <div class="detail-grid">
                                 <div class="detail-item">
-                                    <div class="detail-label">Identity Type</div>
+                                    <div class="detail-label" data-i18n="lbl_identity_type">Identity Type</div>
                                     <div class="detail-value" id="identity-type">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Record Authority</div>
+                                    <div class="detail-label" data-i18n="lbl_record_auth">Record Authority</div>
                                     <div class="detail-value" id="record-authority">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Data Source</div>
+                                    <div class="detail-label" data-i18n="lbl_data_source">Data Source</div>
                                     <div class="detail-value" id="data-source">-</div>
                                 </div>
                                 <div class="detail-item">
-                                    <div class="detail-label">Data Usage</div>
+                                    <div class="detail-label" data-i18n="lbl_data_usage">Data Usage</div>
                                     <div class="detail-value" id="data-usage">-</div>
                                 </div>
                             </div>
                             <div class="govt-note">
-                                <p>⚠️ <strong>Note:</strong> All data shown is sample data for prototype demonstration
+                                <p data-i18n="msg_demo_note">⚠️ <strong>Note:</strong> All data shown is sample data for
+                                    prototype demonstration
                                     purposes. No real government database is connected. This data is for prototype,
                                     presentation, and evaluation only.</p>
                             </div>
@@ -504,6 +535,76 @@
         </div>
     </div>
 
+    <!-- Edit Request Modal -->
+    <div class="modal-overlay" id="edit-request-modal">
+        <div class="modal" style="max-width: 600px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                <h3 class="modal-title" style="color: #92400e;">✏️ Request Record Edit</h3>
+                <button class="modal-close" onclick="closeEditRequestModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div
+                    style="background: var(--info-light); padding: var(--space-3); border-radius: var(--radius); margin-bottom: var(--space-4);">
+                    <p style="margin: 0; color: var(--info);">
+                        <strong>📋 Note:</strong> Edit requests will be reviewed by Government officials.
+                        You'll be notified once your request is processed.
+                    </p>
+                </div>
+
+                <form id="edit-request-form" onsubmit="submitEditRequest(event)">
+                    <div class="form-group">
+                        <label class="form-label">What would you like to change? *</label>
+                        <select id="edit-field" class="form-select" required onchange="updateFieldInputs()">
+                            <option value="">Select a field</option>
+                            <option value="dateOfBirth">Date of Birth</option>
+                            <option value="fullName">Full Name (Spelling Correction)</option>
+                            <option value="sslcBoard">SSLC Board Name</option>
+                            <option value="sslcSchool">SSLC School Name</option>
+                            <option value="plusTwoSchool">Plus Two School Name</option>
+                            <option value="category">Category (SC/ST/OBC/EWS)</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="current-value-group">
+                        <label class="form-label">Current Value</label>
+                        <input type="text" id="current-value" class="form-input"
+                            placeholder="Enter current incorrect value">
+                        <input type="date" id="current-value-date" class="form-input hidden">
+                    </div>
+
+                    <div class="form-group" id="new-value-group">
+                        <label class="form-label">New/Correct Value *</label>
+                        <input type="text" id="new-value" class="form-input" placeholder="Enter correct value">
+                        <input type="date" id="new-value-date" class="form-input hidden" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Reason for Change *</label>
+                        <textarea id="edit-reason" class="form-input" rows="3"
+                            placeholder="Please explain why this change is needed (e.g., spelling error, wrong data entry, etc.)"
+                            required></textarea>
+                    </div>
+
+                    <div class="modal-footer"
+                        style="padding: var(--space-4) 0 0; border: 0; display: flex; justify-content: space-between;">
+                        <button type="button" class="btn btn-secondary"
+                            onclick="closeEditRequestModal()">Cancel</button>
+                        <button type="submit" class="btn btn-lg"
+                            style="background: linear-gradient(135deg, #92400e, #b8860b); color: white;">
+                            📤 Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/language.js"></script>
+    <script src="../js/chatbot.js"></script>
     <script src="../js/data.js"></script>
     <script>
         let currentStudent = null;
@@ -530,53 +631,66 @@
 
         function renderDashboard() {
             const student = currentStudent;
+            console.log('Rendering student:', student);
 
-            // Welcome header
-            document.getElementById('student-name').textContent = student.fullName.split(' ')[0];
+            try {
+                // Welcome header
+                document.getElementById('student-name').textContent = (student.fullName || 'Student').split(' ')[0];
 
-            // ID Card
-            document.getElementById('card-name').textContent = student.fullName;
-            document.getElementById('card-usn').textContent = student.usn;
-            document.getElementById('card-institution').textContent = student.institutionShortName || student.institution;
-            document.getElementById('card-course').textContent = student.course;
-            document.getElementById('card-semester').textContent = student.semesterYear;
+                // ID Card
+                document.getElementById('card-name').textContent = student.fullName || '-';
+                document.getElementById('card-usn').textContent = student.usn || '-';
+                document.getElementById('card-institution').textContent = student.institutionShortName || student.institution || '-';
+                document.getElementById('card-course').textContent = student.course || '-';
+                document.getElementById('card-semester').textContent = student.semesterYear || '-';
 
-            // Status badge on card
-            const statusBadge = document.getElementById('card-status');
-            statusBadge.innerHTML = `<span class="badge badge-${student.status.toLowerCase()}">${student.status}</span>`;
+                // Status badge on card
+                const statusBadge = document.getElementById('card-status');
+                const status = student.status || 'Active';
+                statusBadge.innerHTML = `<span class="badge badge-${status.toLowerCase()}">${status}</span>`;
 
-            // Generate QR Code
-            const verifyUrl = `${window.location.origin}/usdi-system/verifier/verify.html?usn=${student.usn}`;
-            QRCode.toCanvas(document.createElement('canvas'), verifyUrl, { width: 72 }, (err, canvas) => {
-                if (!err) {
-                    document.getElementById('qr-code').innerHTML = '';
-                    document.getElementById('qr-code').appendChild(canvas);
+                // Generate QR Code (wrap in try-catch to prevent blocking)
+                try {
+                    const verifyUrl = `${window.location.origin}/usdi-system/verifier/verify.html?usn=${student.usn}`;
+                    QRCode.toCanvas(document.createElement('canvas'), verifyUrl, { width: 72 }, (err, canvas) => {
+                        if (!err) {
+                            document.getElementById('qr-code').innerHTML = '';
+                            document.getElementById('qr-code').appendChild(canvas);
+                        }
+                    });
+                } catch (qrErr) {
+                    console.log('QR Code error:', qrErr);
                 }
-            });
 
-            // SECTION 1: Personal Details
-            document.getElementById('detail-name').textContent = student.fullName;
-            document.getElementById('detail-dob').textContent = student.dobFormatted || formatDate(student.dob);
-            document.getElementById('detail-gender').textContent = student.gender || '-';
-            document.getElementById('detail-mobile').textContent = student.mobile;
-            document.getElementById('detail-email').textContent = student.email || '-';
-            document.getElementById('detail-usn').textContent = student.usn;
-            document.getElementById('detail-nationality').textContent = student.nationality || 'Indian';
-            document.getElementById('detail-location').textContent = `${student.state || 'Kerala'}, ${student.district || '-'}`;
+                console.log('Rendering Section 1: Personal Details');
+                // SECTION 1: Personal Details
+                document.getElementById('detail-name').textContent = student.fullName || '-';
+                document.getElementById('detail-dob').textContent = student.dobFormatted || formatDate(student.dob) || '-';
+                document.getElementById('detail-gender').textContent = student.gender || '-';
+                document.getElementById('detail-mobile').textContent = student.mobile || '-';
+                document.getElementById('detail-email').textContent = student.email || '-';
+                document.getElementById('detail-usn').textContent = student.usn || '-';
+                document.getElementById('detail-nationality').textContent = student.nationality || 'Indian';
+                document.getElementById('detail-location').textContent = `${student.state || 'Kerala'}, ${student.district || '-'}`;
 
-            // SECTION 2: Current Institution
-            document.getElementById('detail-institution').textContent = student.institution;
-            document.getElementById('detail-inst-type').textContent = student.institutionType || '-';
-            document.getElementById('detail-authority').textContent = student.affiliatedAuthority || '-';
-            document.getElementById('detail-course').textContent = student.course;
-            document.getElementById('detail-branch').textContent = student.branchCode || '-';
-            document.getElementById('detail-mode').textContent = student.modeOfStudy || 'Regular';
-            document.getElementById('detail-admission-type').textContent = student.admissionType || '-';
-            document.getElementById('detail-semester').textContent = student.semesterYear;
-            document.getElementById('detail-status').innerHTML = `<span class="badge badge-${student.status.toLowerCase()}">${student.status}</span>`;
-            document.getElementById('detail-batch').textContent = student.batch || '-';
-            document.getElementById('detail-completion').textContent = student.expectedCompletionYear || '-';
+                console.log('Rendering Section 2: Current Institution');
+                // SECTION 2: Current Institution
+                document.getElementById('detail-institution').textContent = student.institution || '-';
+                document.getElementById('detail-inst-type').textContent = student.institutionType || '-';
+                document.getElementById('detail-authority').textContent = student.affiliatedAuthority || '-';
+                document.getElementById('detail-course').textContent = student.course || '-';
+                document.getElementById('detail-branch').textContent = student.branchCode || '-';
+                document.getElementById('detail-mode').textContent = student.modeOfStudy || 'Regular';
+                document.getElementById('detail-admission-type').textContent = student.admissionType || '-';
+                document.getElementById('detail-semester').textContent = student.semesterYear || '-';
+                document.getElementById('detail-status').innerHTML = `<span class="badge badge-${status.toLowerCase()}">${status}</span>`;
+                document.getElementById('detail-batch').textContent = student.batch || '-';
+                document.getElementById('detail-completion').textContent = student.expectedCompletionYear || '-';
+            } catch (err) {
+                console.error('Error rendering dashboard:', err);
+            }
 
+            console.log('Rendering Section 3: Institution Identifiers');
             // SECTION 3: Institution Identifiers
             if (student.institutionIdentifiers) {
                 document.getElementById('detail-admission-no').textContent = student.institutionIdentifiers.collegeAdmissionNumber || '-';
@@ -585,6 +699,7 @@
                 document.getElementById('detail-roll-no').textContent = student.institutionIdentifiers.rollNumber || '-';
             }
 
+            console.log('Rendering Section 4: Academic History Table');
             // SECTION 4: Academic History Table
             const tableBody = document.getElementById('academic-table-body');
             if (student.academicHistoryTable && student.academicHistoryTable.length > 0) {
@@ -594,13 +709,14 @@
                         <td>${item.institution}</td>
                         <td>${item.board}</td>
                         <td>${item.year}</td>
-                        <td><span class="status-pill status-${item.status.toLowerCase()}">${item.status}</span></td>
+                        <td><span class="status-pill status-${(item.status || 'completed').toLowerCase()}">${item.status}</span></td>
                     </tr>
                 `).join('');
             } else {
                 tableBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--grey-500);">No academic history available</td></tr>';
             }
 
+            console.log('Rendering Section 5: Verification Details');
             // SECTION 5: Verification Details
             if (student.verification) {
                 document.getElementById('verification-status').innerHTML = `✓ ${student.verification.accountStatus}`;
@@ -612,6 +728,7 @@
                 document.getElementById('updated-date').textContent = student.verification.lastUpdatedDate || '-';
             }
 
+            console.log('Rendering Section 6: Government Fields');
             // SECTION 6: Government Fields
             if (student.governmentFields) {
                 document.getElementById('identity-type').textContent = student.governmentFields.identityType || '-';
@@ -619,11 +736,80 @@
                 document.getElementById('data-source').textContent = student.governmentFields.dataSource || '-';
                 document.getElementById('data-usage').textContent = student.governmentFields.dataUsage || '-';
             }
+
+            console.log('Dashboard rendering complete');
+
+            // Load saved photo if available
+            loadSavedPhoto();
         }
 
         function formatDate(dateStr) {
             const date = new Date(dateStr);
             return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        // Photo Upload Functions
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showError('Please select an image file');
+                return;
+            }
+
+            // Validate file size (max 2MB)
+            if (file.size > 2 * 1024 * 1024) {
+                showError('Image must be smaller than 2MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64 = e.target.result;
+
+                // Update preview
+                document.getElementById('photo-placeholder').style.display = 'none';
+                const photoImg = document.getElementById('photo-image');
+                photoImg.src = base64;
+                photoImg.style.display = 'block';
+
+                // Save to localStorage
+                if (currentStudent) {
+                    localStorage.setItem(`usdi_photo_${currentStudent.usn}`, base64);
+                    showSuccess('Photo uploaded successfully!');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadSavedPhoto() {
+            if (!currentStudent) return;
+
+            const savedPhoto = localStorage.getItem(`usdi_photo_${currentStudent.usn}`);
+            if (savedPhoto) {
+                document.getElementById('photo-placeholder').style.display = 'none';
+                const photoImg = document.getElementById('photo-image');
+                photoImg.src = savedPhoto;
+                photoImg.style.display = 'block';
+            }
+        }
+
+        // Print ID Card Function
+        function printIDCard() {
+            // Add print class to body
+            document.body.classList.add('printing-id');
+
+            // Trigger print
+            window.print();
+
+            // Remove print class after print dialog closes
+            setTimeout(() => {
+                document.body.classList.remove('printing-id');
+            }, 500);
+
+            showSuccess('Print dialog opened!');
         }
 
         function downloadPDF() {
@@ -638,10 +824,30 @@
             html2pdf().set(opt).from(element).save();
         }
 
-        function shareLink() {
-            const baseUrl = window.location.origin;
-            const verifyUrl = `${baseUrl}/usdi-system/verifier/verify.html?usn=${currentStudent.usn}`;
-            document.getElementById('share-link').value = verifyUrl;
+        async function shareLink() {
+            // Construct absolute URL relative to current page
+            // Works for both file:// and http://
+            const verifyUrl = new URL('../verifier/verify.html', window.location.href);
+            verifyUrl.searchParams.set('usn', currentStudent.usn);
+            const finalUrl = verifyUrl.href;
+
+            // Try Web Share API (Mobile/Modern Browsers)
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'USDI Verification',
+                        text: `Verify my student identity: ${currentStudent.fullName}`,
+                        url: finalUrl
+                    });
+                    return; // Shared successfully
+                } catch (error) {
+                    console.log('Share failed or cancelled:', error);
+                    // Fallback to modal
+                }
+            }
+
+            // Fallback: Show Modal
+            document.getElementById('share-link').value = finalUrl;
             document.getElementById('share-modal').classList.add('active');
         }
 
@@ -653,7 +859,7 @@
             const linkInput = document.getElementById('share-link');
             linkInput.select();
             document.execCommand('copy');
-            alert('Link copied to clipboard!');
+            showSuccess('Link copied to clipboard!');
         }
 
         function logout() {
@@ -665,6 +871,108 @@
         document.getElementById('share-modal').addEventListener('click', (e) => {
             if (e.target.classList.contains('modal-overlay')) {
                 closeShareModal();
+            }
+        });
+
+        // Edit Request Modal
+        function openEditRequestModal() {
+            document.getElementById('edit-request-form').reset();
+            document.getElementById('edit-request-modal').classList.add('active');
+        }
+
+        function closeEditRequestModal() {
+            document.getElementById('edit-request-modal').classList.remove('active');
+        }
+
+
+
+        function updateFieldInputs() {
+            const field = document.getElementById('edit-field').value;
+            const isDateField = (field === 'dateOfBirth');
+
+            // Toggle between text and date inputs
+            document.getElementById('current-value').classList.toggle('hidden', isDateField);
+            document.getElementById('current-value-date').classList.toggle('hidden', !isDateField);
+            document.getElementById('new-value').classList.toggle('hidden', isDateField);
+            document.getElementById('new-value-date').classList.toggle('hidden', !isDateField);
+
+            // Update required attribute
+            document.getElementById('new-value').required = !isDateField;
+            document.getElementById('new-value-date').required = isDateField;
+
+            // Auto-fill current value based on selected field
+            if (currentStudent) {
+                switch (field) {
+                    case 'dateOfBirth':
+                        document.getElementById('current-value-date').value = currentStudent.dob || '';
+                        break;
+                    case 'fullName':
+                        document.getElementById('current-value').value = currentStudent.fullName || '';
+                        break;
+                    case 'category':
+                        document.getElementById('current-value').value = currentStudent.category || currentStudent.studentCategory || '';
+                        break;
+                    default:
+                        document.getElementById('current-value').value = '';
+                }
+            }
+        }
+
+        function submitEditRequest(e) {
+            e.preventDefault();
+
+            const field = document.getElementById('edit-field').value;
+            const isDateField = (field === 'dateOfBirth');
+
+            // Get values from correct inputs
+            const currentValue = isDateField
+                ? document.getElementById('current-value-date').value
+                : document.getElementById('current-value').value.trim();
+            const newValue = isDateField
+                ? document.getElementById('new-value-date').value
+                : document.getElementById('new-value').value.trim();
+            const reason = document.getElementById('edit-reason').value.trim();
+
+            // Validate
+            if (!newValue) {
+                showWarning('Please enter the new/correct value.');
+                return;
+            }
+
+            // Create change object
+            const changes = {};
+            changes[field] = { old: currentValue, new: newValue };
+
+            // Build description
+            const fieldNames = {
+                'dateOfBirth': 'Date of Birth',
+                'fullName': 'Full Name',
+                'sslcBoard': 'SSLC Board Name',
+                'sslcSchool': 'SSLC School Name',
+                'plusTwoSchool': 'Plus Two School Name',
+                'category': 'Category',
+                'other': 'Other Field'
+            };
+            const description = `Request to update ${fieldNames[field] || field}: "${currentValue}" to "${newValue}". Reason: ${reason}`;
+
+            // Submit to USDI_DATA
+            const request = USDI_DATA.addEditRequest(
+                currentStudent.usn,
+                currentStudent.fullName,
+                description,
+                changes
+            );
+
+            console.log('Edit request submitted:', request);
+
+            showSuccess('Your edit request has been submitted! Request ID: ' + request.id);
+            closeEditRequestModal();
+        }
+
+        // Close edit request modal on outside click
+        document.getElementById('edit-request-modal').addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeEditRequestModal();
             }
         });
 

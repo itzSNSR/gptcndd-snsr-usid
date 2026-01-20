@@ -136,6 +136,7 @@ const USDI_DATA = {
             state: 'Kerala',
             district: 'Thiruvananthapuram',
             studentCategory: 'General',
+            category: 'General',
 
             // SECTION 2: CURRENT INSTITUTION
             institution: 'Government Polytechnic College, Nedumangad',
@@ -150,7 +151,7 @@ const USDI_DATA = {
             expectedCompletionYear: 2026,
             semesterYear: 'Semester 4',
             status: 'Active',
-            batch: '2023-2026',
+            batch: '2023–2026',
 
             // SECTION 3: INSTITUTION IDENTIFIERS
             institutionIdentifiers: {
@@ -237,13 +238,18 @@ const USDI_DATA = {
         }
     ],
 
-    // Initialize data in localStorage
+    // Initialize data in localStorage (force refresh to sync with code changes)
     init: function () {
-        if (!localStorage.getItem(this.STORAGE_KEY)) {
-            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.defaultStudents));
-        }
+        // Always update students to ensure latest data from code is used
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.defaultStudents));
+
         if (!localStorage.getItem(this.INSTITUTION_KEY)) {
             localStorage.setItem(this.INSTITUTION_KEY, JSON.stringify(this.defaultInstitution));
+        }
+
+        // Initialize edit requests if not present
+        if (!localStorage.getItem(this.REQUESTS_KEY)) {
+            localStorage.setItem(this.REQUESTS_KEY, JSON.stringify(this.defaultEditRequests || []));
         }
     },
 
@@ -389,12 +395,96 @@ const USDI_DATA = {
         return { verified: false, data: null };
     },
 
+    // ============ EDIT REQUEST MANAGEMENT ============
+
+    REQUESTS_KEY: 'usdi_edit_requests',
+
+    // Default sample edit requests
+    defaultEditRequests: [
+        {
+            id: 'REQ001',
+            usn: 'USDI2024001',
+            studentName: 'Rahul Sharma',
+            requestDate: '2026-01-18',
+            description: 'Request to update SSLC board name from "CBSE" to "State Board"',
+            status: 'pending',
+            changes: {
+                'SSLC Board': { old: 'CBSE', new: 'Kerala State Board' }
+            }
+        },
+        {
+            id: 'REQ002',
+            usn: 'USDI2024002',
+            studentName: 'Priya Patel',
+            requestDate: '2026-01-19',
+            description: 'Request to correct date of birth',
+            status: 'pending',
+            changes: {
+                'dateOfBirth': { old: '2001-11-22', new: '2001-11-12' }
+            }
+        }
+    ],
+
+    // Get all edit requests
+    getEditRequests: function () {
+        let requests = localStorage.getItem(this.REQUESTS_KEY);
+        if (!requests) {
+            localStorage.setItem(this.REQUESTS_KEY, JSON.stringify(this.defaultEditRequests));
+            return this.defaultEditRequests;
+        }
+        return JSON.parse(requests);
+    },
+
+    // Add new edit request (from student)
+    addEditRequest: function (usn, studentName, description, changes) {
+        const requests = this.getEditRequests();
+        const newRequest = {
+            id: 'REQ' + String(requests.length + 1).padStart(3, '0'),
+            usn: usn,
+            studentName: studentName,
+            requestDate: new Date().toISOString().split('T')[0],
+            description: description,
+            status: 'pending',
+            changes: changes
+        };
+        requests.push(newRequest);
+        localStorage.setItem(this.REQUESTS_KEY, JSON.stringify(requests));
+        return newRequest;
+    },
+
+    // Process edit request (approve/reject)
+    processEditRequest: function (requestId, action, adminNotes) {
+        const requests = this.getEditRequests();
+        const index = requests.findIndex(r => r.id === requestId);
+
+        if (index !== -1) {
+            requests[index].status = action; // 'approved' or 'rejected'
+            requests[index].processedDate = new Date().toISOString().split('T')[0];
+            requests[index].adminNotes = adminNotes || '';
+
+            // If approved, apply the changes
+            if (action === 'approved' && requests[index].changes) {
+                const updates = {};
+                for (const [key, value] of Object.entries(requests[index].changes)) {
+                    updates[key] = value.new;
+                }
+                this.updateStudent(requests[index].usn, updates);
+            }
+
+            localStorage.setItem(this.REQUESTS_KEY, JSON.stringify(requests));
+            return true;
+        }
+        return false;
+    },
+
     // Reset to default data
     reset: function () {
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.defaultStudents));
         localStorage.setItem(this.INSTITUTION_KEY, JSON.stringify(this.defaultInstitution));
+        localStorage.setItem(this.REQUESTS_KEY, JSON.stringify(this.defaultEditRequests));
     }
 };
 
 // Initialize on load
 USDI_DATA.init();
+
