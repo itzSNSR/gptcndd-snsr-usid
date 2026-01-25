@@ -2534,21 +2534,25 @@ h6 {
         width: 24px;
         height: 24px;
         fill: none;
-        stroke: var(--grey-400);
-        /* Default inactive color */
+        stroke: rgba(255, 255, 255, 0.6);
+        /* Visible white against blue/dark header */
         stroke-width: 2;
-        transition: stroke 0.3s ease;
+        transition: all 0.3s ease;
     }
 
-    [data-theme="dark"] .toggle-icons .moon {
-        stroke: white;
-        /* Active state color if uncovered */
+    /* When Dark Mode is Active (Moon Covered, Sun Visible) */
+    [data-theme="dark"] .toggle-icons .sun {
+        stroke: #FFD700;
+        /* Gold Sun */
+        fill: rgba(255, 215, 0, 0.2);
+        filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
+    }
+
+    /* When Light Mode is Active (Sun Covered, Moon Visible) */
+    [data-theme="light"] .toggle-icons .moon {
+        stroke: #f1f5f9;
+        /* Bright Moon */
         fill: rgba(255, 255, 255, 0.2);
-    }
-
-    [data-theme="light"] .toggle-icons .sun {
-        stroke: var(--primary);
-        fill: rgba(59, 130, 246, 0.1);
     }
 
 }
