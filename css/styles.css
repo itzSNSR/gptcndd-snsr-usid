@@ -2361,6 +2361,8 @@ h6 {
     position: relative;
     margin: auto;
     -webkit-tap-highlight-color: transparent;
+    font-size: 12px;
+    /* Enforce compact size (36px wide) */
 }
 
 .switch__input {
