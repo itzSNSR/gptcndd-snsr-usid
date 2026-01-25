@@ -2353,6 +2353,119 @@ h6 {
     pointer-events: all;
 }
 
+/* ===== PREMIUM THEME SWITCHER ===== */
+:root {
+    --switcher-width: 80px;
+    --switcher-height: 40px;
+    --switcher-padding: 4px;
+}
+
+.switcher {
+    position: relative;
+    display: flex;
+    padding: var(--switcher-padding);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    margin: 0;
+    border: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.switcher__legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.switcher__option {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.switcher__icon {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: var(--grey-400);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: all 0.3s ease;
+}
+
+.switcher__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Selected State */
+.switcher__input:checked+.switcher__icon {
+    stroke: var(--primary);
+    filter: drop-shadow(0 0 5px rgba(59, 130, 246, 0.5));
+}
+
+/* Background Slider */
+.switcher::before {
+    content: '';
+    position: absolute;
+    top: var(--switcher-padding);
+    left: var(--switcher-padding);
+    width: 32px;
+    height: 32px;
+    background: #fff;
+    border-radius: 50%;
+    z-index: 1;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Move slider for dark mode (assuming 2nd option) */
+/* We'll handle this dynamically via JS or specific classes, 
+   but for a simple 2-option radio group: 
+*/
+.switcher:has(#theme-dark:checked)::before {
+    transform: translateX(32px);
+}
+
+/* Dark Mode Overrides for Switcher */
+[data-theme="dark"] .switcher {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .switcher::before {
+    background: #1e293b;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .switcher__input:checked+.switcher__icon {
+    stroke: #FFD700;
+    /* Gold for sun/moon highlight */
+    filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.5));
+}
+
 .chatbot-header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
     color: white;

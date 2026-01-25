@@ -25,12 +25,23 @@ class ThemeManager {
                 this.setTheme(e.matches ? 'dark' : 'light');
             }
         });
+
+        // Listen for radio changes (delegate to handle dynamic insertion)
+        document.addEventListener('change', (e) => {
+            if (e.target.name === 'theme') {
+                this.setTheme(e.target.value);
+            }
+        });
     }
 
     setTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem(this.storageKey, theme);
         this.currentTheme = theme;
+
+        // Sync radio buttons
+        const radio = document.querySelector(`input[name="theme"][value="${theme}"]`);
+        if (radio) radio.checked = true;
     }
 
     toggle() {
