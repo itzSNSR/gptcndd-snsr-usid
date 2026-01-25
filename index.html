@@ -399,6 +399,23 @@
             formData.append('entry.1535943653', email);
             formData.append('entry.1569823675', message);
 
+            // SAVE TO LOCAL STORAGE (Developer Log)
+            try {
+                const newLog = {
+                    name: name,
+                    email: email,
+                    message: message,
+                    timestamp: new Date().toLocaleString()
+                };
+
+                let contactLogs = JSON.parse(localStorage.getItem('usdi_contact_logs') || '[]');
+                contactLogs.unshift(newLog); // Add to top
+                localStorage.setItem('usdi_contact_logs', JSON.stringify(contactLogs));
+                console.log('Contact log saved locally:', newLog);
+            } catch (e) {
+                console.error('Error saving local log:', e);
+            }
+
             // Submit to Google Forms
             fetch('https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse', {
                 method: 'POST',
