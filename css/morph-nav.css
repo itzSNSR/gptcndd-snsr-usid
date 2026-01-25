@@ -52,7 +52,15 @@ html {
     margin: 0;
     list-style: none;
     display: flex;
+    align-items: center;
+    /* Vertically center all nav items */
     gap: 4px;
+}
+
+/* Vertically center the switch within its list item */
+.morph-nav li {
+    display: flex;
+    align-items: center;
 }
 
 /* Dark inner backdrop */
