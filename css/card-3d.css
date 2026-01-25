@@ -1,0 +1,259 @@
+/* ===== 3D ID CARD ===== */
+.id-card-perspective {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 450px;
+    /* Slightly wider for the premium look */
+    aspect-ratio: 1.6 / 1;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.id-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Bouncy premium feel */
+    transform-style: preserve-3d;
+}
+
+.id-card-perspective.flipped .id-card-inner {
+    transform: rotateY(180deg);
+}
+
+.id-card-front,
+.id-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 2rem;
+    /* Rounded-2xl equivalent */
+    overflow: hidden;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    /* shadow-2xl */
+}
+
+/* Front Face Styling */
+.id-card-front {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    color: white;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Decorative background orb */
+.id-card-front::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(40px);
+    pointer-events: none;
+}
+
+/* Header Section */
+.card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+}
+
+.card-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.card-logo-box {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 1.2rem;
+}
+
+.card-brand-text h4 {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    opacity: 0.8;
+    margin: 0;
+    font-weight: 800;
+}
+
+.card-brand-text h3 {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.card-status-badge {
+    background: #4ade80;
+    /* Green-400 */
+    color: #052e16;
+    /* Green-950 */
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Profile Section */
+.card-profile-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    z-index: 10;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.card-photo-box {
+    width: 5rem;
+    /* 80px */
+    height: 5rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.card-photo-box:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.card-photo-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-photo-placeholder {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.card-info h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-info p {
+    font-size: 0.75rem;
+    opacity: 0.9;
+    margin: 0 0 0.5rem 0;
+}
+
+.card-role-chip {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.05em;
+}
+
+/* Footer Section */
+.card-footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    padding-top: 1rem;
+    z-index: 10;
+}
+
+.card-label {
+    font-size: 0.55rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 0.25rem;
+    letter-spacing: 0.05em;
+}
+
+.card-value {
+    font-family: 'Courier New', monospace;
+    /* Monospace for ID/Date */
+    font-size: 0.85rem;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+}
+
+/* Back Face Styling */
+.id-card-back {
+    background: #0f172a;
+    /* Slate 900 */
+    transform: rotateY(180deg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: center;
+}
+
+.card-qr-box {
+    background: white;
+    padding: 1rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1/1;
+    width: 140px;
+}
+
+.card-security-text {
+    color: var(--primary-light);
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+}
+
+.card-details-text {
+    font-size: 0.7rem;
+    color: #64748b;
+    /* Slate 500 */
+    line-height: 1.6;
+    max-width: 200px;
+}

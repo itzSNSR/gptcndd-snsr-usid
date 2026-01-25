@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>USDI Data Test</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        pre {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 300px;
+        }
+
+        .success {
+            color: #22c55e;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>USDI Data Layer Test</h1>
+
+    <div>
+        <button onclick="clearData()">1. Clear All Data</button>
+        <button onclick="registerTest()">2. Register Test Student</button>
+        <button onclick="showPending()">3. Show Pending Students</button>
+        <button onclick="approveFirst()">4. Approve First Pending</button>
+        <button onclick="showAll()">5. Show All Students</button>
+    </div>
+
+    <h3>Output:</h3>
+    <pre id="output">Click a button to test...</pre>
+
+    <script src="js/data.js"></script>
+    <script>
+        const out = document.getElementById('output');
+
+        function log(msg, isError = false) {
+            out.innerHTML = `<span class="${isError ? 'error' : 'success'}">${JSON.stringify(msg, null, 2)}</span>`;
+            console.log(msg);
+        }
+
+        function clearData() {
+            localStorage.clear();
+            log('✓ localStorage cleared. Refresh page to reinitialize.');
+        }
+
+        function registerTest() {
+            const student = {
+                fullName: 'Test Student ' + Date.now(),
+                mobile: '9' + Math.floor(Math.random() * 1000000000),
+                dob: '2000-01-01',
+                institution: 'Test Institution',
+                course: 'Test Course',
+                semesterYear: '1st Year'
+            };
+            const result = USDI_DATA.addStudent(student);
+            log({ message: '✓ Student registered!', student: result });
+        }
+
+        function showPending() {
+            const pending = USDI_DATA.getPendingInstitutionStudents();
+            log({
+                message: `Found ${pending.length} pending students`,
+                students: pending.map(s => ({ name: s.fullName, mobile: s.mobile, status: s.status }))
+            });
+        }
+
+        function approveFirst() {
+            const pending = USDI_DATA.getPendingInstitutionStudents();
+            if (pending.length === 0) {
+                log({ error: 'No pending students to approve!' }, true);
+                return;
+            }
+
+            const first = pending[0];
+            console.log('Approving:', first.mobile);
+            const result = USDI_DATA.approveByInstitution(first.mobile);
+
+            if (result && result.usn) {
+                log({ message: '✓ Student approved!', usn: result.usn, status: result.status });
+            } else {
+                log({ error: 'Approval failed', result: result }, true);
+            }
+        }
+
+        function showAll() {
+            const all = USDI_DATA.getAllStudents();
+            log({
+                message: `Total ${all.length} students`,
+                students: all.map(s => ({ name: s.fullName, usn: s.usn, status: s.status }))
+            });
+        }
+    </script>
+</body>
+
+</html>

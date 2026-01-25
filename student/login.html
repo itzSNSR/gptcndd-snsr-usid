@@ -63,6 +63,10 @@
                         data-i18n="btn_send_otp">
                         Send OTP
                     </button>
+                    <p class="text-center mt-4">
+                        <span class="text-muted">New Student? </span>
+                        <a href="register.html" class="text-primary" style="font-weight: 600;">Register Here</a>
+                    </p>
                 </div>
 
                 <!-- Step 2: OTP Verification -->
@@ -168,8 +172,12 @@
             if (student) {
                 const validOTP = student.otp || '123456'; // Student-specific or default demo OTP
                 if (otp === validOTP) {
-                    // Store student USN in session
-                    sessionStorage.setItem('usdi_student_usn', student.usn);
+                    // Store student info in session
+                    // For pending students, USN may be null - store mobile as fallback
+                    if (student.usn) {
+                        sessionStorage.setItem('usdi_student_usn', student.usn);
+                    }
+                    sessionStorage.setItem('usdi_student_mobile', currentMobile);
                     sessionStorage.setItem('usdi_student_logged_in', 'true');
 
                     // Redirect to dashboard

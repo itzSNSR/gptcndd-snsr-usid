@@ -29,9 +29,12 @@
         <div class="container">
             <!-- Header -->
             <div class="dashboard-header flex justify-between items-center">
-                <div>
-                    <h1 class="dashboard-title">Institution Dashboard</h1>
-                    <p class="dashboard-subtitle" id="institution-name">National Institute of Technology</p>
+                <div class="flex items-center">
+                    <a href="login.html" class="btn-back">←</a>
+                    <div>
+                        <h1 class="dashboard-title">Institution Dashboard</h1>
+                        <p class="dashboard-subtitle" id="institution-name">National Institute of Technology</p>
+                    </div>
                 </div>
                 <button class="btn btn-primary" onclick="openAddModal()">
                     + Add New Student
@@ -55,6 +58,35 @@
                 <div class="stat-card warning">
                     <div class="stat-value" id="stat-other">0</div>
                     <div class="stat-label">Transferred/Discontinued</div>
+                </div>
+            </div>
+
+            <!-- Pending Verifications Section -->
+            <div class="card mb-6" id="pending-section">
+                <div class="card-header"
+                    style="background: linear-gradient(135deg, #fef3c7, #fde68a); border-left: 4px solid #f59e0b;">
+                    <h3 style="margin: 0; color: #92400e;">
+                        ⏳ Pending Student Verifications
+                        <span class="badge badge-warning" id="pending-count" style="margin-left: 10px;">0</span>
+                    </h3>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Mobile</th>
+                                    <th>Course</th>
+                                    <th>Submitted</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-table">
+                                <!-- Pending rows will be inserted here -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -419,12 +451,87 @@
             document.getElementById('stat-graduated').textContent = stats.graduated;
             document.getElementById('stat-other').textContent = stats.transferred + stats.discontinued;
 
-            // Load students
-            allStudents = USDI_DATA.getAllStudents();
+            // Load pending verifications (show all for demo, in production filter by institution)
+            loadPendingStudents();
+
+            // Load verified students (with USN)
+            allStudents = USDI_DATA.getAllStudents().filter(s => s.usn !== null);
             renderStudentsTable(allStudents);
 
             // Preview USN for new student
             document.getElementById('preview-usn').textContent = USDI_DATA.generateUSN();
+        }
+
+        function loadPendingStudents(institutionName = null) {
+            const pending = USDI_DATA.getPendingInstitutionStudents(institutionName);
+            const tbody = document.getElementById('pending-table');
+            const countBadge = document.getElementById('pending-count');
+
+            countBadge.textContent = pending.length;
+
+            if (pending.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: var(--space-6); color: var(--grey-500);">
+                            ✓ No pending verifications
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('pending-section').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('pending-section').style.display = 'block';
+
+            tbody.innerHTML = pending.map(student => `
+                <tr>
+                    <td><strong>${student.fullName}</strong></td>
+                    <td>${student.mobile}</td>
+                    <td>${student.course || '-'}</td>
+                    <td>${student.createdAt || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm" style="background: #059669; color: #fff;" onclick="approveStudent('${student.mobile}')">
+                            ✓ Verify
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="rejectStudent('${student.mobile}')">
+                            ✕ Reject
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveStudent(mobile) {
+            if (!confirm('Verify this student and generate their USDI number?')) return;
+
+            console.log('Approving student with mobile:', mobile);
+            const result = USDI_DATA.approveByInstitution(mobile);
+            console.log('Approval result:', result);
+
+            if (result && result.usn) {
+                alert(`Student verified! USN assigned: ${result.usn}`);
+                // Force full page reload to ensure fresh data
+                location.reload();
+            } else if (result && result.error) {
+                alert('Error: ' + result.error);
+            } else {
+                console.error('Approval failed, result:', result);
+                alert('Failed to verify student');
+            }
+        }
+
+        function rejectStudent(mobile) {
+            const reason = prompt('Enter rejection reason:');
+            if (!reason) return;
+
+            const result = USDI_DATA.rejectStudent(mobile, reason, 'Institution');
+
+            if (result) {
+                showWarning('Student application rejected');
+                loadDashboard();
+            } else {
+                showError('Failed to reject student');
+            }
         }
 
         function renderStudentsTable(students) {
@@ -447,13 +554,23 @@
                     <td>${student.fullName}</td>
                     <td>${student.course}</td>
                     <td>${student.semesterYear}</td>
-                    <td><span class="badge badge-${student.status.toLowerCase()}">${student.status}</span></td>
+                    <td>${getStatusBadge(student.status)}</td>
                     <td>
                         <button class="btn btn-sm btn-secondary" onclick="openEditModal('${student.usn}')">Edit</button>
                         <button class="btn btn-sm btn-outline" onclick="viewHistory('${student.usn}')">History</button>
                     </td>
                 </tr>
             `).join('');
+        }
+
+        function getStatusBadge(status) {
+            let cls = 'info';
+            if (status === 'Active') cls = 'success';
+            if (status === 'Graduated') cls = 'info';
+            if (status === 'Transferred' || status === 'Discontinued') cls = 'danger';
+            if (status === 'Pending Verification' || status === 'Pending') cls = 'warning';
+
+            return `<span class="badge badge-${cls}">${status}</span>`;
         }
 
         function filterStudents() {

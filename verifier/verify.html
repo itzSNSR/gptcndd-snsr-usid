@@ -172,6 +172,22 @@
                             </div>
                         </div>
 
+                        <!-- Pending Result -->
+                        <div id="pending-result" class="hidden">
+                            <div class="verify-result">
+                                <div class="verify-icon warning">⚠️</div>
+                                <div class="verify-status warning">PENDING APPROVAL</div>
+                                <p class="text-muted" id="pending-message">Student verification is in progress</p>
+                            </div>
+
+                            <div
+                                style="background: var(--warning-light); border-radius: var(--radius); padding: var(--space-4); margin-top: var(--space-4); text-align: center;">
+                                <p class="text-sm" style="color: var(--warning-dark);">
+                                    This ID is not yet active for official use.
+                                </p>
+                            </div>
+                        </div>
+
                         <button class="btn btn-secondary btn-block mt-6" onclick="resetSearch()">
                             ← Verify Another Student
                         </button>
@@ -292,7 +308,7 @@
         }
 
         function verifyStudent() {
-            const usn = document.getElementById('usn-input').value.trim().toUpperCase();
+            const usn = document.getElementById('usn-input').value.trim();
 
             if (!usn) {
                 showWarning('Please enter a USN to verify');
@@ -306,9 +322,19 @@
 
             if (result.verified) {
                 showVerifiedResult(result.data);
+            } else if (result.pending) {
+                showPendingResult(result.message);
             } else {
                 showInvalidResult();
             }
+        }
+
+        function getStatusClass(status) {
+            if (status === 'Active') return 'success';
+            if (status === 'Graduated') return 'info';
+            if (status === 'Transferred' || status === 'Discontinued') return 'danger';
+            if (status === 'Pending Verification' || status === 'Pending') return 'warning';
+            return 'secondary';
         }
 
         function showVerifiedResult(data) {
@@ -321,8 +347,24 @@
             document.getElementById('result-course').textContent = data.course;
             document.getElementById('result-semester').textContent = data.semesterYear;
 
-            const statusBadge = `<span class="badge badge-lg badge-${data.status.toLowerCase()}">${data.status}</span>`;
+            const statusBadge = `<span class="badge badge-lg badge-${getStatusClass(data.status)}">${data.status}</span>`;
             document.getElementById('result-status').innerHTML = statusBadge;
+
+            // Show warning if Pending
+            if (data.status === 'Pending Verification') {
+                document.querySelector('.verify-icon').className = 'verify-icon warning';
+                document.querySelector('.verify-icon').textContent = '⚠️';
+                document.querySelector('.verify-status').className = 'verify-status warning';
+                document.querySelector('.verify-status').textContent = 'PENDING APPROVAL';
+                document.querySelector('.verify-result p').textContent = 'This student record is currently pending verification.';
+            } else {
+                // Reset to success defaults
+                document.querySelector('.verify-icon').className = 'verify-icon success';
+                document.querySelector('.verify-icon').textContent = '✓';
+                document.querySelector('.verify-status').className = 'verify-status success';
+                document.querySelector('.verify-status').textContent = 'VERIFIED';
+                document.querySelector('.verify-result p').textContent = 'This student is registered in the USDI system';
+            }
 
             const now = new Date();
             document.getElementById('verify-timestamp').textContent = now.toLocaleString('en-IN', {
@@ -336,7 +378,18 @@
 
         function showInvalidResult() {
             document.getElementById('verified-result').classList.add('hidden');
+            document.getElementById('pending-result').classList.add('hidden');
             document.getElementById('invalid-result').classList.remove('hidden');
+        }
+
+        function showPendingResult(message) {
+            document.getElementById('verified-result').classList.add('hidden');
+            document.getElementById('invalid-result').classList.add('hidden');
+            document.getElementById('pending-result').classList.remove('hidden');
+
+            if (message) {
+                document.getElementById('pending-message').textContent = message;
+            }
         }
 
         function resetSearch() {
@@ -345,6 +398,7 @@
             document.getElementById('result-section').classList.add('hidden');
             document.getElementById('verified-result').classList.add('hidden');
             document.getElementById('invalid-result').classList.add('hidden');
+            document.getElementById('pending-result').classList.add('hidden');
 
             // Clear URL params
             window.history.replaceState({}, document.title, window.location.pathname);

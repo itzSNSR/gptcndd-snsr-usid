@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>USDI Full Flow Test</title>
+    <style>
+        body {
+            font-family: Arial;
+            padding: 20px;
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: #2563eb;
+        }
+
+        pre {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 400px;
+            font-size: 12px;
+        }
+
+        .success {
+            color: #22c55e;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        .step {
+            background: #334155;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>USDI Complete Flow Test</h1>
+    <p>This tests the EXACT same flow as the real pages</p>
+
+    <div>
+        <button onclick="runFullTest()">Run Complete Test</button>
+        <button onclick="clearAll()">Clear All Data</button>
+    </div>
+
+    <h3>Test Log:</h3>
+    <pre id="output">Click "Run Complete Test" to start...</pre>
+
+    <script src="js/data.js"></script>
+    <script>
+        const out = document.getElementById('output');
+        let log = [];
+
+        function addLog(step, data) {
+            log.push({ step, data, time: new Date().toISOString() });
+            out.innerHTML = log.map(l =>
+                `<div class="step"><strong>${l.step}</strong>\n${JSON.stringify(l.data, null, 2)}</div>`
+            ).join('');
+        }
+
+        function clearAll() {
+            localStorage.clear();
+            log = [];
+            addLog('CLEARED', 'All localStorage data cleared. Refresh page to continue.');
+        }
+
+        function runFullTest() {
+            log = [];
+
+            // Step 1: Check initial state
+            addLog('1. Initial State', {
+                storageKey: USDI_DATA.STORAGE_KEY,
+                hasData: !!localStorage.getItem(USDI_DATA.STORAGE_KEY),
+                studentCount: USDI_DATA.getAllStudents().length
+            });
+
+            // Step 2: Register a new student (simulating register.html)
+            const testMobile = '9' + Math.floor(Math.random() * 1000000000);
+            const studentData = {
+                fullName: 'Test Student',
+                mobile: testMobile,
+                dob: '2000-01-01',
+                institution: 'Test Institution',
+                course: 'Test Course',
+                semesterYear: '1st Year'
+            };
+
+            addLog('2. Registering Student', { mobile: testMobile });
+
+            const newStudent = USDI_DATA.addStudent(studentData);
+            addLog('3. Student Registered', {
+                tempId: newStudent.tempId,
+                mobile: newStudent.mobile,
+                status: newStudent.status,
+                usn: newStudent.usn
+            });
+
+            // Step 4: Check pending (simulating institution dashboard load)
+            const pending1 = USDI_DATA.getPendingInstitutionStudents();
+            addLog('4. Pending Students (Before Approval)', {
+                count: pending1.length,
+                students: pending1.map(s => ({ name: s.fullName, mobile: s.mobile, status: s.status }))
+            });
+
+            // Step 5: Find our student
+            const ourStudent = pending1.find(s => s.mobile === testMobile);
+            addLog('5. Our Test Student Found', ourStudent ? {
+                found: true,
+                mobile: ourStudent.mobile,
+                status: ourStudent.status
+            } : { found: false, searchedMobile: testMobile });
+
+            if (!ourStudent) {
+                addLog('ERROR', 'Could not find student to approve!');
+                return;
+            }
+
+            // Step 6: Approve (simulating clicking Verify button)
+            addLog('6. Calling approveByInstitution(' + testMobile + ')');
+
+            let result;
+            try {
+                result = USDI_DATA.approveByInstitution(testMobile);
+            } catch (err) {
+                addLog('ERROR in approveByInstitution', {
+                    error: err.message,
+                    stack: err.stack
+                });
+                return;
+            }
+
+            addLog('7. Approval Result', result ? {
+                usn: result.usn,
+                status: result.status,
+                error: result.error
+            } : { result: null, reason: 'Function returned null - student not found' });
+
+            // Step 8: Check pending AGAIN (simulating page reload)
+            addLog('8. Simulating Page Reload - calling getAllStudents again');
+            const allAfter = USDI_DATA.getAllStudents();
+            const pending2 = USDI_DATA.getPendingInstitutionStudents();
+
+            addLog('9. Pending Students (After Approval)', {
+                count: pending2.length,
+                students: pending2.map(s => ({ name: s.fullName, mobile: s.mobile, status: s.status }))
+            });
+
+            // Step 10: Find our student's new state
+            const updatedStudent = allAfter.find(s => s.mobile === testMobile);
+            addLog('10. Our Student After Approval', updatedStudent ? {
+                mobile: updatedStudent.mobile,
+                usn: updatedStudent.usn,
+                status: updatedStudent.status,
+                stillPending: updatedStudent.status === USDI_DATA.STATUS.PENDING_INSTITUTION
+            } : { found: false });
+
+            // Final summary
+            const wasInPendingBefore = pending1.some(s => s.mobile === testMobile);
+            const isInPendingAfter = pending2.some(s => s.mobile === testMobile);
+
+            addLog('FINAL RESULT', {
+                success: wasInPendingBefore && !isInPendingAfter,
+                wasInPendingBefore,
+                isInPendingAfter,
+                message: wasInPendingBefore && !isInPendingAfter
+                    ? '✓ SUCCESS! Student was removed from pending list after approval'
+                    : '✕ FAILED! Student is still in pending list'
+            });
+        }
+    </script>
+</body>
+
+</html>

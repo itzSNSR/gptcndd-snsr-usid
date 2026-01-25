@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Student Registration - Create your digital student ID">
+    <title>Student Registration - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.95);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --accent-gradient: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        body {
+            background: #f0f4f8;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.1) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .login-page {
+            width: 100%;
+            height: auto;
+            background: transparent;
+            display: flex;
+            justify-content: center;
+        }
+
+        .registration-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--white);
+            border-radius: 24px;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.08),
+                0 0 0 1px rgba(255, 255, 255, 0.5);
+            width: 100%;
+            max-width: 900px;
+            overflow: hidden;
+            position: relative;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .reg-header {
+            background: var(--white);
+            padding: 2.5rem 3rem;
+            text-align: center;
+            border-bottom: 1px solid var(--grey-100);
+        }
+
+        .reg-header h2 {
+            font-size: 1.75rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        /* Modern Step Indicator */
+        .step-container {
+            padding: 0 4rem;
+            margin-top: -1.5rem;
+            margin-bottom: 3rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .step-indicator::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--grey-200);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+
+        .step-indicator::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: var(--progress, 0%);
+            height: 2px;
+            background: var(--primary);
+            transform: translateY(-50%);
+            z-index: 1;
+            transition: width 0.4s ease;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--white);
+            border: 2px solid var(--grey-200);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--grey-400);
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+        }
+
+        .step.completed {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--white);
+        }
+
+        .form-content {
+            padding: 0 3rem 3rem;
+        }
+
+        /* Modern Inputs */
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--grey-600);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--grey-100);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            background: var(--grey-50);
+            color: var(--grey-800);
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            background: var(--white);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+            outline: none;
+        }
+
+        /* Custom File Dropzone */
+        .file-dropzone {
+            border: 2px dashed var(--grey-300);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--grey-50);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-dropzone:hover {
+            border-color: var(--primary);
+            background: rgba(37, 99, 235, 0.03);
+            transform: translateY(-2px);
+        }
+
+        .drop-icon {
+            font-size: 2rem;
+            color: var(--grey-400);
+            margin-bottom: 0.5rem;
+            transition: color 0.3s;
+        }
+
+        .file-dropzone:hover .drop-icon {
+            color: var(--primary);
+        }
+
+        .drop-text {
+            color: var(--grey-500);
+            font-size: 0.9rem;
+        }
+
+        .drop-text span {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .file-preview {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 150px;
+        }
+
+        /* Buttons */
+        .btn-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--grey-100);
+        }
+
+        .btn-modern {
+            padding: 0.875rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-modern {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-primary-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-outline-modern {
+            background: transparent;
+            border: 2px solid var(--grey-200);
+            color: var(--grey-600);
+        }
+
+        .btn-outline-modern:hover {
+            border-color: var(--grey-400);
+            color: var(--grey-800);
+        }
+
+        /* Animations */
+        .form-step {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .form-step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .review-card {
+            background: var(--grey-50);
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid var(--grey-200);
+        }
+
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--grey-200);
+            font-size: 0.95rem;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-label {
+            color: var(--grey-500);
+        }
+
+        .review-val {
+            font-weight: 600;
+            color: var(--grey-800);
+        }
+
+        @media (max-width: 768px) {
+            .registration-card {
+                border-radius: 0;
+                height: 100vh;
+            }
+
+            .reg-header {
+                padding: 2rem 1.5rem;
+            }
+
+            .step-container {
+                padding: 0 2rem;
+            }
+
+            .form-content {
+                padding: 0 1.5rem 2rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dark Theme Support */
+        [data-theme="dark"] body {
+            background: #0f172a;
+            background-image:
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
+        }
+
+        [data-theme="dark"] .registration-card {
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
+        }
+
+        [data-theme="dark"] .reg-header {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .reg-header h2 {
+            background: linear-gradient(135deg, #60a5fa, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="dark"] .reg-header p,
+        [data-theme="dark"] .text-muted {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .step {
+            background: #1e293b;
+            border-color: #334155;
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .step.active {
+            border-color: #3b82f6;
+            color: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+
+        [data-theme="dark"] .step.completed {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: #fff;
+        }
+
+        [data-theme="dark"] .step-indicator::before {
+            background: #334155;
+        }
+
+        [data-theme="dark"] .form-label {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .form-input,
+        [data-theme="dark"] .form-select {
+            background: #1e293b;
+            border-color: #334155;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .form-input:focus,
+        [data-theme="dark"] .form-select:focus {
+            border-color: #3b82f6;
+            background: #0f172a;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        [data-theme="dark"] .form-input::placeholder {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .file-dropzone {
+            background: #1e293b;
+            border-color: #475569;
+        }
+
+        [data-theme="dark"] .file-dropzone:hover {
+            border-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        [data-theme="dark"] .drop-icon {
+            color: #64748b;
+        }
+
+        [data-theme="dark"] .drop-text {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .btn-outline-modern {
+            border-color: #475569;
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .btn-outline-modern:hover {
+            border-color: #60a5fa;
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] .btn-footer {
+            border-top-color: rgba(255, 255, 255, 0.1);
+        }
+
+        [data-theme="dark"] .review-card {
+            background: #1e293b;
+            border-color: #334155;
+        }
+
+        [data-theme="dark"] .review-item {
+            border-bottom-color: #334155;
+        }
+
+        [data-theme="dark"] .review-label {
+            color: #94a3b8;
+        }
+
+        [data-theme="dark"] .review-val {
+            color: #e2e8f0;
+        }
+
+        [data-theme="dark"] h4,
+        [data-theme="dark"] .text-primary {
+            color: #60a5fa !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-page">
+        <div class="registration-card">
+            <!-- Header -->
+            <div class="reg-header">
+                <div style="display: flex; align-items: center; justify-content: center; position: relative;">
+                    <a href="login.html" class="btn-back"
+                        style="position: absolute; left: 0; top: 0; box-shadow: none; border: 0; background: transparent; font-size: 1.5rem;">←</a>
+                    <h2 style="margin-bottom: 0;">Create Student ID</h2>
+                </div>
+                <p class="text-muted" style="margin-top: 0.5rem;">Start your digital journey with USDI</p>
+            </div>
+
+            <!-- Steps -->
+            <div class="step-container">
+                <style>
+                    /* Dynamic Progress Bar Logic handled in JS */
+                </style>
+                <div class="step-indicator" id="step-bar">
+                    <div class="step active" id="step-marker-1">1</div>
+                    <div class="step" id="step-marker-2">2</div>
+                    <div class="step" id="step-marker-3">3</div>
+                    <div class="step" id="step-marker-4"><i class="fas fa-check"></i></div>
+                </div>
+            </div>
+
+            <form id="reg-form" onsubmit="return false;">
+                <div class="form-content">
+
+                    <!-- STEP 1: Personal -->
+                    <div id="step-1" class="form-step active">
+                        <h4 class="mb-4 text-primary">Personal Information</h4>
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" id="fullName" class="form-input" required
+                                    placeholder="e.g. John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                                <input type="date" id="dob" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                                <input type="tel" id="mobile" class="form-input" required maxlength="10"
+                                    placeholder="10-digit number">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" id="email" class="form-input" placeholder="student@example.com">
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Aadhaar Number <span class="text-danger">*</span></label>
+                                <input type="text" id="aadhaar" class="form-input" required maxlength="12"
+                                    placeholder="12-digit UID">
+                            </div>
+                            <div class="form-group full-width">
+                                <label class="form-label">Upload Aadhaar / ID Proof</label>
+                                <div class="file-dropzone" onclick="document.getElementById('file-aadhaar').click()">
+                                    <input type="file" id="file-aadhaar" class="hidden" accept="image/*"
+                                        onchange="previewFile('aadhaar')">
+                                    <i class="fas fa-cloud-upload-alt drop-icon"></i>
+                                    <p class="drop-text"><span>Click to upload</span> or drag and drop</p>
+                                    <p class="text-xs text-muted mt-1">PNG, JPG up to 1MB</p>
+                                    <img id="preview-aadhaar" class="file-preview">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="btn-footer justify-between" style="justify-content: flex-end;">
+                            <button class="btn-modern btn-primary-modern" onclick="nextStep(2)">
+                                Continue <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: Previous Education -->
+                    <div id="step-2" class="form-step">
+                        <h4 class="mb-4 text-primary">Academic History</h4>
+
+                        <!-- SSLC -->
+                        <div class="review-card mb-4" style="background:var(--white)">
+                            <h5 class="mb-3"><i class="fas fa-graduation-cap text-primary"></i> 10th Standard (SSLC)
+                            </h5>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">School Name</label>
+                                    <input type="text" id="sslcSchool" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Year of Passing</label>
+                                    <input type="number" id="sslcYear" class="form-input" placeholder="YYYY">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">SSLC Certificate</label>
+                                    <div class="file-dropzone" onclick="document.getElementById('file-sslc').click()"
+                                        style="padding: 1rem;">
+                                        <input type="file" id="file-sslc" class="hidden" accept="image/*"
+                                            onchange="previewFile('sslc')">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <i class="fas fa-paperclip text-muted"></i>
+                                            <span class="text-sm text-primary">Attach File</span>
+                                        </div>
+                                        <img id="preview-sslc" class="file-preview">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Plus Two -->
+                        <div class="review-card mb-4" style="background:var(--white)">
+                            <h5 class="mb-3"><i class="fas fa-university text-primary"></i> 12th Standard / Plus Two
+                            </h5>
+                            <div class="grid grid-2">
+                                <div class="form-group">
+                                    <label class="form-label">School Name</label>
+                                    <input type="text" id="plusTwoSchool" class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Year of Passing</label>
+                                    <input type="number" id="plusTwoYear" class="form-input" placeholder="YYYY">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label class="form-label">Certificate</label>
+                                    <div class="file-dropzone" onclick="document.getElementById('file-plustwo').click()"
+                                        style="padding: 1rem;">
+                                        <input type="file" id="file-plustwo" class="hidden" accept="image/*"
+                                            onchange="previewFile('plustwo')">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <i class="fas fa-paperclip text-muted"></i>
+                                            <span class="text-sm text-primary">Attach File</span>
+                                        </div>
+                                        <img id="preview-plustwo" class="file-preview">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn-footer">
+                            <button class="btn-modern btn-outline-modern" onclick="prevStep(1)">Back</button>
+                            <button class="btn-modern btn-primary-modern" onclick="nextStep(3)">
+                                Next Step <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: Current Study -->
+                    <div id="step-3" class="form-step">
+                        <h4 class="mb-4 text-primary">Current Institution</h4>
+
+                        <div class="form-group">
+                            <label class="form-label">Institute Name <span class="text-danger">*</span></label>
+                            <input type="text" id="currentInst" class="form-input" required
+                                value="Government Polytechnic College, Nedumangad">
+                        </div>
+
+                        <div class="grid grid-2">
+                            <div class="form-group">
+                                <label class="form-label">Course / Program</label>
+                                <input type="text" id="currentCourse" class="form-input"
+                                    placeholder="e.g. Diploma in Computer Engg">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Current Semester</label>
+                                <input type="text" id="currentSem" class="form-input" placeholder="e.g. S4">
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <label class="form-label">Upload Admission Proof / ID Card</label>
+                            <div class="file-dropzone" onclick="document.getElementById('file-current').click()">
+                                <input type="file" id="file-current" class="hidden" accept="image/*"
+                                    onchange="previewFile('current')">
+                                <i class="fas fa-id-card drop-icon"></i>
+                                <p class="drop-text"><span>Upload College ID</span> to auto-verify</p>
+                                <img id="preview-current" class="file-preview">
+                            </div>
+                        </div>
+
+                        <div class="btn-footer">
+                            <button class="btn-modern btn-outline-modern" onclick="prevStep(2)">Back</button>
+                            <button class="btn-modern btn-primary-modern" onclick="nextStep(4)">
+                                Review <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Review -->
+                    <div id="step-4" class="form-step">
+                        <div class="text-center mb-6">
+                            <div
+                                style="width:60px; height:60px; background:var(--success-light); color:var(--success); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1rem; font-size:1.5rem;">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3>All Set!</h3>
+                            <p class="text-muted">Please review your details before submitting.</p>
+                        </div>
+
+                        <div class="review-card">
+                            <div class="review-item">
+                                <span class="review-label">Name</span>
+                                <span class="review-val" id="review-name">-</span>
+                            </div>
+                            <div class="review-item">
+                                <span class="review-label">Mobile</span>
+                                <span class="review-val" id="review-mobile">-</span>
+                            </div>
+                            <div class="review-item">
+                                <span class="review-label">Institute</span>
+                                <span class="review-val" id="review-inst">-</span>
+                            </div>
+                            <div class="review-item">
+                                <span class="review-label">Course</span>
+                                <span class="review-val" id="review-course">-</span>
+                            </div>
+                        </div>
+
+                        <div class="btn-footer">
+                            <button class="btn-modern btn-outline-modern" onclick="prevStep(3)">Edit</button>
+                            <button class="btn-modern btn-primary-modern"
+                                style="background:var(--success); box-shadow:0 4px 12px rgba(5, 150, 105, 0.3);"
+                                onclick="submitRegistration()">
+                                Create ID Card <i class="fas fa-check-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <div class="text-center pb-6">
+                <p class="text-sm text-muted">Already have an ID? <a href="login.html"
+                        class="text-primary font-bold">Login here</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/theme.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/data.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        const formData = { documents: {} };
+
+        function updateProgress() {
+            const progress = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.documentElement.style.setProperty('--progress', `${progress}%`);
+        }
+
+        function nextStep(step) {
+            // Validation Logic (Simulated)
+            if (step > currentStep && !validateStep(currentStep)) return;
+
+            // Animate Out
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+
+            // Update Markers
+            const currentMarker = document.getElementById(`step-marker-${currentStep}`);
+            currentMarker.classList.add('completed');
+            currentMarker.innerHTML = '<i class="fas fa-check"></i>';
+            currentMarker.classList.remove('active');
+
+            // Move to Next
+            currentStep = step;
+            updateProgress();
+
+            // Animate In
+            setTimeout(() => {
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+                const nextMarker = document.getElementById(`step-marker-${currentStep}`);
+                nextMarker.classList.add('active');
+                // Reset icon if backtracking (optional, simplified here)
+                if (step === 4) updateReview();
+            }, 200);
+        }
+
+        function prevStep(step) {
+            document.getElementById(`step-${currentStep}`).classList.remove('active');
+
+            // Revert marker
+            const currentMarker = document.getElementById(`step-marker-${currentStep}`);
+            currentMarker.classList.remove('active');
+
+            currentStep = step;
+            updateProgress();
+
+            const prevMarker = document.getElementById(`step-marker-${currentStep}`);
+            prevMarker.classList.remove('completed');
+            prevMarker.textContent = step;
+            prevMarker.classList.add('active');
+
+            setTimeout(() => {
+                document.getElementById(`step-${currentStep}`).classList.add('active');
+            }, 200);
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                const name = document.getElementById('fullName').value;
+                const mobile = document.getElementById('mobile').value;
+                if (!name || mobile.length < 10) {
+                    showToast('Please enter valid Name and Mobile', 'error');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function previewFile(type) {
+            const input = document.getElementById(`file-${type}`);
+            const preview = document.getElementById(`preview-${type}`);
+            const dropzone = input.parentElement; // The .file-dropzone div
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    formData.documents[type] = e.target.result;
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+
+                    // Hide default text to show clean preview
+                    dropzone.querySelector('.drop-icon').style.display = 'none';
+                    dropzone.querySelector('.drop-text').style.display = 'none';
+                    dropzone.style.padding = '1rem';
+                    dropzone.style.borderColor = 'var(--success)';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updateReview() {
+            document.getElementById('review-name').textContent = document.getElementById('fullName').value;
+            document.getElementById('review-mobile').textContent = document.getElementById('mobile').value;
+            document.getElementById('review-inst').textContent = document.getElementById('currentInst').value;
+            document.getElementById('review-course').textContent = document.getElementById('currentCourse').value;
+        }
+
+        function submitRegistration() {
+            const studentData = {
+                fullName: document.getElementById('fullName').value,
+                dob: document.getElementById('dob').value,
+                mobile: document.getElementById('mobile').value,
+                email: document.getElementById('email').value,
+                aadhaar: document.getElementById('aadhaar').value,
+                institution: document.getElementById('currentInst').value,
+                course: document.getElementById('currentCourse').value,
+                semesterYear: document.getElementById('currentSem').value,
+                documents: formData.documents
+            };
+
+            try {
+                // Check if mobile already exists
+                const existing = USDI_DATA.getStudentByMobile(studentData.mobile);
+                if (existing) {
+                    showToast('A student with this mobile number already exists', 'error');
+                    return;
+                }
+
+                const newStudent = USDI_DATA.addStudent(studentData);
+
+                // Show pending message - NO USN yet
+                showToast('Registration submitted! Waiting for institution verification.', 'success');
+
+                // Show success screen
+                document.getElementById('step-4').innerHTML = `
+                    <div class="text-center" style="padding: 2rem 0;">
+                        <div style="width:80px; height:80px; background:var(--info-light); color:var(--info); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2rem;">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <h2 style="color: var(--grey-800); margin-bottom: 1rem;">Registration Submitted!</h2>
+                        <p class="text-muted" style="max-width: 400px; margin: 0 auto 1.5rem;">
+                            Your application has been received. Please wait for your institution to verify your details.
+                        </p>
+                        <div class="review-card" style="text-align: left; max-width: 400px; margin: 0 auto;">
+                            <div class="review-item">
+                                <span class="review-label">Status</span>
+                                <span class="badge badge-warning">Pending Institution Verification</span>
+                            </div>
+                            <div class="review-item">
+                                <span class="review-label">Mobile</span>
+                                <span class="review-val">${studentData.mobile}</span>
+                            </div>
+                            <div class="review-item">
+                                <span class="review-label">Next Step</span>
+                                <span class="review-val">Institution Review</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-muted mt-4">
+                            <i class="fas fa-info-circle"></i> You will receive your USDI number after institution verification.
+                        </p>
+                        <a href="login.html" class="btn-modern btn-primary-modern mt-4" style="display: inline-flex;">
+                            <i class="fas fa-home"></i> Go to Login
+                        </a>
+                    </div>
+                `;
+
+            } catch (e) {
+                console.error(e);
+                showToast('Error registering. Please try again.', 'error');
+            }
+        }
+
+        // Init
+        updateProgress();
+    </script>
+</body>
+
+</html>

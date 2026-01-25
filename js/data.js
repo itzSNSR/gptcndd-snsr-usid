@@ -7,6 +7,19 @@ const USDI_DATA = {
     STORAGE_KEY: 'usdi_students',
     INSTITUTION_KEY: 'usdi_institution',
 
+    // Status Constants for Workflow
+    STATUS: {
+        PENDING_INSTITUTION: 'Pending Institution Verification',
+        VERIFIED_INSTITUTION: 'Verified by Institution',
+        PENDING_GOVERNMENT: 'Pending Government Verification',
+        VERIFIED_GOVERNMENT: 'Verified by Government',
+        REJECTED: 'Rejected',
+        ACTIVE: 'Active',
+        GRADUATED: 'Graduated',
+        TRANSFERRED: 'Transferred',
+        DISCONTINUED: 'Discontinued'
+    },
+
     // Default institution data
     defaultInstitution: {
         id: 'INST001',
@@ -238,10 +251,12 @@ const USDI_DATA = {
         }
     ],
 
-    // Initialize data in localStorage (force refresh to sync with code changes)
+    // Initialize data in localStorage (only if not already present)
     init: function () {
-        // Always update students to ensure latest data from code is used
-        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.defaultStudents));
+        // Only initialize students if not already present
+        if (!localStorage.getItem(this.STORAGE_KEY)) {
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.defaultStudents));
+        }
 
         if (!localStorage.getItem(this.INSTITUTION_KEY)) {
             localStorage.setItem(this.INSTITUTION_KEY, JSON.stringify(this.defaultInstitution));
@@ -255,8 +270,13 @@ const USDI_DATA = {
 
     // Get all students
     getAllStudents: function () {
-        this.init();
-        return JSON.parse(localStorage.getItem(this.STORAGE_KEY)) || [];
+        const data = localStorage.getItem(this.STORAGE_KEY);
+        if (!data) {
+            // First time - initialize with defaults
+            localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.defaultStudents));
+            return this.defaultStudents;
+        }
+        return JSON.parse(data);
     },
 
     // Get student by USN
@@ -278,6 +298,9 @@ const USDI_DATA = {
         let maxNum = 0;
 
         students.forEach(s => {
+            // Skip students without USN (pending registration)
+            if (!s.usn) return;
+
             const match = s.usn.match(/USDI(\d{4})(\d{3})/);
             if (match && parseInt(match[1]) === year) {
                 maxNum = Math.max(maxNum, parseInt(match[2]));
@@ -287,18 +310,31 @@ const USDI_DATA = {
         return `USDI${year}${String(maxNum + 1).padStart(3, '0')}`;
     },
 
-    // Add new student
+    // Add new student (Registration - NO USN yet)
     addStudent: function (studentData) {
         const students = this.getAllStudents();
+
+        // Generate a temporary ID for tracking (not the official USN)
+        const tempId = 'TEMP' + Date.now();
+
         const newStudent = {
             ...studentData,
-            usn: this.generateUSN(),
+            tempId: tempId,
+            usn: null, // USN assigned only after Institution approval
+            status: this.STATUS.PENDING_INSTITUTION,
             createdAt: new Date().toISOString().split('T')[0],
+            verification: {
+                accountStatus: this.STATUS.PENDING_INSTITUTION,
+                methods: [],
+                qrCodeStatus: 'Inactive',
+                institutionVerified: false,
+                governmentVerified: false
+            },
             academicHistory: [
                 {
                     date: new Date().toISOString().split('T')[0],
-                    event: `Admitted to ${studentData.course}`,
-                    type: 'admission'
+                    event: 'Registration submitted. Awaiting institution verification.',
+                    type: 'registration'
                 }
             ]
         };
@@ -306,6 +342,135 @@ const USDI_DATA = {
         students.push(newStudent);
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(students));
         return newStudent;
+    },
+
+    // Approve student by Institution (generates USN)
+    approveByInstitution: function (mobileOrTempId) {
+        console.log('[approveByInstitution] Called with:', mobileOrTempId, 'Type:', typeof mobileOrTempId);
+
+        const students = this.getAllStudents();
+        console.log('[approveByInstitution] Total students:', students.length);
+
+        // Debug: log all students' mobile numbers
+        students.forEach((s, i) => {
+            console.log(`[approveByInstitution] Student ${i}: mobile="${s.mobile}" (${typeof s.mobile}), tempId="${s.tempId}"`);
+        });
+
+        const index = students.findIndex(s =>
+            s.mobile === mobileOrTempId || s.tempId === mobileOrTempId
+        );
+
+        console.log('[approveByInstitution] Found at index:', index);
+
+        if (index === -1) {
+            console.error('[approveByInstitution] Student NOT FOUND!');
+            return null;
+        }
+
+        const student = students[index];
+        console.log('[approveByInstitution] Student status:', student.status);
+        console.log('[approveByInstitution] Expected status:', this.STATUS.PENDING_INSTITUTION);
+
+        if (student.status !== this.STATUS.PENDING_INSTITUTION) {
+            console.error('[approveByInstitution] Status mismatch!');
+            return { error: 'Student is not pending institution verification' };
+        }
+
+        // Generate USN now
+        const usn = this.generateUSN();
+        students[index].usn = usn;
+        students[index].status = this.STATUS.VERIFIED_INSTITUTION;
+        students[index].verification.accountStatus = this.STATUS.VERIFIED_INSTITUTION;
+        students[index].verification.institutionVerified = true;
+        students[index].verification.institutionVerifiedDate = new Date().toISOString().split('T')[0];
+
+        students[index].academicHistory.unshift({
+            date: new Date().toISOString().split('T')[0],
+            event: `Verified by Institution. USN assigned: ${usn}`,
+            type: 'verification'
+        });
+
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(students));
+        return students[index];
+    },
+
+    // Approve student by Government (final activation)
+    approveByGovernment: function (usn) {
+        const students = this.getAllStudents();
+        const index = students.findIndex(s => s.usn === usn);
+
+        if (index === -1) return null;
+
+        const student = students[index];
+        if (student.status !== this.STATUS.VERIFIED_INSTITUTION) {
+            return { error: 'Student is not pending government verification' };
+        }
+
+        students[index].status = this.STATUS.VERIFIED_GOVERNMENT;
+        students[index].verification.accountStatus = this.STATUS.VERIFIED_GOVERNMENT;
+        students[index].verification.governmentVerified = true;
+        students[index].verification.governmentVerifiedDate = new Date().toISOString().split('T')[0];
+        students[index].verification.qrCodeStatus = 'Active';
+
+        students[index].academicHistory.unshift({
+            date: new Date().toISOString().split('T')[0],
+            event: 'Verified by Government. Digital ID is now Active.',
+            type: 'verification'
+        });
+
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(students));
+        return students[index];
+    },
+
+    // Reject student
+    rejectStudent: function (mobileOrUsnOrTempId, reason, rejectedBy) {
+        const students = this.getAllStudents();
+        const index = students.findIndex(s =>
+            s.mobile === mobileOrUsnOrTempId ||
+            s.usn === mobileOrUsnOrTempId ||
+            s.tempId === mobileOrUsnOrTempId
+        );
+
+        if (index === -1) return null;
+
+        students[index].status = this.STATUS.REJECTED;
+        students[index].verification.accountStatus = this.STATUS.REJECTED;
+        students[index].rejectionReason = reason;
+        students[index].rejectedBy = rejectedBy;
+
+        students[index].academicHistory.unshift({
+            date: new Date().toISOString().split('T')[0],
+            event: `Rejected by ${rejectedBy}. Reason: ${reason}`,
+            type: 'rejection'
+        });
+
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(students));
+        return students[index];
+    },
+
+    // Get students pending institution verification (for institution dashboard)
+    getPendingInstitutionStudents: function (institutionName) {
+        const students = this.getAllStudents();
+        return students.filter(s =>
+            s.status === this.STATUS.PENDING_INSTITUTION &&
+            (institutionName ? s.institution === institutionName : true)
+        );
+    },
+
+    // Get students pending government verification (for government dashboard)
+    getPendingGovernmentStudents: function () {
+        const students = this.getAllStudents();
+        return students.filter(s => s.status === this.STATUS.VERIFIED_INSTITUTION);
+    },
+
+    // Get fully verified/active students
+    getActiveStudents: function () {
+        const students = this.getAllStudents();
+        return students.filter(s =>
+            s.status === this.STATUS.VERIFIED_GOVERNMENT ||
+            s.status === this.STATUS.ACTIVE ||
+            s.status === 'Active'
+        );
     },
 
     // Update student
@@ -376,21 +541,38 @@ const USDI_DATA = {
         return institution.adminUser === username && institution.adminPass === password;
     },
 
-    // Verify student (for verifier portal)
+    // Verify student (for verifier portal) - ONLY returns Government-verified students
     verifyStudent: function (usn) {
         const student = this.getStudentByUSN(usn);
         if (student) {
-            return {
-                verified: true,
-                data: {
-                    fullName: student.fullName,
-                    usn: student.usn,
-                    institution: student.institution,
-                    course: student.course,
-                    semesterYear: student.semesterYear,
-                    status: student.status
-                }
-            };
+            // Check if fully verified
+            const isFullyVerified =
+                student.status === this.STATUS.VERIFIED_GOVERNMENT ||
+                student.status === this.STATUS.ACTIVE ||
+                student.status === 'Active' ||
+                student.status === 'Graduated';
+
+            if (isFullyVerified) {
+                return {
+                    verified: true,
+                    data: {
+                        fullName: student.fullName,
+                        usn: student.usn,
+                        institution: student.institution,
+                        course: student.course,
+                        semesterYear: student.semesterYear,
+                        status: student.status
+                    }
+                };
+            } else {
+                // Student exists but not fully verified
+                return {
+                    verified: false,
+                    pending: true,
+                    message: `Student verification is incomplete. Current status: ${student.status}`,
+                    data: null
+                };
+            }
         }
         return { verified: false, data: null };
     },

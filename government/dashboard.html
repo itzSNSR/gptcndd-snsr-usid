@@ -111,9 +111,12 @@
         <div class="container">
             <!-- Header -->
             <div class="dashboard-header flex justify-between items-center">
-                <div>
-                    <h1 class="dashboard-title" style="color: #1e3a5f;">🏛️ Government Portal</h1>
-                    <p class="dashboard-subtitle">Unified Student Digital ID System - Administrative Dashboard</p>
+                <div class="flex items-center">
+                    <a href="login.html" class="btn-back">←</a>
+                    <div>
+                        <h1 class="dashboard-title" style="color: #1e3a5f;">🏛️ Government Portal</h1>
+                        <p class="dashboard-subtitle">Unified Student Digital ID System - Administrative Dashboard</p>
+                    </div>
                 </div>
                 <div style="text-align: right;">
                     <span class="gov-badge" style="font-size: 0.9rem; padding: 8px 16px;">Official ID: <span
@@ -143,13 +146,46 @@
 
             <!-- Tab Navigation -->
             <div class="tab-buttons">
-                <button class="tab-btn active" onclick="showTab('requests')">📋 Edit Requests</button>
+                <button class="tab-btn active" onclick="showTab('pending')">🎓 Pending Verifications <span
+                        class="badge badge-warning" id="pending-tab-count">0</span></button>
+                <button class="tab-btn" onclick="showTab('requests')">📋 Edit Requests</button>
                 <button class="tab-btn" onclick="showTab('history')">📚 Academic History Editor</button>
                 <button class="tab-btn" onclick="showTab('students')">👥 All Students</button>
             </div>
 
+            <!-- Tab 0: Pending Student Verifications (Final Govt Approval) -->
+            <div id="tab-pending" class="tab-content active">
+                <div class="card" style="border-top: 4px solid #f59e0b;">
+                    <div class="card-header" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
+                        <h3 style="margin: 0; color: #92400e;">🎓 Final Student Verification</h3>
+                        <p class="text-muted text-sm" style="margin: var(--space-2) 0 0; color: #b45309;">
+                            Students verified by institutions awaiting final government approval
+                        </p>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>USN</th>
+                                        <th>Name</th>
+                                        <th>Institution</th>
+                                        <th>Course</th>
+                                        <th>Verified By Inst</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pending-students-table">
+                                    <!-- Pending students will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Tab 1: Edit Requests -->
-            <div id="tab-requests" class="tab-content active">
+            <div id="tab-requests" class="tab-content">
                 <div class="card">
                     <div class="card-header">
                         <h3 style="margin: 0;">📋 Student Edit Requests</h3>
@@ -321,17 +357,89 @@
         }
 
         function loadDashboard() {
-            allStudents = USDI_DATA.getAllStudents();
+            allStudents = USDI_DATA.getAllStudents().filter(s => s.usn !== null);
             editRequests = USDI_DATA.getEditRequests ? USDI_DATA.getEditRequests() : [];
 
+            // Load pending for government
+            loadPendingForGovernment();
+
             // Stats
+            const pendingGovt = USDI_DATA.getPendingGovernmentStudents ? USDI_DATA.getPendingGovernmentStudents() : [];
             document.getElementById('stat-total').textContent = allStudents.length;
-            document.getElementById('stat-pending').textContent = editRequests.filter(r => r.status === 'pending').length;
+            document.getElementById('stat-pending').textContent = pendingGovt.length + editRequests.filter(r => r.status === 'pending').length;
             document.getElementById('stat-approved').textContent = editRequests.filter(r => r.status === 'approved').length;
             document.getElementById('stat-rejected').textContent = editRequests.filter(r => r.status === 'rejected').length;
 
             renderRequests();
             renderStudentsTable(allStudents);
+        }
+
+        function loadPendingForGovernment() {
+            const pending = USDI_DATA.getPendingGovernmentStudents ? USDI_DATA.getPendingGovernmentStudents() : [];
+            const tbody = document.getElementById('pending-students-table');
+            const countBadge = document.getElementById('pending-tab-count');
+
+            countBadge.textContent = pending.length;
+
+            if (pending.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: var(--space-8); color: var(--grey-500);">
+                            <div style="font-size: 3rem; margin-bottom: var(--space-4);">✅</div>
+                            <p>No pending student verifications</p>
+                            <p class="text-sm">All institution-verified students have been processed</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = pending.map(student => `
+                <tr>
+                    <td><strong>${student.usn}</strong></td>
+                    <td>${student.fullName}</td>
+                    <td>${student.institution || '-'}</td>
+                    <td>${student.course || '-'}</td>
+                    <td>${student.verification?.institutionVerifiedDate || '-'}</td>
+                    <td>
+                        <button class="btn btn-sm" style="background: #059669; color: #fff;" onclick="approveByGovt('${student.usn}')">
+                            ✓ Activate
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="rejectByGovt('${student.usn}')">
+                            ✕ Reject
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function approveByGovt(usn) {
+            if (!confirm('Activate this student\'s Digital ID? This is the final approval.')) return;
+
+            const result = USDI_DATA.approveByGovernment(usn);
+
+            if (result && !result.error) {
+                showSuccess(`Student ${usn} has been verified and activated!`);
+                loadDashboard();
+            } else if (result && result.error) {
+                showError(result.error);
+            } else {
+                showError('Failed to verify student');
+            }
+        }
+
+        function rejectByGovt(usn) {
+            const reason = prompt('Enter rejection reason:');
+            if (!reason) return;
+
+            const result = USDI_DATA.rejectStudent(usn, reason, 'Government');
+
+            if (result) {
+                showWarning('Student application rejected');
+                loadDashboard();
+            } else {
+                showError('Failed to reject student');
+            }
         }
 
         function showTab(tabName) {
