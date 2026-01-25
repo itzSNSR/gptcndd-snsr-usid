@@ -7,6 +7,7 @@
     <meta name="description" content="USDI Student Dashboard - View your digital student ID">
     <title>Student Dashboard - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/morph-nav.css">
     <script src="../js/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
     <style>
@@ -190,43 +191,50 @@
                 </a>
             </div>
 
-            <!-- Right Side: Nav Items -->
-            <nav class="nav">
-                <a href="dashboard.html" class="active">My Profile</a>
-                <a href="#" onclick="logout()">Logout</a>
+            <!-- Right Side: Morphing Nav -->
+            <nav class="morph-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="active">My Profile</a></li>
+                    <li><a href="#" onclick="logout()">Logout</a></li>
 
-                <div class="language-wrapper">
-                    <div class="custom-dropdown" id="language-dropdown">
-                        <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
-                            <span class="selected-lang">🇺🇸 English</span>
-                            <span class="dropdown-arrow">▼</span>
-                        </div>
-                        <div class="dropdown-options">
-                            <div class="dropdown-option" onclick="changeLanguage('en')">🇺🇸 English</div>
-                            <div class="dropdown-option" onclick="changeLanguage('ml')">🇮🇳 മലയാളം</div>
-                            <div class="dropdown-option" onclick="changeLanguage('hi')">🇮🇳 हिन्दी</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Liquid Toggle Switcher -->
-                <button aria-label="toggle" aria-pressed="false" class="liquid-toggle">
-                    <div class="knockout">
-                        <div class="indicator indicator--masked">
-                            <div class="mask"></div>
-                        </div>
-                    </div>
-                    <div class="indicator__liquid">
-                        <div class="shadow"></div>
-                        <div class="wrapper">
-                            <div class="liquids">
-                                <div class="liquid__shadow"></div>
-                                <div class="liquid__track"></div>
+                    <!-- Language Dropdown Item -->
+                    <li class="language-wrapper-nav">
+                        <div class="custom-dropdown" id="language-dropdown">
+                            <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
+                                <span class="selected-lang">🇺🇸 English</span>
+                                <span class="dropdown-arrow">▼</span>
+                            </div>
+                            <div class="dropdown-options">
+                                <div class="dropdown-option" onclick="changeLanguage('en')">🇺🇸 English</div>
+                                <div class="dropdown-option" onclick="changeLanguage('ml')">🇮🇳 മലയാളം</div>
+                                <div class="dropdown-option" onclick="changeLanguage('hi')">🇮🇳 हिन्दी</div>
                             </div>
                         </div>
-                        <div class="cover"></div>
-                    </div>
-                </button>
+                    </li>
+
+                    <!-- Theme Toggle Item -->
+                    <li>
+                        <!-- Liquid Toggle Switcher -->
+                        <button aria-label="toggle" aria-pressed="false" class="liquid-toggle"
+                            style="transform: scale(0.5); margin: 0;">
+                            <div class="knockout">
+                                <div class="indicator indicator--masked">
+                                    <div class="mask"></div>
+                                </div>
+                            </div>
+                            <div class="indicator__liquid">
+                                <div class="shadow"></div>
+                                <div class="wrapper">
+                                    <div class="liquids">
+                                        <div class="liquid__shadow"></div>
+                                        <div class="liquid__track"></div>
+                                    </div>
+                                </div>
+                                <div class="cover"></div>
+                            </div>
+                        </button>
+                    </li>
+                </ul>
             </nav>
         </div>
     </header>

@@ -1,0 +1,171 @@
+/* FLOATING MORPHING NAVIGATION */
+
+/* Enable interpolation for smooth morphing */
+html {
+    interpolate-size: allow-keywords;
+}
+
+/* Nav Container */
+.morph-nav {
+    width: fit-content;
+    margin: 0;
+    padding: 8px;
+    border-radius: 8px;
+    position: relative;
+    /* Ensure it sits above other content */
+    z-index: 100;
+}
+
+@supports (corner-shape: squircle) {
+    .morph-nav {
+        border-radius: 24px;
+        corner-shape: squircle;
+    }
+}
+
+/* Anchor for Hover Detection */
+.morph-nav ul:has(:not(:hover)) {
+    anchor-name: --nav-anchor;
+}
+
+/* Background Glass Layers */
+.morph-nav::before {
+    z-index: -2;
+    background-attachment: fixed;
+    /* Adjusted to match project theme if needed, or keep user's abstract bg */
+    background-image: var(--nav-bg-image, none);
+}
+
+.morph-nav::after {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: var(--nav-bg-color, rgba(255, 255, 255, 0.1));
+    z-index: -1;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Inner List Layer */
+.morph-nav>ul {
+    position: relative;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    gap: 4px;
+}
+
+/* Dark inner backdrop */
+.morph-nav>ul::after {
+    content: "";
+    position: absolute;
+    z-index: -3;
+    inset: -8px;
+    border-radius: 8px;
+    background: var(--nav-inner-bg, rgba(0, 0, 0, 0.8));
+    /* Default dark pill */
+    backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+@supports (corner-shape: squircle) {
+    .morph-nav>ul::after {
+        border-radius: 24px;
+        corner-shape: squircle;
+    }
+}
+
+/* Active/Hover Morphing Pill */
+.morph-nav::before,
+.morph-nav::after {
+    content: "";
+    border-radius: 8px;
+
+    position-anchor: --nav-anchor;
+    position: absolute;
+
+    /* Default State (covers whole nav) */
+    top: calc(anchor(bottom) - 4px);
+    left: calc(anchor(left) + 4px);
+    right: calc(anchor(right) + 4px);
+    bottom: anchor(bottom);
+
+    transition: 500ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 0;
+    /* Hidden by default until hover */
+}
+
+/* Show on Hover */
+.morph-nav:has(a:hover)::before,
+.morph-nav:has(a:hover)::after {
+    opacity: 1;
+    top: anchor(top);
+    left: anchor(left);
+    right: anchor(right);
+    bottom: anchor(bottom);
+
+    @supports (corner-shape: squircle) {
+        corner-shape: squircle;
+        border-radius: 50%;
+    }
+}
+
+/* Specific Border Radius Morphing per Item Position */
+.morph-nav:has(li:first-of-type a:hover)::before,
+.morph-nav:has(li:first-of-type a:hover)::after {
+    @supports (corner-shape: squircle) {
+        border-radius: 32px 50% 50% 32px;
+    }
+
+    border-radius: 24px 8px 8px 24px;
+}
+
+.morph-nav:has(li:last-of-type a:hover)::before,
+.morph-nav:has(li:last-of-type a:hover)::after {
+    @supports (corner-shape: squircle) {
+        border-radius: 50% 32px 32px 50%;
+    }
+
+    border-radius: 8px 24px 24px 8px;
+}
+
+/* Navigation Links */
+.morph-nav a {
+    display: block;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    color: var(--nav-text-color, white);
+    font-weight: 500;
+    font-size: 1rem;
+    transition: color 0.3s;
+    position: relative;
+    border-radius: 50px;
+}
+
+/* Define anchor name on individual hover */
+.morph-nav a:hover {
+    anchor-name: --nav-anchor;
+    color: var(--nav-text-active, white);
+}
+
+/* Highlight Pill Color */
+.morph-nav::after {
+    background-color: var(--primary, #3b82f6);
+    /* Active pill color */
+}
+
+/* Theme Integration */
+[data-theme="light"] {
+    --nav-text-color: #1e293b;
+    --nav-text-active: #ffffff;
+    --nav-bg-color: rgba(255, 255, 255, 0.6);
+    --nav-inner-bg: rgba(255, 255, 255, 0.8);
+}
+
+[data-theme="dark"] {
+    --nav-text-color: #cbd5e1;
+    --nav-text-active: #ffffff;
+    --nav-bg-color: rgba(0, 0, 0, 0.4);
+    --nav-inner-bg: rgba(15, 23, 42, 0.8);
+}
