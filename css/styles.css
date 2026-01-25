@@ -2220,7 +2220,9 @@ h6 {
     right: 0;
     width: 100%;
     min-width: 180px;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border-radius: 16px;
     padding: 8px;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
@@ -2228,7 +2230,7 @@ h6 {
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .dropdown-options.show {
