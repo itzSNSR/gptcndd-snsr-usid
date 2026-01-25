@@ -214,69 +214,29 @@
 
                     <!-- Theme Toggle Item -->
                     <li>
-                        <!-- Liquid Toggle Switcher -->
-                        <button aria-label="toggle" aria-pressed="false" class="liquid-toggle"
-                            style="transform: scale(0.5); margin: 0;">
-                            <div class="toggle-icons">
-                                <svg class="sun" viewBox="0 0 24 24">
-                                    <circle cx="12" cy="12" r="5"></circle>
-                                    <line x1="12" y1="1" x2="12" y2="3"></line>
-                                    <line x1="12" y1="21" x2="12" y2="23"></line>
-                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                                    <line x1="1" y1="12" x2="3" y2="12"></line>
-                                    <line x1="21" y1="12" x2="23" y2="12"></line>
-                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-                                </svg>
-                                <svg class="moon" viewBox="0 0 24 24">
-                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                                </svg>
-                            </div>
-                            <div class="knockout">
-                                <div class="indicator indicator--masked">
-                                    <div class="mask"></div>
-                                </div>
-                            </div>
-                            <div class="indicator__liquid">
-                                <div class="shadow"></div>
-                                <div class="wrapper">
-                                    <div class="liquids">
-                                        <div class="liquid__shadow"></div>
-                                        <div class="liquid__track"></div>
-                                    </div>
-                                </div>
-                                <div class="cover"></div>
-                            </div>
-                        </button>
+                        <label class="switch">
+                            <input class="switch__input" type="checkbox" role="switch"
+                                onchange="toggleTheme(this.checked)" />
+                            <span class="switch__icon">
+                                <span class="switch__icon-part switch__icon-part--1"></span>
+                                <span class="switch__icon-part switch__icon-part--2"></span>
+                                <span class="switch__icon-part switch__icon-part--3"></span>
+                                <span class="switch__icon-part switch__icon-part--4"></span>
+                                <span class="switch__icon-part switch__icon-part--5"></span>
+                                <span class="switch__icon-part switch__icon-part--6"></span>
+                                <span class="switch__icon-part switch__icon-part--7"></span>
+                                <span class="switch__icon-part switch__icon-part--8"></span>
+                                <span class="switch__icon-part switch__icon-part--9"></span>
+                                <span class="switch__icon-part switch__icon-part--10"></span>
+                                <span class="switch__icon-part switch__icon-part--11"></span>
+                            </span>
+                            <span class="switch__sr">Dark Mode</span>
+                        </label>
                     </li>
                 </ul>
             </nav>
         </div>
     </header>
-
-    <!-- SVG Filters for Liquid Toggle -->
-    <svg class="sr-only" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <filter id="goo">
-                <feGaussianBlur id="SvgjsFeGaussianBlur1000" result="SvgjsFeGaussianBlur1000" in="SourceGraphic"
-                    stdDeviation="13"></feGaussianBlur>
-                <feColorMatrix id="SvgjsFeColorMatrix1001" result="SvgjsFeColorMatrix1001" in="SvgjsFeGaussianBlur1000"
-                    values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 16 -10" type="matrix"></feColorMatrix>
-                <feComposite id="SvgjsFeComposite1002" result="SvgjsFeComposite1002" in="SvgjsFeColorMatrix1001"
-                    operator="atop"></feComposite>
-            </filter>
-            <filter id="remove-black" color-interpolation-filters="sRGB">
-                <feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -255 -255 -255 0 1"
-                    result="black-pixels" />
-                <feMorphology in="black-pixels" operator="dilate" radius="0.5" result="smoothed" />
-                <feComposite in="SourceGraphic" in2="smoothed" operator="out" />
-            </filter>
-        </defs>
-    </svg>
-
-    <!-- Load Liquid Toggle Script -->
-    <script type="module" src="../js/liquid-toggle.js"></script>
 
     <!-- Main Content -->
     <main class="dashboard">

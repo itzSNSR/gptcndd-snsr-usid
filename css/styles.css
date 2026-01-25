@@ -2353,290 +2353,221 @@ h6 {
     pointer-events: all;
 }
 
-/* ===== PREMIUM THEME SWITCHER (GSAP) ===== */
-@layer toggle {
-
-    /* this is the button */
-    :root {
-        --transition: 0.2s;
-        --ease: ease-out;
-    }
-
-    .liquid-toggle {
-        --unchecked: hsl(218, 8%, 81%);
-        --checked: var(--primary);
-        /* Use primary color */
-        /* --checked: hsl(144, 100%, 43%); */
-        --control: hsl(300, 100%, 100%);
-        --border: 5px;
-        --width: 140;
-        --height: 60;
-        height: calc(var(--height) * 1px);
-        width: calc(var(--width) * 1px);
-        border-radius: 100px;
-        border: 0;
-        padding: 0;
-        cursor: pointer;
-        position: relative;
-        overflow: visible;
-        container-type: inline-size;
-        background: #0000;
-        transition: outline var(--transition) var(--ease);
-        outline-offset: 2px;
-        transform: scale(0.6);
-        transform-origin: right center;
-    }
-
-    [data-theme="dark"] .liquid-toggle {
-        --checked: #4f46e5;
-    }
-
-    .liquid-toggle:focus-visible {
-        outline: 4px solid color-mix(in oklch, var(--checked), #0000);
-    }
-
-    .liquid-toggle:active {
-        outline: none;
-    }
-
-    .liquid-toggle[data-active='true']:focus-visible {
-        outline: 4px solid #0000;
-    }
-
-    .indicator {
-        border-radius: 100px;
-        pointer-events: none;
-        height: 100%;
-        width: 100%;
-        background: var(--checked);
-        position: absolute;
-        top: 50%;
-        scale: 1;
-        left: 50%;
-        translate: -50% -50%;
-    }
-
-    .knockout {
-        height: calc(var(--height) * 1px);
-        width: calc(var(--width) * 1px);
-        border-radius: 100px;
-        filter: url(#remove-black);
-        position: absolute;
-        inset: 0;
-        will-change: filter, scale;
-        transform: translate3d(0, 0, 0);
-    }
-
-    .indicator--masked {
-        background: var(--checked);
-        z-index: 12;
-        height: 100%;
-        width: 100%;
-        translate: -50% -50%;
-        container-type: inline-size;
-
-        .mask {
-            position: absolute;
-            height: calc(100% - (2 * var(--border)));
-            width: calc(60% - (2 * var(--border)));
-            top: 50%;
-            background: #000;
-            left: var(--border);
-            border-radius: 100px;
-        }
-    }
-
-    .wrapper {
-        position: absolute;
-        inset: 0;
-        border-radius: 100px;
-    }
-
-    .liquids {
-        position: absolute;
-        inset: 0;
-        transform: translate3d(0, 0, 0);
-        border-radius: 100px;
-        overflow: hidden;
-        filter: url(#goo);
-
-        .liquid__shadow {
-            position: absolute;
-            inset: 0;
-            box-shadow: inset 0px 0px 3px 4px var(--checked),
-                inset calc(((var(--complete) / 100) * 8px) + -4px) 0px 3px 4px var(--checked);
-            border-radius: 100px;
-        }
-
-        .liquid__track {
-            content: '';
-            height: calc((var(--height) * 1px) - (0 * var(--border)));
-            width: calc((var(--width) * 1px) - (0 * var(--border)));
-            background: var(--checked);
-            border-radius: 100px;
-            position: absolute;
-            top: 50%;
-        }
-    }
-
-    .indicator__liquid {
-        position: absolute;
-        height: calc(100% - (2 * var(--border)));
-        width: calc(60% - (2 * var(--border)));
-        container-type: inline-size;
-        top: 50%;
-        background: #0000;
-        left: var(--border);
-        border-radius: 100px;
-
-        .shadow {
-            opacity: 0;
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 100px;
-            box-shadow: 1px -1px 2px hsl(0 0% 100% / 0.5) inset,
-                0px -1px 2px hsl(0 0% 100% / 0.5) inset,
-                -1px -1px 2px hsl(0 0% 100% / 0.5) inset,
-                1px 1px 2px hsl(0 0% 30% / 0.5) inset,
-                -8px 4px 10px -6px hsl(0 0% 30% / 0.25) inset,
-                -1px 1px 6px hsl(0 0% 30% / 0.25) inset,
-                -1px -1px 8px hsl(0 0% 60% / 0.15), 1px 1px 2px hsl(0 0% 30% / 0.15),
-                2px 2px 6px hsl(0 0% 30% / 0.15),
-                -2px -1px 2px hsl(0 0% 100% / 0.25) inset,
-                3px 6px 16px -6px hsl(0 0% 30% / 0.5);
-            z-index: 20;
-        }
-
-        .cover {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: white;
-            border-radius: 100px;
-        }
-    }
-
-    /* Theme Icons Layer */
-    .toggle-icons {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 20px;
-        z-index: 15;
-        /* Above track (z-12), below liquid thumb (z-20) */
-        pointer-events: none;
-    }
-
-    .toggle-icons svg {
-        width: 24px;
-        height: 24px;
-        fill: none;
-        stroke: rgba(255, 255, 255, 0.6);
-        /* Visible white against blue/dark header */
-        stroke-width: 2;
-        transition: all 0.3s ease;
-    }
-
-    /* When Dark Mode is Active (Moon Covered, Sun Visible) */
-    [data-theme="dark"] .toggle-icons .sun {
-        stroke: #FFD700;
-        /* Gold Sun */
-        fill: rgba(255, 215, 0, 0.2);
-        filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.5));
-    }
-
-    /* When Light Mode is Active (Sun Covered, Moon Visible) */
-    [data-theme="light"] .toggle-icons .moon {
-        stroke: #f1f5f9;
-        /* Bright Moon */
-        fill: rgba(255, 255, 255, 0.2);
-    }
-
+/* ===== FLAT THEME SWITCHER ===== */
+.switch {
+    --hue: 223;
+    --trans-dur: 0.4s;
+    --trans-timing: cubic-bezier(0.65, 0, 0.35, 1);
+    position: relative;
+    margin: auto;
+    -webkit-tap-highlight-color: transparent;
 }
 
-@layer transitions {
-    [data-pressed=true] .liquid__track {
-        min-height: 30px;
-    }
+.switch__input {
+    background-color: hsl(var(--hue), 10%, 10%);
+    border-radius: 0.75em;
+    cursor: pointer;
+    display: block;
+    width: 3em;
+    height: 1.5em;
+    transition: background-color var(--trans-dur) var(--trans-timing);
+    -webkit-appearance: none;
+    appearance: none;
+    position: relative;
+    border: 0;
+    margin: 0;
+}
 
-    .indicator--masked .mask {
-        translate: calc((var(--complete) / 100) * (100cqi - 60cqi - (0 * var(--border)))) -50%;
-        transition-property: height, width, margin, scale;
-        transition-duration: var(--transition);
-        transition-timing-function: var(--ease);
-        will-change: height, width, margin;
-    }
+/* Fix for global reset in user snippet */
+.switch * {
+    border: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-    .wrapper {
-        clip-path: inset(0 0 0 0 round 100px);
-        filter: blur(6px);
-        transition: filter var(--transition) var(--ease);
-    }
+.switch__input:before {
+    border-radius: 50%;
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0.125em;
+    left: 0.125em;
+    width: 1.25em;
+    height: 1.25em;
+    transition:
+        background-color var(--trans-dur) var(--trans-timing),
+        transform var(--trans-dur) var(--trans-timing);
+    background-color: hsl(var(--hue), 10%, 10%);
+}
 
-    [aria-pressed='true']:not([data-active='true']) .liquid__track {
-        left: calc(var(--border) * 6);
-    }
+.switch__icon,
+.switch__icon-part {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
-    .liquid__track {
-        left: 0;
-        transition-property: height, width, filter, left;
-        transition-duration: var(--transition);
-        transition-timing-function: var(--ease);
-        translate: calc((var(--complete) / 100) * (100cqi - 100% - (6 * var(--border)))) -50%;
-    }
+.switch__icon {
+    background-color: hsl(var(--hue), 10%, 90%);
+    border-radius: 50%;
+    overflow: hidden;
+    pointer-events: none;
+    top: 0.125em;
+    left: 0.125em;
+    width: 1.25em;
+    height: 1.25em;
+    transition: transform var(--trans-dur) var(--trans-timing);
+}
 
-    .indicator__liquid {
-        translate: calc((var(--complete) / 100) * (100cqi - 100% - (2 * var(--border)))) -50%;
-        transition-property: scale;
-        transition-duration: var(--transition);
-        transition-timing-function: var(--ease);
-    }
+.switch__icon-part {
+    transition:
+        box-shadow var(--trans-dur) var(--trans-timing),
+        transform var(--trans-dur) var(--trans-timing);
+}
 
-    .indicator__liquid :is(.cover, .shadow) {
-        transition: opacity var(--transition) var(--ease);
-    }
+.switch__icon-part--1,
+.switch__icon-part--2,
+.switch__icon-part--3 {
+    border-radius: 50%;
+}
 
-    /* Active states interactions */
-    [data-active='true'] .indicator--masked .mask,
-    .liquid-toggle:active .indicator--masked .mask {
-        height: calc((100% - (2 * var(--border))) * (1.65 - (var(--delta, 0) * 0.025)));
-        width: calc((60% - (2 * var(--border))) * (1.65 + (var(--delta, 0) * 0.025)));
-        margin-left: calc((60% - (2 * var(--border))) * ((.65 + (var(--delta, 0) * 0.025)) * -0.5));
-    }
+.switch__icon-part--1 {
+    background-color: hsl(var(--hue), 10%, 90%);
+    top: calc(50% - 0.375em);
+    left: calc(50% - 0.375em);
+    width: 0.75em;
+    height: 0.75em;
+}
 
-    [data-active='true'] .indicator__liquid,
-    .liquid-toggle:active .indicator__liquid {
-        scale: calc(1.65 + (var(--delta, 0) * 0.025)) calc(1.65 - (var(--delta, 0) * 0.025));
-    }
+.switch__icon-part--2 {
+    background-color: hsl(var(--hue), 10%, 10%);
+    top: calc(50% - 0.4375em);
+    left: calc(50% - 0.0625em);
+    width: 0.5em;
+    height: 0.5em;
+    transform: translate(-0.1875em, 0.1875em) scale(0.2);
+}
 
-    [data-active='true'] .wrapper,
-    .liquid-toggle:active .wrapper {
-        filter: blur(0px);
-    }
+.switch__icon-part--3 {
+    box-shadow: 0 0 0 0.625em hsl(var(--hue), 10%, 10%) inset;
+    width: 1.25em;
+    height: 1.25em;
+    transform: scale(0.25);
+}
 
-    [data-active='true'] .indicator__liquid .shadow,
-    .liquid-toggle:active .indicator__liquid .shadow {
-        opacity: 1;
-    }
+.switch__icon-part--3~.switch__icon-part {
+    background-color: hsl(var(--hue), 10%, 10%);
+    border-radius: 0.0625em;
+    top: 50%;
+    left: 50%;
+    width: 0.125em;
+    height: 0.1875em;
+    transform-origin: 50% 0;
+}
 
-    [data-active='true'] .indicator__liquid .cover,
-    .liquid-toggle:active .indicator__liquid .cover {
-        opacity: 0;
-    }
+.switch__icon-part--4 {
+    transform: translateX(-50%) rotate(0) translateY(0.25em);
+}
 
-    [data-active='true'] .indicator__liquid .liquid__track,
-    .liquid-toggle:active .indicator__liquid .liquid__track {
-        left: calc(var(--border) * 3);
-        height: calc((var(--height) * 1px) - (6 * var(--border)));
-    }
+.switch__icon-part--5 {
+    transform: translateX(-50%) rotate(45deg) translateY(0.25em);
+}
+
+.switch__icon-part--6 {
+    transform: translateX(-50%) rotate(90deg) translateY(0.25em);
+}
+
+.switch__icon-part--7 {
+    transform: translateX(-50%) rotate(135deg) translateY(0.25em);
+}
+
+.switch__icon-part--8 {
+    transform: translateX(-50%) rotate(180deg) translateY(0.25em);
+}
+
+.switch__icon-part--9 {
+    transform: translateX(-50%) rotate(225deg) translateY(0.25em);
+}
+
+.switch__icon-part--10 {
+    transform: translateX(-50%) rotate(270deg) translateY(0.25em);
+}
+
+.switch__icon-part--11 {
+    transform: translateX(-50%) rotate(315deg) translateY(0.25em);
+}
+
+.switch__sr {
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+}
+
+/* :checked state */
+.switch__input:checked {
+    background-color: hsl(var(--hue), 10%, 90%);
+}
+
+.switch__input:checked:before,
+.switch__input:checked~.switch__icon {
+    transform: translateX(1.5em);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--2 {
+    transform: translate(0, 0) scale(1);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--3 {
+    box-shadow: 0 0 0 0.25em hsl(var(--hue), 10%, 10%) inset;
+    transform: scale(1);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--4 {
+    transform: translateX(-50%) rotate(0) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--5 {
+    transform: translateX(-50%) rotate(45deg) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--6 {
+    transform: translateX(-50%) rotate(90deg) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--7 {
+    transform: translateX(-50%) rotate(135deg) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--8 {
+    transform: translateX(-50%) rotate(180deg) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--9 {
+    transform: translateX(-50%) rotate(225deg) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--10 {
+    transform: translateX(-50%) rotate(270deg) translateY(0.625em) scale(0);
+}
+
+.switch__input:checked~.switch__icon .switch__icon-part--11 {
+    transform: translateX(-50%) rotate(315deg) translateY(0.625em) scale(0);
+}
+
+/* Integration overrides */
+[data-theme="dark"] .switch__input {
+    background-color: hsl(223, 10%, 90%);
+}
+
+[data-theme="dark"] .switch__input::before {
+    background-color: hsl(223, 10%, 90%);
 }
 
 .chatbot-header {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
-    color: white;
     padding: 15px 20px;
     display: flex;
     justify-content: space-between;

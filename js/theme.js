@@ -39,7 +39,13 @@ class ThemeManager {
         localStorage.setItem(this.storageKey, theme);
         this.currentTheme = theme;
 
-        // Sync radio buttons
+        // Sync new flat switch checkboxes
+        const isDark = theme === 'dark';
+        document.querySelectorAll('.switch__input').forEach(input => {
+            input.checked = isDark;
+        });
+
+        // Keep legacy radio sync just in case
         const radio = document.querySelector(`input[name="theme"][value="${theme}"]`);
         if (radio) radio.checked = true;
     }
@@ -48,16 +54,17 @@ class ThemeManager {
         const newTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
         this.setTheme(newTheme);
     }
-
-    getCurrentTheme() {
-        return this.currentTheme;
-    }
 }
 
 // Initialize Theme Manager
 window.themeManager = new ThemeManager();
 
 // Helper function for theme toggle buttons
-function toggleTheme() {
-    window.themeManager.toggle();
+// accepts explicit checked state (boolean) from checkbox
+function toggleTheme(isChecked) {
+    if (typeof isChecked === 'boolean') {
+        window.themeManager.setTheme(isChecked ? 'dark' : 'light');
+    } else {
+        window.themeManager.toggle();
+    }
 }
