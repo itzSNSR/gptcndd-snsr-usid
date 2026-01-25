@@ -157,15 +157,25 @@ html {
 
 /* Theme Integration */
 [data-theme="light"] {
-    --nav-text-color: #1e293b;
+    --nav-text-color: #334155;
+    /* Darker slate for better contrast */
     --nav-text-active: #ffffff;
-    --nav-bg-color: rgba(255, 255, 255, 0.6);
-    --nav-inner-bg: rgba(255, 255, 255, 0.8);
+    --nav-bg-color: rgba(255, 255, 255, 0.25);
+    /* More transparent white */
+    --nav-inner-bg: rgba(255, 255, 255, 0.4);
+    /* Subtle inner pill */
+    --nav-border: rgba(255, 255, 255, 0.3);
 }
 
 [data-theme="dark"] {
-    --nav-text-color: #cbd5e1;
+    --nav-text-color: #e2e8f0;
     --nav-text-active: #ffffff;
-    --nav-bg-color: rgba(0, 0, 0, 0.4);
-    --nav-inner-bg: rgba(15, 23, 42, 0.8);
+    --nav-bg-color: rgba(0, 0, 0, 0.3);
+    --nav-inner-bg: rgba(30, 41, 59, 0.6);
+    --nav-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Apply new border var */
+.morph-nav::after {
+    border: 1px solid var(--nav-border);
 }
