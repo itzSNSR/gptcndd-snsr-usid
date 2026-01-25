@@ -379,8 +379,14 @@
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label" data-i18n="lbl_usn">Unique Student ID (USDI)</div>
-                                    <div class="detail-value" id="detail-usn"
-                                        style="color: var(--primary); font-weight: 700;">-</div>
+                                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                        <div class="detail-value" id="detail-usn"
+                                            style="color: var(--primary); font-weight: 700; margin-bottom: 0;">-</div>
+                                        <button onclick="copyUSN()" class="btn-copy" title="Copy USID"
+                                            style="background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 0;">📋</button>
+                                        <span id="copy-feedback"
+                                            style="font-size: 0.8rem; color: #10b981; opacity: 0; transition: opacity 0.3s;">Copied!</span>
+                                    </div>
                                 </div>
                                 <div class="detail-item">
                                     <div class="detail-label">Nationality</div>
@@ -1268,6 +1274,23 @@
                 closeEditRequestModal();
             }
         });
+
+        // Copy USN to Clipboard
+        function copyUSN() {
+            if (!currentStudent || !currentStudent.usn) return;
+
+            navigator.clipboard.writeText(currentStudent.usn).then(() => {
+                const feedback = document.getElementById('copy-feedback');
+                if (feedback) {
+                    feedback.style.opacity = '1';
+                    setTimeout(() => {
+                        feedback.style.opacity = '0';
+                    }, 2000);
+                }
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
 
         // Initialize
         checkAuth();
