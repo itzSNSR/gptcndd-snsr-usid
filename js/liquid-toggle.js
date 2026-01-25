@@ -1,7 +1,9 @@
-import gsap from 'https://cdn.skypack.dev/gsap@3.13.0';
-import Draggable from 'https://cdn.skypack.dev/gsap@3.13.0/Draggable';
+import gsap from 'https://esm.sh/gsap@3.12.5';
+import Draggable from 'https://esm.sh/gsap@3.12.5/Draggable';
 
 gsap.registerPlugin(Draggable);
+
+console.log('Liquid Toggle Loaded');
 
 const toggle = document.querySelector('.liquid-toggle');
 const config = {
