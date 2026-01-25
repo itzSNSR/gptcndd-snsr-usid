@@ -2516,6 +2516,41 @@ h6 {
             border-radius: 100px;
         }
     }
+
+    /* Theme Icons Layer */
+    .toggle-icons {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+        z-index: 0;
+        /* Behind the liquid */
+        pointer-events: none;
+    }
+
+    .toggle-icons svg {
+        width: 24px;
+        height: 24px;
+        fill: none;
+        stroke: var(--grey-400);
+        /* Default inactive color */
+        stroke-width: 2;
+        transition: stroke 0.3s ease;
+    }
+
+    [data-theme="dark"] .toggle-icons .moon {
+        stroke: white;
+        /* Active state color if uncovered */
+        fill: rgba(255, 255, 255, 0.2);
+    }
+
+    [data-theme="light"] .toggle-icons .sun {
+        stroke: var(--primary);
+        fill: rgba(59, 130, 246, 0.1);
+    }
+
 }
 
 @layer transitions {
