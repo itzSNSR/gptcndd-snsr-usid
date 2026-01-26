@@ -75,17 +75,18 @@ function initLiquidBackground() {
         let lastWidth = window.innerWidth;
 
         function resizeCanvas() {
-            // Mobile Optimization: Ignore resize if width hasn't changed (address bar scroll)
-            // This prevents lag on scrolling index pages
-            if (window.innerWidth === lastWidth && Math.abs(window.innerHeight - canvas.height / dpr) < 100) {
+            // Mobile Optimization: STRICTLY ignore resize if width hasn't changed.
+            // Address bar hiding/showing triggers resize but width stays same.
+            // This is the #1 cause of mobile scroll lag.
+            if (window.innerWidth === lastWidth) {
                 return;
             }
             lastWidth = window.innerWidth;
 
             canvas.width = window.innerWidth * dpr;
             canvas.height = window.innerHeight * dpr;
-            canvas.style.width = '100vw';
-            canvas.style.height = '100vh';
+            canvas.style.width = '100%';
+            canvas.style.height = '100%';
             if (app.resize) app.resize();
         }
 
