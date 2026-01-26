@@ -8,6 +8,7 @@
     <title>Student Login - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/button-anim.css">
+    <link rel="stylesheet" href="../css/liquid-bg.css">
 </head>
 
 <body>
@@ -23,21 +24,21 @@
                     <div class="custom-dropdown" id="language-dropdown">
                         <div class="dropdown-trigger" role="button" aria-haspopup="listbox" aria-expanded="false"
                             tabindex="0">
-                            <span>🇺🇸 English</span>
+                            <span>🌐 English</span>
                             <span class="dropdown-icon">▼</span>
                         </div>
                         <div class="dropdown-options" role="listbox">
                             <div class="dropdown-option selected" data-value="en" role="option" aria-selected="true"
                                 tabindex="0">
-                                <span>🇺🇸 English</span>
+                                <span>English</span>
                             </div>
                             <div class="dropdown-option" data-value="ml" role="option" aria-selected="false"
                                 tabindex="0">
-                                <span>🇮🇳 മലയാളം</span>
+                                <span>മലയാളം</span>
                             </div>
                             <div class="dropdown-option" data-value="hi" role="option" aria-selected="false"
                                 tabindex="0">
-                                <span>🇮🇳 हिन्दी</span>
+                                <span>हिन्दी</span>
                             </div>
                         </div>
                     </div>
@@ -328,6 +329,7 @@
             if (e.key === 'Enter') sendOTP();
         });
     </script>
+    <script type="module" src="../js/liquid-bg.js"></script>
 </body>
 
 </html>
