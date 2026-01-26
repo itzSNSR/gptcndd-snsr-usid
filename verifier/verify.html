@@ -7,6 +7,7 @@
     <meta name="description" content="USDI Student Verification Portal - Instantly verify student identity and status">
     <title>Verify Student - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/button-anim.css">
 </head>
 
 <body>
@@ -82,9 +83,21 @@
                             <p class="form-hint" data-i18n="hint_mobile">Enter the student's USN to verify their current
                                 status</p>
                         </div>
-                        <button class="btn btn-primary btn-lg btn-block" onclick="verifyStudent()"
-                            data-i18n="btn_verify_check">
-                            🔍 Verify Student
+                        <button id="btn-verify" class="expand btn-primary" onclick="verifyStudent()"
+                            style="width: 100%;">
+                            <span data-i18n="btn_verify_check">🔍 Verify Student</span>
+                            <span class="expand-icon expand-hover">
+                                <svg class="first" xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 32 32"
+                                    version="1.1">
+                                    <path
+                                        d="M8.489 31.975c-0.271 0-0.549-0.107-0.757-0.316-0.417-0.417-0.417-1.098 0-1.515l14.258-14.264-14.050-14.050c-0.417-0.417-0.417-1.098 0-1.515s1.098-0.417 1.515 0l14.807 14.807c0.417 0.417 0.417 1.098 0 1.515l-15.015 15.022c-0.208 0.208-0.486 0.316-0.757 0.316z" />
+                                </svg>
+                                <span class="loader"></span>
+                                <svg class="second" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                    <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 5L8 15l-5-4" />
+                                </svg>
+                            </span>
                         </button>
 
                         <div class="text-center mt-6">
@@ -296,6 +309,7 @@
     <script src="../js/data.js"></script>
     <script src="../js/translations.js"></script>
     <script src="../js/language.js"></script>
+    <script src="../js/button-anim.js"></script>
     <script>
         // Check for USN in URL params (from shared link or QR code)
         function checkURLParams() {
@@ -309,24 +323,39 @@
 
         function verifyStudent() {
             const usn = document.getElementById('usn-input').value.trim();
+            const btn = document.getElementById('btn-verify');
 
             if (!usn) {
                 showWarning('Please enter a USN to verify');
                 return;
             }
 
-            const result = USDI_DATA.verifyStudent(usn);
+            // Start Animation
+            startLoader(btn);
 
-            document.getElementById('search-section').classList.add('hidden');
-            document.getElementById('result-section').classList.remove('hidden');
+            // Simulate delay for lookup
+            setTimeout(() => {
+                const result = USDI_DATA.verifyStudent(usn);
 
-            if (result.verified) {
-                showVerifiedResult(result.data);
-            } else if (result.pending) {
-                showPendingResult(result.message);
-            } else {
-                showInvalidResult();
-            }
+                finishLoader(btn, true);
+
+                setTimeout(() => {
+                    document.getElementById('search-section').classList.add('hidden');
+                    document.getElementById('result-section').classList.remove('hidden');
+
+                    if (result.verified) {
+                        showVerifiedResult(result.data);
+                    } else if (result.pending) {
+                        showPendingResult(result.message);
+                    } else {
+                        showInvalidResult();
+                    }
+
+                    // Reset button for when they come back
+                    btn.classList.remove('loading', 'loaded', 'finished');
+                    btn.disabled = false;
+                }, 800);
+            }, 1000);
         }
 
         function getStatusClass(status) {

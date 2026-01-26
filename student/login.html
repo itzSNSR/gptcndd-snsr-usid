@@ -7,6 +7,7 @@
     <meta name="description" content="USDI Student Login - Access your digital student ID">
     <title>Student Login - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/button-anim.css">
 </head>
 
 <body>
@@ -76,9 +77,20 @@
                         <p class="form-hint" data-i18n="hint_mobile">Enter the mobile number registered with your
                             institution</p>
                     </div>
-                    <button id="btn-send-otp" class="btn btn-primary btn-lg btn-block" onclick="sendOTP()"
-                        data-i18n="btn_send_otp">
-                        Send OTP
+                    <button id="btn-send-otp" class="expand btn-primary" onclick="sendOTP()" style="width: 100%;">
+                        <span data-i18n="btn_send_otp">Send OTP</span>
+                        <span class="expand-icon expand-hover">
+                            <svg class="first" xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 32 32"
+                                version="1.1">
+                                <path
+                                    d="M8.489 31.975c-0.271 0-0.549-0.107-0.757-0.316-0.417-0.417-0.417-1.098 0-1.515l14.258-14.264-14.050-14.050c-0.417-0.417-0.417-1.098 0-1.515s1.098-0.417 1.515 0l14.807 14.807c0.417 0.417 0.417 1.098 0 1.515l-15.015 15.022c-0.208 0.208-0.486 0.316-0.757 0.316z" />
+                            </svg>
+                            <span class="loader"></span>
+                            <svg class="second" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 5L8 15l-5-4" />
+                            </svg>
+                        </span>
                     </button>
                     <p class="text-center mt-4">
                         <span class="text-muted">New Student? </span>
@@ -104,9 +116,20 @@
                         <input type="tel" class="otp-input" maxlength="1" pattern="[0-9]" inputmode="numeric"
                             data-index="5">
                     </div>
-                    <button id="btn-verify-otp" class="btn btn-primary btn-lg btn-block" onclick="verifyOTP()"
-                        data-i18n="btn_verify">
-                        Verify & Login
+                    <button id="btn-verify-otp" class="expand btn-primary" onclick="verifyOTP()" style="width: 100%;">
+                        <span data-i18n="btn_verify">Verify & Login</span>
+                        <span class="expand-icon expand-hover">
+                            <svg class="first" xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 32 32"
+                                version="1.1">
+                                <path
+                                    d="M8.489 31.975c-0.271 0-0.549-0.107-0.757-0.316-0.417-0.417-0.417-1.098 0-1.515l14.258-14.264-14.050-14.050c-0.417-0.417-0.417-1.098 0-1.515s1.098-0.417 1.515 0l14.807 14.807c0.417 0.417 0.417 1.098 0 1.515l-15.015 15.022c-0.208 0.208-0.486 0.316-0.757 0.316z" />
+                            </svg>
+                            <span class="loader"></span>
+                            <svg class="second" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 5L8 15l-5-4" />
+                            </svg>
+                        </span>
                     </button>
                     <p class="text-center mt-4">
                         <a href="#" onclick="goBack()" class="text-sm" data-i18n="link_change_mobile">← Change mobile
@@ -159,13 +182,14 @@
     <script src="../js/data.js"></script>
     <script src="../js/translations.js"></script>
     <script src="../js/language.js"></script>
+    <script src="../js/button-anim.js"></script>
     <script>
         const DEMO_OTP = '123456';
         let currentMobile = '';
 
         function sendOTP() {
             const mobile = document.getElementById('mobile').value.trim();
-            const errorDiv = document.getElementById('error-message');
+            const btn = document.getElementById('btn-send-otp');
 
             // Validate mobile number
             if (!/^\d{10}$/.test(mobile)) {
@@ -180,21 +204,36 @@
                 return;
             }
 
-            // Store mobile and show OTP step
-            currentMobile = mobile;
+            // Start Animation
+            startLoader(btn);
             hideError();
-            document.getElementById('step-mobile').classList.add('hidden');
-            document.getElementById('step-otp').classList.remove('hidden');
 
-            // Focus first OTP input
-            document.querySelector('.otp-input').focus();
+            // Simulate network delay
+            setTimeout(() => {
+                finishLoader(btn, true);
 
-            // Show success message (simulated OTP sent)
-            showInfo('OTP sent! For demo, use: 123456');
+                setTimeout(() => {
+                    // Store mobile and show OTP step
+                    currentMobile = mobile;
+                    document.getElementById('step-mobile').classList.add('hidden');
+                    document.getElementById('step-otp').classList.remove('hidden');
+
+                    // Focus first OTP input
+                    document.querySelector('.otp-input').focus();
+
+                    // Show success message (simulated OTP sent)
+                    showInfo('OTP sent! For demo, use: 123456');
+
+                    // Reset button state for next time
+                    btn.classList.remove('loading', 'loaded', 'finished');
+                    btn.disabled = false;
+                }, 1000); // 1s wait for checkmark
+            }, 1500); // 1.5s simulated loading
         }
 
         function verifyOTP() {
             const otpInputs = document.querySelectorAll('.otp-input');
+            const btn = document.getElementById('btn-verify-otp');
             let otp = '';
             otpInputs.forEach(input => otp += input.value);
 
@@ -203,27 +242,38 @@
                 return;
             }
 
-            // Verify OTP - check student-specific OTP or fallback to demo OTP
-            const student = USDI_DATA.getStudentByMobile(currentMobile);
-            if (student) {
-                const validOTP = student.otp || '123456'; // Student-specific or default demo OTP
-                if (otp === validOTP) {
-                    // Store student info in session
-                    // For pending students, USN may be null - store mobile as fallback
-                    if (student.usn) {
-                        sessionStorage.setItem('usdi_student_usn', student.usn);
-                    }
-                    sessionStorage.setItem('usdi_student_mobile', currentMobile);
-                    sessionStorage.setItem('usdi_student_logged_in', 'true');
+            // Start Animation
+            startLoader(btn);
 
-                    // Redirect to dashboard
-                    window.location.href = 'dashboard.html';
+            // Simulate delay
+            setTimeout(() => {
+                // Verify OTP - check student-specific OTP or fallback to demo OTP
+                const student = USDI_DATA.getStudentByMobile(currentMobile);
+                if (student) {
+                    const validOTP = student.otp || '123456'; // Student-specific or default demo OTP
+                    if (otp === validOTP) {
+                        finishLoader(btn, true);
+
+                        // Store student info in session
+                        if (student.usn) {
+                            sessionStorage.setItem('usdi_student_usn', student.usn);
+                        }
+                        sessionStorage.setItem('usdi_student_mobile', currentMobile);
+                        sessionStorage.setItem('usdi_student_logged_in', 'true');
+
+                        // Redirect to dashboard after success animation
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    } else {
+                        showError('Invalid OTP. Please check and try again.');
+                        finishLoader(btn, false);
+                    }
                 } else {
-                    showError('Invalid OTP. Please check and try again.');
+                    showError('Verification failed. Please try again.');
+                    finishLoader(btn, false);
                 }
-            } else {
-                showError('Verification failed. Please try again.');
-            }
+            }, 1500);
         }
 
         function goBack() {

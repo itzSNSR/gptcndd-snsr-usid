@@ -7,6 +7,7 @@
     <meta name="description" content="USDI Institution Admin Login">
     <title>Institution Login - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/button-anim.css">
 </head>
 
 <body>
@@ -72,8 +73,20 @@
                         data-i18n="err_login">
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg btn-block" data-i18n="login_btn">
-                        Login
+                    <button type="submit" id="btn-login" class="expand btn-primary" style="width: 100%;">
+                        <span data-i18n="login_btn">Login</span>
+                        <span class="expand-icon expand-hover">
+                            <svg class="first" xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 32 32"
+                                version="1.1">
+                                <path
+                                    d="M8.489 31.975c-0.271 0-0.549-0.107-0.757-0.316-0.417-0.417-0.417-1.098 0-1.515l14.258-14.264-14.050-14.050c-0.417-0.417-0.417-1.098 0-1.515s1.098-0.417 1.515 0l14.807 14.807c0.417 0.417 0.417 1.098 0 1.515l-15.015 15.022c-0.208 0.208-0.486 0.316-0.757 0.316z" />
+                            </svg>
+                            <span class="loader"></span>
+                            <svg class="second" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 5L8 15l-5-4" />
+                            </svg>
+                        </span>
                     </button>
                 </form>
 
@@ -94,6 +107,7 @@
     <script src="../js/theme.js"></script>
     <script src="../js/translations.js"></script>
     <script src="../js/language.js"></script>
+    <script src="../js/button-anim.js"></script>
     <script>
         function handleLogin(e) {
             e.preventDefault();
@@ -101,15 +115,29 @@
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('error-message');
+            const btn = document.getElementById('btn-login');
 
-            if (USDI_DATA.verifyAdmin(username, password)) {
-                sessionStorage.setItem('usdi_admin_logged_in', 'true');
-                sessionStorage.setItem('usdi_admin_user', username);
-                window.location.href = 'dashboard.html';
-            } else {
-                errorDiv.textContent = 'Invalid username or password';
-                errorDiv.classList.remove('hidden');
-            }
+            // Start Animation
+            startLoader(btn);
+            errorDiv.classList.add('hidden');
+
+            // Simulate network delay
+            setTimeout(() => {
+                if (USDI_DATA.verifyAdmin(username, password)) {
+                    finishLoader(btn, true);
+
+                    sessionStorage.setItem('usdi_admin_logged_in', 'true');
+                    sessionStorage.setItem('usdi_admin_user', username);
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    errorDiv.textContent = 'Invalid username or password';
+                    errorDiv.classList.remove('hidden');
+                    finishLoader(btn, false);
+                }
+            }, 1500);
         }
 
         // Check if already logged in

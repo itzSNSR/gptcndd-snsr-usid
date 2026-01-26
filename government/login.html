@@ -7,6 +7,7 @@
     <meta name="description" content="USDI Government Portal - Manage Academic Records">
     <title>Government Portal Login - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/button-anim.css">
 </head>
 
 <body>
@@ -79,10 +80,22 @@
                             <input type="password" id="password" class="form-input form-input-lg"
                                 placeholder="Enter password" required data-i18n="ph_password">
                         </div>
-                        <button type="submit" class="btn btn-lg btn-block"
-                            style="background: linear-gradient(135deg, #1e3a5f, #FFD700); color: white;"
-                            data-i18n="btn_secure_login">
-                            🔐 Secure Login
+                        <button type="submit" id="btn-login" class="expand btn-lg btn-block"
+                            style="background: linear-gradient(135deg, #1e3a5f, #FFD700); color: white; width: 100%; border: none;">
+                            <span data-i18n="btn_secure_login">🔐 Secure Login</span>
+                            <span class="expand-icon expand-hover"
+                                style="border-left: 1px solid rgba(255,255,255,0.3);">
+                                <svg class="first" xmlns="http://www.w3.org/2000/svg" fill="#fff" viewBox="0 0 32 32"
+                                    version="1.1">
+                                    <path
+                                        d="M8.489 31.975c-0.271 0-0.549-0.107-0.757-0.316-0.417-0.417-0.417-1.098 0-1.515l14.258-14.264-14.050-14.050c-0.417-0.417-0.417-1.098 0-1.515s1.098-0.417 1.515 0l14.807 14.807c0.417 0.417 0.417 1.098 0 1.515l-15.015 15.022c-0.208 0.208-0.486 0.316-0.757 0.316z" />
+                                </svg>
+                                <span class="loader"></span>
+                                <svg class="second" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none">
+                                    <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 5L8 15l-5-4" />
+                                </svg>
+                            </span>
                         </button>
                     </form>
 
@@ -116,21 +129,36 @@
     <script src="../js/data.js"></script>
     <script src="../js/translations.js"></script>
     <script src="../js/language.js"></script>
+    <script src="../js/button-anim.js"></script>
     <script>
         function handleLogin(e) {
             e.preventDefault();
 
             const officialId = document.getElementById('official-id').value.trim();
             const password = document.getElementById('password').value;
+            const btn = document.getElementById('btn-login');
 
-            // Demo credentials
-            if (officialId === 'GOV001' && password === 'gov123') {
-                sessionStorage.setItem('usdi_gov_logged_in', 'true');
-                sessionStorage.setItem('usdi_gov_user', officialId);
-                window.location.href = 'dashboard.html';
-            } else {
-                showError('Invalid credentials. Please try again.');
-            }
+            // Start Animation
+            startLoader(btn);
+            if (window.hideError) window.hideError(); // if defined
+
+            // Simulate network delay
+            setTimeout(() => {
+                // Demo credentials
+                if (officialId === 'GOV001' && password === 'gov123') {
+                    finishLoader(btn, true);
+
+                    sessionStorage.setItem('usdi_gov_logged_in', 'true');
+                    sessionStorage.setItem('usdi_gov_user', officialId);
+
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1000);
+                } else {
+                    showError('Invalid credentials. Please try again.');
+                    finishLoader(btn, false);
+                }
+            }, 1500);
         }
 
         function showError(msg) {

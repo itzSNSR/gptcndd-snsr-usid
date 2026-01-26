@@ -258,6 +258,8 @@
         </div>
     </section>
 
+    <link rel="stylesheet" href="css/button-anim.css">
+
     <!-- Contact Section -->
     <section class="features" id="contact" style="background: #1e293b;">
         <div class="container">
@@ -288,9 +290,23 @@
                                     placeholder="Write your message here..." required style="resize: vertical;"
                                     data-i18n="contact_message"></textarea>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-lg btn-block" id="submit-btn"
-                                data-i18n="contact_send">
-                                📩 Send Message
+
+                            <!-- Animated Submit Button -->
+                            <button type="submit" class="expand btn-primary" id="submit-btn" style="width: 100%;">
+                                <span data-i18n="contact_send">📩 Send Message</span>
+                                <span class="expand-icon expand-hover">
+                                    <svg class="first" xmlns="http://www.w3.org/2000/svg" fill="#fff"
+                                        viewBox="0 0 32 32" version="1.1">
+                                        <path
+                                            d="M8.489 31.975c-0.271 0-0.549-0.107-0.757-0.316-0.417-0.417-0.417-1.098 0-1.515l14.258-14.264-14.050-14.050c-0.417-0.417-0.417-1.098 0-1.515s1.098-0.417 1.515 0l14.807 14.807c0.417 0.417 0.417 1.098 0 1.515l-15.015 15.022c-0.208 0.208-0.486 0.316-0.757 0.316z" />
+                                    </svg>
+                                    <span class="loader"></span>
+                                    <svg class="second" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none">
+                                        <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="M17 5L8 15l-5-4" />
+                                    </svg>
+                                </span>
                             </button>
                         </form>
 
@@ -408,6 +424,7 @@
         </div>
     </footer>
 
+    <script src="js/button-anim.js"></script>
     <script>
         function submitToGoogleForm(event) {
             event.preventDefault();
@@ -417,9 +434,8 @@
             const message = document.getElementById('entry-message').value;
             const submitBtn = document.getElementById('submit-btn');
 
-            // Disable button while submitting
-            submitBtn.disabled = true;
-            submitBtn.textContent = '⏳ Sending...';
+            // START ANIMATION
+            startLoader(submitBtn);
 
             // Build form data
             const formData = new FormData();
@@ -450,27 +466,32 @@
                 mode: 'no-cors',
                 body: formData
             }).then(() => {
-                // Show success (no-cors doesn't return response, but data is sent)
-                document.getElementById('contact-form').style.display = 'none';
-                document.getElementById('contact-success').classList.remove('hidden');
+                // SUCCESS ANIMATION
+                finishLoader(submitBtn, true);
 
-                // Reset after 5 seconds
                 setTimeout(() => {
-                    document.getElementById('contact-form').reset();
-                    document.getElementById('contact-form').style.display = 'block';
-                    document.getElementById('contact-success').classList.add('hidden');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = '📩 Send Message';
-                }, 5000);
+                    // Show success (no-cors doesn't return response, but data is sent)
+                    document.getElementById('contact-form').style.display = 'none';
+                    document.getElementById('contact-success').classList.remove('hidden');
+
+                    // Reset after 5 seconds
+                    setTimeout(() => {
+                        document.getElementById('contact-form').reset();
+                        document.getElementById('contact-form').style.display = 'block';
+                        document.getElementById('contact-success').classList.add('hidden');
+
+                        // Reset button state
+                        submitBtn.className = 'expand btn-primary'; // reset classes
+                        submitBtn.disabled = false;
+                    }, 5000);
+                }, 1000); // wait for finish animation
             }).catch((error) => {
                 console.error('Error:', error);
                 showError('Failed to send message. Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '📩 Send Message';
+                finishLoader(submitBtn, false);
             });
         }
 
-        // Button hover text change effect
         document.querySelectorAll('.btn-hover-text').forEach(btn => {
             const defaultText = btn.getAttribute('data-default');
             const hoverText = btn.getAttribute('data-hover');
