@@ -81,20 +81,28 @@ body {
 }
 
 /* Home Page Transparency - Reveal Liquid Background */
+/* Home Page Transparency - Reveal Liquid Background */
 .hero,
 .features,
 .footer,
-.section-card {
+.section-card,
+.request-card,
+.stat-card,
+.card {
     background: rgba(255, 255, 255, 0.7) !important;
     /* Glass effect */
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 [data-theme="dark"] .hero,
 [data-theme="dark"] .features,
 [data-theme="dark"] .footer,
-[data-theme="dark"] .section-card {
+[data-theme="dark"] .section-card,
+[data-theme="dark"] .request-card,
+[data-theme="dark"] .stat-card,
+[data-theme="dark"] .card {
     background: rgba(15, 23, 42, 0.6) !important;
     /* Dark glass */
     border-color: rgba(255, 255, 255, 0.05);
