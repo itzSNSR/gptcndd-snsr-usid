@@ -62,7 +62,46 @@ function initLiquidBackground() {
     }
 
     try {
-        const app = LiquidBackground(canvas);
+        // Optimize for mobile: Cap DPR at 1.0 for absolute max performance (Lag Free)
+        const dpr = window.innerWidth < 768 ? 1.0 : Math.min(window.devicePixelRatio, 1.5);
+
+
+        const app = LiquidBackground(canvas, {
+            dpr: dpr
+        });
+
+        // Ensure canvas fits viewport - Fix "incorrect size"
+        // Ensure canvas fits viewport - Fix "incorrect size"
+        let lastWidth = window.innerWidth;
+
+        function resizeCanvas() {
+            // Mobile Optimization: Ignore resize if width hasn't changed (address bar scroll)
+            // This prevents lag on scrolling index pages
+            if (window.innerWidth === lastWidth && Math.abs(window.innerHeight - canvas.height / dpr) < 100) {
+                return;
+            }
+            lastWidth = window.innerWidth;
+
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            canvas.style.width = '100vw';
+            canvas.style.height = '100vh';
+            if (app.resize) app.resize();
+        }
+
+        // Debounce resize to prevent thrashing
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(resizeCanvas, 100);
+        });
+
+        // Initial set
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+        canvas.style.width = '100vw';
+        canvas.style.height = '100vh';
+
         appInstance = app;
 
         // Initial load based on current theme

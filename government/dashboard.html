@@ -7,6 +7,7 @@
     <meta name="description" content="USDI Government Dashboard - Manage Academic Records">
     <title>Government Dashboard - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/liquid-bg.css">
     <style>
         .gov-header {
             background: linear-gradient(135deg, #1e3a5f, #0d1b2a);
@@ -93,16 +94,23 @@
 
 <body>
     <!-- Header -->
-    <header class="header gov-header">
-        <div class="container">
-            <a href="../index.html" class="logo" style="color: white;">
-                <div class="logo-icon">🏛️</div>
+    <header class="header" role="banner">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../index.html" class="logo" aria-label="USDI Home" style="color: white;">
+                <div class="logo-icon" aria-hidden="true">🏛️</div>
                 <span>USDI <span class="gov-badge">GOV</span></span>
             </a>
-            <nav class="nav">
-                <a href="dashboard.html" class="active" style="color: white;">Dashboard</a>
-                <a href="#" onclick="logout()" style="color: white;">Logout</a>
+            <nav class="nav morph-nav">
+                <ul>
+                    <li><a href="dashboard.html" class="active" style="color: white;">Dashboard</a></li>
+                    <li><a href="#" onclick="logout()" style="color: white;">Logout</a></li>
+                </ul>
             </nav>
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu" style="color: white;">
+                <span style="background: white;"></span>
+                <span style="background: white;"></span>
+                <span style="background: white;"></span>
+            </button>
         </div>
     </header>
 
@@ -115,7 +123,8 @@
                     <a href="login.html" class="btn-back">←</a>
                     <div>
                         <h1 class="dashboard-title" style="color: #1e3a5f;">🏛️ Government Portal</h1>
-                        <p class="dashboard-subtitle">Unified Student Digital ID System - Administrative Dashboard</p>
+                        <p class="dashboard-subtitle">Unified Student Digital ID System - Administrative
+                            Dashboard</p>
                     </div>
                 </div>
                 <div style="text-align: right;">
@@ -189,7 +198,8 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 style="margin: 0;">📋 Student Edit Requests</h3>
-                        <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Review and approve/reject
+                        <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Review and
+                            approve/reject
                             student requests to update their details</p>
                     </div>
                     <div class="card-body" id="requests-container">
@@ -204,7 +214,8 @@
                     <div class="card-header flex justify-between items-center">
                         <div>
                             <h3 style="margin: 0;">📚 Edit Academic History (SSLC, Plus Two, etc.)</h3>
-                            <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Search for a student and
+                            <p class="text-muted text-sm" style="margin: var(--space-2) 0 0;">Search for a
+                                student and
                                 edit their prior education history</p>
                         </div>
                     </div>
@@ -730,7 +741,22 @@
 
         // Initialize
         checkAuth();
+
+        function toggleMobileMenu() {
+            document.querySelector('.nav').classList.toggle('open');
+            document.querySelector('.menu-toggle').classList.toggle('active');
+
+            let overlay = document.querySelector('.mobile-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'mobile-overlay';
+                overlay.onclick = toggleMobileMenu;
+                document.body.appendChild(overlay);
+            }
+            overlay.classList.toggle('active');
+        }
     </script>
+    <script type="module" src="../js/liquid-bg.js"></script>
 </body>
 
 </html>

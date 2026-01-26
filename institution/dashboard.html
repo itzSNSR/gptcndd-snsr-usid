@@ -7,20 +7,36 @@
     <meta name="description" content="USDI Institution Dashboard - Manage Student Records">
     <title>Institution Dashboard - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/liquid-bg.css">
+    <link rel="stylesheet" href="../css/morph-nav.css"> <!-- For consistency if needed -->
 </head>
 
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <a href="../index.html" class="logo">
-                <div class="logo-icon">🎓</div>
+    <header class="header" role="banner">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../index.html" class="logo" aria-label="USDI Home">
+                <div class="logo-icon" aria-hidden="true">🎓</div>
                 <span>USDI</span>
             </a>
-            <nav class="nav">
-                <a href="dashboard.html" class="active">Dashboard</a>
-                <a href="#" onclick="logout()">Logout</a>
+            <span class="switch__icon-part switch__icon-part--3"></span>
+            <span class="switch__icon-part switch__icon-part--4"></span>
+            <span class="switch__icon-part switch__icon-part--5"></span>
+            <span class="switch__icon-part switch__icon-part--6"></span>
+            <span class="switch__icon-part switch__icon-part--7"></span>
+            <span class="switch__icon-part switch__icon-part--8"></span>
+            <span class="switch__icon-part switch__icon-part--9"></span>
+            <span class="switch__icon-part switch__icon-part--10"></span>
+            <span class="switch__icon-part switch__icon-part--11"></span>
+            </span>
+            <span class="switch__sr">Dark Mode</span>
+            </label>
             </nav>
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
 
@@ -813,7 +829,22 @@
 
         // Initialize
         checkAuth();
+
+        function toggleMobileMenu() {
+            document.querySelector('.nav').classList.toggle('open');
+            document.querySelector('.menu-toggle').classList.toggle('active');
+
+            let overlay = document.querySelector('.mobile-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'mobile-overlay';
+                overlay.onclick = toggleMobileMenu;
+                document.body.appendChild(overlay);
+            }
+            overlay.classList.toggle('active');
+        }
     </script>
+    <script type="module" src="../js/liquid-bg.js"></script>
 </body>
 
 </html>

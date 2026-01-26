@@ -8,26 +8,40 @@
     <title>Student Dashboard - USDI</title>
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/morph-nav.css">
+    <link rel="stylesheet" href="../css/liquid-bg.css">
     <script src="../js/qrcode.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js"></script>
     <style>
         .section-card {
-            background: var(--white);
+            /* background: var(--white); REMOVED for Glass Effect */
             border-radius: var(--radius-lg);
             box-shadow: var(--shadow-md);
             margin-bottom: var(--space-6);
             overflow: hidden;
+            /* Ensure text is readable on glass */
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
         .section-card-header {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
+            /* background: linear-gradient(135deg, var(--primary), var(--primary-dark)); REMOVED */
+            background: rgba(37, 99, 235, 0.1);
+            /* Subtle tint instead */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--grey-800);
+            /* Dark text for visibility on light glass */
             padding: var(--space-4) var(--space-6);
             font-weight: 600;
             font-size: 1rem;
             display: flex;
             align-items: center;
             gap: var(--space-2);
+        }
+
+        /* Dark mode text adjust */
+        @media (prefers-color-scheme: dark) {
+            .section-card-header {
+                color: white;
+            }
         }
 
         .section-card-body {
@@ -179,20 +193,15 @@
 
 <body>
     <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <!-- Left Side: Back + Logo -->
-            <div style="display: flex; align-items: center; gap: 1rem;">
-                <a href="javascript:history.back()" class="btn-back" aria-label="Go Back"
-                    style="color: white; font-size: 1.2rem; text-decoration: none;">←</a>
-                <a href="../index.html" class="logo">
-                    <span class="logo-icon">🎓</span>
-                    <span>USDI</span>
-                </a>
-            </div>
+    <header class="header" role="banner">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="../index.html" class="logo" aria-label="USDI Home">
+                <div class="logo-icon" aria-hidden="true">🎓</div>
+                <span>USDI</span>
+            </a>
 
-            <!-- Right Side: Morphing Nav -->
-            <nav class="morph-nav">
+            <!-- Morphing Navigation -->
+            <nav class="nav morph-nav" role="navigation" aria-label="Main navigation">
                 <ul>
                     <li><a href="dashboard.html" class="active">My Profile</a></li>
                     <li><a href="#" onclick="logout()">Logout</a></li>
@@ -201,13 +210,13 @@
                     <li class="language-wrapper-nav">
                         <div class="custom-dropdown" id="language-dropdown">
                             <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
-                                <span class="selected-lang">🇺🇸 English</span>
+                                <span class="selected-lang">🌐 English</span>
                                 <span class="dropdown-arrow">▼</span>
                             </div>
                             <div class="dropdown-options">
-                                <div class="dropdown-option" onclick="changeLanguage('en')">🇺🇸 English</div>
-                                <div class="dropdown-option" onclick="changeLanguage('ml')">🇮🇳 മലയാളം</div>
-                                <div class="dropdown-option" onclick="changeLanguage('hi')">🇮🇳 हिन्दी</div>
+                                <div class="dropdown-option" onclick="changeLanguage('en')">English</div>
+                                <div class="dropdown-option" onclick="changeLanguage('ml')">മലയാളം</div>
+                                <div class="dropdown-option" onclick="changeLanguage('hi')">हिन्दी</div>
                             </div>
                         </div>
                     </li>
@@ -235,6 +244,13 @@
                     </li>
                 </ul>
             </nav>
+
+            <!-- Hamburger for Mobile -->
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
         </div>
     </header>
 
@@ -1345,7 +1361,22 @@
 
         // Initialize
         checkAuth();
+
+        function toggleMobileMenu() {
+            document.querySelector('.nav').classList.toggle('open');
+            document.querySelector('.menu-toggle').classList.toggle('active');
+
+            let overlay = document.querySelector('.mobile-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'mobile-overlay';
+                overlay.onclick = toggleMobileMenu;
+                document.body.appendChild(overlay);
+            }
+            overlay.classList.toggle('active');
+        }
     </script>
+    <script type="module" src="../js/liquid-bg.js"></script>
 </body>
 
 </html>

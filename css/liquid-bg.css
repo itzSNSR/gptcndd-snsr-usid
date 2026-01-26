@@ -75,6 +75,61 @@ body {
     /* Push content down to clear language/theme toggles */
 }
 
+/* Home Page Transparency - Reveal Liquid Background */
+.hero,
+.features,
+.footer,
+.section-card {
+    background: rgba(255, 255, 255, 0.7) !important;
+    /* Glass effect */
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+[data-theme="dark"] .hero,
+[data-theme="dark"] .features,
+[data-theme="dark"] .footer,
+[data-theme="dark"] .section-card {
+    background: rgba(15, 23, 42, 0.6) !important;
+    /* Dark glass */
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Ensure body doesn't block it */
+body {
+    background: transparent !important;
+}
+
+/* Mobile Dropdown Fixes */
+
+/* Mobile Performance Optimization: Remove expensive blur on scrollable areas */
+@media (max-width: 768px) {
+
+    .hero,
+    .features,
+    .footer,
+    .section-card {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        /* increased opacity for legibility without blur */
+    }
+
+    [data-theme="dark"] .hero,
+    [data-theme="dark"] .features,
+    [data-theme="dark"] .footer,
+    [data-theme="dark"] .section-card {
+        background: rgba(15, 23, 42, 0.85) !important;
+    }
+
+    /* Keep slight blur only on small fixed elements like dropdowns/nav if supported, else remove */
+    .morph-nav::after,
+    .morph-nav>ul::after {
+        backdrop-filter: none !important;
+        background: rgba(0, 0, 0, 0.8);
+    }
+}
+
 /* Mobile Dropdown Fixes */
 @media (max-width: 768px) {
     .custom-dropdown .dropdown-trigger {
