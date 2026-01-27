@@ -1305,7 +1305,8 @@ h6 {
 .hero {
     background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
     color: var(--white);
-    padding: var(--space-16) 0;
+    padding: 140px 0 var(--space-16) 0;
+    /* Cleared for Centered Nav */
     text-align: center;
     position: relative;
     overflow: hidden;

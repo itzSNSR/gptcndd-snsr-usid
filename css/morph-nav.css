@@ -14,7 +14,10 @@ html {
         margin: 0;
         padding: 8px;
         border-radius: 8px;
-        position: relative;
+        /* Center Navigation */
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
         z-index: 100;
     }
 
