@@ -2311,9 +2311,12 @@ h6 {
 }
 
 /* Dark Mode Dropdown */
+/* Dark Mode Dropdown */
 [data-theme="dark"] .dropdown-trigger {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
     border-color: rgba(255, 255, 255, 0.2);
+    color: #ffffff !important;
+    /* Force white text */
 }
 
 [data-theme="dark"] .dropdown-options {
