@@ -82,6 +82,7 @@ body {
 
 /* Home Page Transparency - Reveal Liquid Background */
 /* Home Page Transparency - Reveal Liquid Background */
+/* Home Page Transparency - Reveal Liquid Background */
 .hero,
 .features,
 .footer,
@@ -89,10 +90,11 @@ body {
 .request-card,
 .stat-card,
 .card {
-    background: rgba(255, 255, 255, 0.7) !important;
-    /* Glass effect */
-    backdrop-filter: blur(10px) !important;
-    -webkit-backdrop-filter: blur(10px) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    /* High opacity to hide bg but keep consistency */
+    backdrop-filter: none !important;
+    /* REMOVED BLUR to fix scroll lag */
+    -webkit-backdrop-filter: none !important;
     border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
@@ -103,8 +105,10 @@ body {
 [data-theme="dark"] .request-card,
 [data-theme="dark"] .stat-card,
 [data-theme="dark"] .card {
-    background: rgba(15, 23, 42, 0.6) !important;
-    /* Dark glass */
+    background: rgba(15, 23, 42, 0.98) !important;
+    /* Dark mode solid */
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
     border-color: rgba(255, 255, 255, 0.05);
 }
 

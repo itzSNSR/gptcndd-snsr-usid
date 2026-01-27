@@ -3520,3 +3520,15 @@ h6 {
         -webkit-backdrop-filter: blur(10px);
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
+
+    /* Static Gradient Background (Performance Optimized) */
+    .static-liquid-bg {
+        background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+        min-height: 100vh;
+        background-attachment: scroll;
+        /* Performant */
+    }
+
+    [data-theme="dark"] .static-liquid-bg {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    }
