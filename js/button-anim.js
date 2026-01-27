@@ -168,16 +168,13 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
 
-        // Chat Toggle Logic
-        button.addEventListener("click", () => {
-            const container = document.querySelector('.chatbot-container');
-            const btn = document.querySelector('.generate-button');
-            if (container) {
-                container.classList.toggle('active');
-
-                // Optional: Hide button on open if desired, or just animate
-                // btn.classList.toggle('hidden'); 
-            }
-        });
+        // DISABLED: Chat toggle is handled by onclick="toggleChatbot()" in HTML
+        // button.addEventListener("click", () => {
+        //     const container = document.querySelector('.chatbot-container');
+        //     const btn = document.querySelector('.generate-button');
+        //     if (container) {
+        //         container.classList.toggle('active');
+        //     }
+        // });
     });
 });
