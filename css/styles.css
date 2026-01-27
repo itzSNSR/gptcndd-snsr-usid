@@ -3668,14 +3668,29 @@ textarea:focus-visible {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Static Gradient Background (Performance Optimized) */
-.static-liquid-bg {
-    background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
-    min-height: 100vh;
-    background-attachment: scroll;
-    /* Performant */
+/* Fix for Contact Button SVG Layout */
+.expand-icon svg {
+    width: 24px;
+    height: 24px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
-[data-theme="dark"] .static-liquid-bg {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+.expand-icon .loader {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none;
+    /* Hidden by default */
+}
+
+.expand .first {
+    display: inline-block;
+}
+
+.expand .second {
+    display: none;
 }
