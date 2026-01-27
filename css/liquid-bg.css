@@ -112,9 +112,13 @@ body {
     border-color: rgba(255, 255, 255, 0.05);
 }
 
-/* Ensure body doesn't block it */
-body {
+/* Ensure body doesn't block liquid bg in light mode, but honors dark theme */
+body:not([data-theme="dark"]) {
     background: transparent !important;
+}
+
+[data-theme="dark"] body {
+    background: #0f172a !important;
 }
 
 /* Mobile Dropdown Fixes */
