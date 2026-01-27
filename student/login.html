@@ -206,29 +206,33 @@
             }
 
             // Start Animation
-            startLoader(btn);
+            btn.classList.add('loading');
+            btn.disabled = true;
             hideError();
 
             // Simulate network delay
             setTimeout(() => {
-                finishLoader(btn, true);
-
+                btn.classList.add('loaded');
                 setTimeout(() => {
-                    // Store mobile and show OTP step
-                    currentMobile = mobile;
-                    document.getElementById('step-mobile').classList.add('hidden');
-                    document.getElementById('step-otp').classList.remove('hidden');
+                    btn.classList.add('finished');
 
-                    // Focus first OTP input
-                    document.querySelector('.otp-input').focus();
+                    setTimeout(() => {
+                        // Store mobile and show OTP step
+                        currentMobile = mobile;
+                        document.getElementById('step-mobile').classList.add('hidden');
+                        document.getElementById('step-otp').classList.remove('hidden');
 
-                    // Show success message (simulated OTP sent)
-                    showInfo('OTP sent! For demo, use: 123456');
+                        // Focus first OTP input
+                        document.querySelector('.otp-input').focus();
 
-                    // Reset button state for next time
-                    btn.classList.remove('loading', 'loaded', 'finished');
-                    btn.disabled = false;
-                }, 1000); // 1s wait for checkmark
+                        // Show success message (simulated OTP sent)
+                        showToast('OTP sent! For demo, use: ' + (student.otp || '123456'), 'success');
+
+                        // Reset button state for next time
+                        btn.classList.remove('loading', 'loaded', 'finished');
+                        btn.disabled = false;
+                    }, 1500); // 1.5s wait for checkmark
+                }, 700);
             }, 1500); // 1.5s simulated loading
         }
 
@@ -244,7 +248,8 @@
             }
 
             // Start Animation
-            startLoader(btn);
+            btn.classList.add('loading');
+            btn.disabled = true;
 
             // Simulate delay
             setTimeout(() => {
@@ -253,7 +258,10 @@
                 if (student) {
                     const validOTP = student.otp || '123456'; // Student-specific or default demo OTP
                     if (otp === validOTP) {
-                        finishLoader(btn, true);
+                        btn.classList.add('loaded');
+                        setTimeout(() => {
+                            btn.classList.add('finished');
+                        }, 700);
 
                         // Store student info in session
                         if (student.usn) {
@@ -265,14 +273,16 @@
                         // Redirect to dashboard after success animation
                         setTimeout(() => {
                             window.location.href = 'dashboard.html';
-                        }, 1000);
+                        }, 2200); // Total: 1500 + 700
                     } else {
                         showError('Invalid OTP. Please check and try again.');
-                        finishLoader(btn, false);
+                        btn.classList.remove('loading');
+                        btn.disabled = false;
                     }
                 } else {
                     showError('Verification failed. Please try again.');
-                    finishLoader(btn, false);
+                    btn.classList.remove('loading');
+                    btn.disabled = false;
                 }
             }, 1500);
         }
@@ -295,6 +305,7 @@
         function hideError() {
             document.getElementById('error-message').classList.add('hidden');
         }
+
 
         // OTP input handling - only allow numbers
         document.querySelectorAll('.otp-input').forEach((input, index, inputs) => {
