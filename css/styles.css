@@ -618,6 +618,9 @@ h6 {
 @media (max-width: 768px) {
     .menu-toggle {
         display: flex;
+        position: fixed;
+        top: 1rem;
+        right: 1rem;
     }
 
     .nav {
