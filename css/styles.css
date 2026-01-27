@@ -2550,6 +2550,41 @@ h6 {
     }
 }
 
+/* Chatbot Option Buttons */
+.chatbot-container .btn-outline-primary {
+    background: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+[data-theme="dark"] .chatbot-container .btn-outline-primary {
+    background: #1e293b;
+    border-color: var(--primary-light);
+    color: var(--primary-light);
+}
+
+.chatbot-container .btn-outline-primary:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+[data-theme="dark"] .chatbot-container .btn-outline-primary:hover {
+    background: var(--primary-light);
+    color: white;
+}
+
+
 /* ===== FLAT THEME SWITCHER ===== */
 .switch {
     --hue: 223;
