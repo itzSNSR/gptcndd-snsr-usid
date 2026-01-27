@@ -206,22 +206,34 @@
                     <li><a href="dashboard.html" class="active">My Profile</a></li>
                     <li><a href="#" onclick="logout()">Logout</a></li>
 
-                    <!-- Language Dropdown Item -->
-                    <li class="language-wrapper-nav">
-                        <div class="custom-dropdown" id="language-dropdown">
-                            <div class="dropdown-trigger" onclick="toggleLanguageDropdown()">
-                                <span class="selected-lang">🌐 English</span>
-                                <span class="dropdown-arrow">▼</span>
-                            </div>
-                            <div class="dropdown-options">
-                                <div class="dropdown-option" onclick="changeLanguage('en')">English</div>
-                                <div class="dropdown-option" onclick="changeLanguage('ml')">മലയാളം</div>
-                                <div class="dropdown-option" onclick="changeLanguage('hi')">हिन्दी</div>
+                    <!-- Language Dropdown -->
+                    <li>
+                        <div class="language-wrapper" style="margin: 0;">
+                            <div class="custom-dropdown" id="language-dropdown">
+                                <div class="dropdown-trigger" role="button" aria-haspopup="listbox"
+                                    aria-expanded="false" tabindex="0">
+                                    <span>🌐 English</span>
+                                    <span class="dropdown-icon">▼</span>
+                                </div>
+                                <div class="dropdown-options" role="listbox">
+                                    <div class="dropdown-option selected" data-value="en" role="option"
+                                        aria-selected="true" tabindex="0">
+                                        <span>English</span>
+                                    </div>
+                                    <div class="dropdown-option" data-value="ml" role="option" aria-selected="false"
+                                        tabindex="0">
+                                        <span>മലയാളം</span>
+                                    </div>
+                                    <div class="dropdown-option" data-value="hi" role="option" aria-selected="false"
+                                        tabindex="0">
+                                        <span>हिन्दी</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </li>
 
-                    <!-- Theme Toggle Item -->
+                    <!-- Flat Theme Switcher -->
                     <li>
                         <label class="switch">
                             <input class="switch__input" type="checkbox" role="switch"
@@ -1377,6 +1389,8 @@
             overlay.classList.toggle('active');
         }
     </script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/language.js"></script>
     <script type="module" src="../js/liquid-bg.js"></script>
 </body>
 

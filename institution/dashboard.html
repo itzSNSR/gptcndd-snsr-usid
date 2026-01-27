@@ -19,19 +19,63 @@
                 <div class="logo-icon" aria-hidden="true">🎓</div>
                 <span>USDI</span>
             </a>
-            <span class="switch__icon-part switch__icon-part--3"></span>
-            <span class="switch__icon-part switch__icon-part--4"></span>
-            <span class="switch__icon-part switch__icon-part--5"></span>
-            <span class="switch__icon-part switch__icon-part--6"></span>
-            <span class="switch__icon-part switch__icon-part--7"></span>
-            <span class="switch__icon-part switch__icon-part--8"></span>
-            <span class="switch__icon-part switch__icon-part--9"></span>
-            <span class="switch__icon-part switch__icon-part--10"></span>
-            <span class="switch__icon-part switch__icon-part--11"></span>
-            </span>
-            <span class="switch__sr">Dark Mode</span>
-            </label>
+
+            <!-- Morphing Navigation -->
+            <nav class="nav morph-nav" role="navigation" aria-label="Main navigation">
+                <ul>
+                    <li><a href="../index.html" class="active">Dashboard</a></li>
+
+                    <!-- Language Dropdown -->
+                    <li>
+                        <div class="language-wrapper" style="margin: 0;">
+                            <div class="custom-dropdown" id="language-dropdown">
+                                <div class="dropdown-trigger" role="button" aria-haspopup="listbox"
+                                    aria-expanded="false" tabindex="0">
+                                    <span>🌐 English</span>
+                                    <span class="dropdown-icon">▼</span>
+                                </div>
+                                <div class="dropdown-options" role="listbox">
+                                    <div class="dropdown-option selected" data-value="en" role="option"
+                                        aria-selected="true" tabindex="0">
+                                        <span>English</span>
+                                    </div>
+                                    <div class="dropdown-option" data-value="ml" role="option" aria-selected="false"
+                                        tabindex="0">
+                                        <span>മലയാളം</span>
+                                    </div>
+                                    <div class="dropdown-option" data-value="hi" role="option" aria-selected="false"
+                                        tabindex="0">
+                                        <span>हिन्दी</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+
+                    <!-- Flat Theme Switcher -->
+                    <li>
+                        <label class="switch">
+                            <input class="switch__input" type="checkbox" role="switch"
+                                onchange="toggleTheme(this.checked)" />
+                            <span class="switch__icon">
+                                <span class="switch__icon-part switch__icon-part--1"></span>
+                                <span class="switch__icon-part switch__icon-part--2"></span>
+                                <span class="switch__icon-part switch__icon-part--3"></span>
+                                <span class="switch__icon-part switch__icon-part--4"></span>
+                                <span class="switch__icon-part switch__icon-part--5"></span>
+                                <span class="switch__icon-part switch__icon-part--6"></span>
+                                <span class="switch__icon-part switch__icon-part--7"></span>
+                                <span class="switch__icon-part switch__icon-part--8"></span>
+                                <span class="switch__icon-part switch__icon-part--9"></span>
+                                <span class="switch__icon-part switch__icon-part--10"></span>
+                                <span class="switch__icon-part switch__icon-part--11"></span>
+                            </span>
+                            <span class="switch__sr">Dark Mode</span>
+                        </label>
+                    </li>
+                </ul>
             </nav>
+
             <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
                 <span></span>
                 <span></span>
@@ -844,6 +888,8 @@
             overlay.classList.toggle('active');
         }
     </script>
+    <script src="../js/translations.js"></script>
+    <script src="../js/language.js"></script>
     <script type="module" src="../js/liquid-bg.js"></script>
 </body>
 
