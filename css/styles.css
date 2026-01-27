@@ -3781,3 +3781,14 @@ textarea:focus-visible {
         transform: scale(1);
     }
 }
+
+/* RESTORED: Static Gradient Background (Performance Optimized) */
+.static-liquid-bg {
+    background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+    min-height: 100vh;
+    background-attachment: scroll;
+}
+
+[data-theme="dark"] .static-liquid-bg {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
