@@ -3,11 +3,16 @@
 class Chatbot {
     constructor() {
         this.isOpen = false;
-        this.init();
+        // Wait for DOM
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => this.init());
+        } else {
+            this.init();
+        }
     }
 
     init() {
-        this.renderWidget();
+        // No more renderWidget() - we use the static HTML
         this.attachEventListeners();
 
         // Listen for language changes to reset/update chat
@@ -86,53 +91,43 @@ class Chatbot {
         };
     }
 
-    renderWidget() {
-        const toggleText = window.langManager ? window.langManager.translate('chat_toggle') : 'Help';
-
-        const widgetHTML = `
-            <div id="usdi-chatbot" class="chatbot-container">
-                <div class="chatbot-header">
-                    <div class="chatbot-title">
-                        <span class="bot-avatar">🤖</span>
-                        <div>
-                            <h4>USDI Assistant</h4>
-                            <span class="status-dot"></span> Online
-                        </div>
-                    </div>
-                    <button id="chatbot-close" class="chatbot-close">&times;</button>
-                </div>
-                <div id="chatbot-messages" class="chatbot-messages">
-                    <!-- Messages will appear here -->
-                </div>
-                <div class="chatbot-input-area" style="display:none;">
-                    <input type="text" placeholder="Select an option above..." disabled>
-                </div>
-            </div>
-            <button id="chatbot-toggle" class="chatbot-toggle-btn">
-                <span class="toggle-icon">💬</span>
-                <span class="toggle-text" data-i18n="chat_toggle">${toggleText}</span>
-            </button>
-        `;
-        document.body.insertAdjacentHTML('beforeend', widgetHTML);
-    }
-
     attachEventListeners() {
-        this.container = document.getElementById('usdi-chatbot');
-        this.messagesContainer = document.getElementById('chatbot-messages');
-        this.toggleBtn = document.getElementById('chatbot-toggle');
-        this.closeBtn = document.getElementById('chatbot-close');
+        this.container = document.getElementById('chatbot-container');
+        this.messagesContainer = document.getElementById('chatbot-body');
+        this.toggleBtn = document.querySelector('.generate-button');
+        this.closeBtn = document.querySelector('.close-chat');
 
-        this.toggleBtn.addEventListener('click', () => this.toggleChat());
-        this.closeBtn.addEventListener('click', () => this.toggleChat());
+        // Manual Send Button (if present)
+        const sendBtn = document.querySelector('.chatbot-input button');
+        if (sendBtn) {
+            sendBtn.addEventListener('click', () => {
+                const input = document.getElementById('chat-input');
+                if (input && input.value.trim()) {
+                    this.addMessage(input.value, 'user');
+                    input.value = '';
+                    // Simulate bot response for custom input
+                    setTimeout(() => {
+                        this.addMessage("I'm a demo bot! Please use the options above.", 'bot');
+                    }, 1000);
+                }
+            });
+        }
+
+        // We expose toggleChatbot globally because the HTML onclick uses it
+        window.toggleChatbot = () => this.toggleChat();
     }
 
     toggleChat() {
         this.isOpen = !this.isOpen;
         this.container.classList.toggle('active', this.isOpen);
-        this.toggleBtn.classList.toggle('hidden', this.isOpen);
 
-        if (this.isOpen && this.messagesContainer.children.length === 0) {
-            // First open, show welcome message
+        // Optional: animate button out/in
+        // this.toggleBtn.classList.toggle('hidden', this.isOpen);
+
+        if (this.isOpen && this.messagesContainer.querySelectorAll('.message').length <= 1) {
+            // First open (only initial hello message exists), start logic flow
+            // Clear the static hello
+            this.messagesContainer.innerHTML = '';
             this.showNode('start');
         }
     }
@@ -143,11 +138,6 @@ class Chatbot {
         // If open, restart
         if (this.isOpen) {
             this.showNode('start');
-        }
-        // Update toggle button text
-        const toggleText = document.querySelector('#chatbot-toggle .toggle-text');
-        if (toggleText && window.langManager) {
-            toggleText.textContent = window.langManager.translate('chat_toggle');
         }
     }
 
@@ -166,7 +156,8 @@ class Chatbot {
 
     addMessage(text, sender) {
         const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${sender}-message animate-fadeInUp`;
+        // Use new CSS classes: .message .bot or .message .user
+        messageDiv.className = `message ${sender}`;
 
         // Process markdown-like bold syntax
         const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
@@ -177,21 +168,30 @@ class Chatbot {
     }
 
     addOptions(options) {
+        // Create a container for options, styled as bot message or separate
+        // For premium UI, let's make them separate bubbles or a button group
         const optionsDiv = document.createElement('div');
-        optionsDiv.className = 'chat-options animate-fadeInUp';
+        optionsDiv.className = 'message bot options-group';
+        optionsDiv.style.background = 'transparent';
+        optionsDiv.style.boxShadow = 'none';
+        optionsDiv.style.padding = '0';
+        optionsDiv.style.display = 'flex';
+        optionsDiv.style.flexWrap = 'wrap';
+        optionsDiv.style.gap = '8px';
 
         options.forEach((opt, index) => {
             const btn = document.createElement('button');
-            btn.className = 'chat-option-btn';
+            btn.className = 'btn btn-sm btn-outline-primary'; // Use existing button classes
             btn.textContent = opt.text;
-            btn.style.animationDelay = `${index * 0.1}s`;
+            btn.style.borderRadius = '20px';
+            btn.style.fontSize = '0.85rem';
 
             btn.addEventListener('click', () => {
                 this.addMessage(opt.text, 'user');
 
                 if (opt.action === 'navigate') {
                     this.addMessage("Redirecting... 🚀", 'bot');
-                    setTimeout(() => window.location.href = opt.url, 1000);
+                    setTimeout(() => window.location.href = "../" + opt.url, 1000); // adjust path relative
                 } else if (opt.next) {
                     setTimeout(() => this.showNode(opt.next), 500);
                 }
@@ -208,10 +208,5 @@ class Chatbot {
     }
 }
 
-// Initialize Chatbot when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if chatbot already exists to prevent duplicates (hot reload safety)
-    if (!document.getElementById('usdi-chatbot')) {
-        window.usdiChatbot = new Chatbot();
-    }
-});
+// Initialize
+window.usdiChatbot = new Chatbot();
