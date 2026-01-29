@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer Portal - USDI</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Password Modal */
+        .password-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .password-modal.hidden {
+            display: none;
+        }
+
+        .password-box {
+            background: white;
+            padding: 3rem 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        [data-theme="dark"] .password-box {
+            background: #1e293b;
+            color: white;
+        }
+
+        .password-box h2 {
+            margin-bottom: 0.5rem;
+            color: #667eea;
+            font-size: 1.8rem;
+        }
+
+        [data-theme="dark"] .password-box h2 {
+            color: #a78bfa;
+        }
+
+        .password-box p {
+            color: #64748b;
+            margin-bottom: 2rem;
+        }
+
+        [data-theme="dark"] .password-box p {
+            color: #94a3b8;
+        }
+
+        .password-box input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 0.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            transition: all 0.3s;
+        }
+
+        [data-theme="dark"] .password-box input {
+            background: #0f172a;
+            border-color: #334155;
+            color: white;
+        }
+
+        .password-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .password-box button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .password-box button:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+        }
+
+        /* Main Content */
+        .dev-portal {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .dev-portal.active {
+            display: block;
+        }
+
+        .portal-header {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .portal-header {
+            background: #1e293b;
+            color: white;
+        }
+
+        .portal-header h1 {
+            margin: 0 0 0.5rem 0;
+            color: #667eea;
+            font-size: 2.5rem;
+        }
+
+        [data-theme="dark"] .portal-header h1 {
+            color: #a78bfa;
+        }
+
+        .portal-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+        .sitemap-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .sitemap-section {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] .sitemap-section {
+            background: #1e293b;
+            color: white;
+        }
+
+        .sitemap-section h3 {
+            margin-top: 0;
+            color: #667eea;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        [data-theme="dark"] .sitemap-section h3 {
+            color: #a78bfa;
+        }
+
+        .sitemap-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sitemap-section li {
+            margin-bottom: 0.75rem;
+        }
+
+        .sitemap-section a {
+            color: #475569;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        [data-theme="dark"] .sitemap-section a {
+            color: #cbd5e1;
+        }
+
+        .sitemap-section a:hover {
+            background: #f1f5f9;
+            color: #667eea;
+            transform: translateX(5px);
+        }
+
+        [data-theme="dark"] .sitemap-section a:hover {
+            background: #334155;
+            color: #a78bfa;
+        }
+
+        .sitemap-section a::before {
+            content: "→";
+            color: #667eea;
+        }
+
+        .dev-tools {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .dev-tools h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+        }
+
+        .tool-links {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .tool-link {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .tool-link:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Password Modal -->
+    <div class="password-modal" id="passwordModal">
+        <div class="password-box">
+            <h2>🔐 Developer Access</h2>
+            <p>Enter the developer code to continue</p>
+            <input type="password" id="passwordInput" placeholder="••••••" maxlength="6"
+                onkeypress="if(event.key==='Enter') checkPassword()">
+            <button onclick="checkPassword()">Unlock Portal</button>
+            <p class="error-message" id="errorMessage">❌ Incorrect password. Try again.</p>
+        </div>
+    </div>
+
+    <!-- Main Dev Portal Content -->
+    <div class="dev-portal" id="devPortal">
+        <!-- Header -->
+        <div class="portal-header">
+            <h1>🚀 Developer Portal</h1>
+            <p>Complete sitemap and development tools for USDI System</p>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;"><strong>Live Site:</strong> <a
+                    href="https://usid.vercel.app/" target="_blank"
+                    style="color: #667eea; text-decoration: none;">https://usid.vercel.app/</a></p>
+        </div>
+
+        <!-- Sitemap Grid -->
+        <div class="sitemap-grid">
+            <!-- Public Pages -->
+            <div class="sitemap-section">
+                <h3>🌐 Public Pages</h3>
+                <ul>
+                    <li><a href="https://usid.vercel.app/" target="_blank">Home Page</a></li>
+                    <li><a href="https://usid.vercel.app/team.html" target="_blank">Team Page</a></li>
+                </ul>
+            </div>
+
+            <!-- Student Portal -->
+            <div class="sitemap-section">
+                <h3>🎓 Student Portal</h3>
+                <ul>
+                    <li><a href="https://usid.vercel.app/student/login.html" target="_blank">Student Login</a></li>
+                    <li><a href="https://usid.vercel.app/student/register.html" target="_blank">Student Registration</a>
+                    </li>
+                    <li><a href="https://usid.vercel.app/student/dashboard.html" target="_blank">Student Dashboard</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Institution Portal -->
+            <div class="sitemap-section">
+                <h3>🏫 Institution Portal</h3>
+                <ul>
+                    <li><a href="https://usid.vercel.app/institution/login.html" target="_blank">Institution Login</a>
+                    </li>
+                    <li><a href="https://usid.vercel.app/institution/dashboard.html" target="_blank">Institution
+                            Dashboard</a></li>
+                </ul>
+            </div>
+
+            <!-- Government Portal -->
+            <div class="sitemap-section">
+                <h3>🏛️ Government Portal</h3>
+                <ul>
+                    <li><a href="https://usid.vercel.app/government/login.html" target="_blank">Government Login</a>
+                    </li>
+                    <li><a href="https://usid.vercel.app/government/dashboard.html" target="_blank">Government
+                            Dashboard</a></li>
+                </ul>
+            </div>
+
+            <!-- Verifier Portal -->
+            <div class="sitemap-section">
+                <h3>✅ Verifier Portal</h3>
+                <ul>
+                    <li><a href="https://usid.vercel.app/verifier/verify.html" target="_blank">Verify Student ID</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Assets & Resources -->
+            <div class="sitemap-section">
+                <h3>📦 Resources</h3>
+                <ul>
+                    <li><a href="https://usid.vercel.app/css/styles.css" target="_blank">Main Stylesheet</a></li>
+                    <li><a href="https://usid.vercel.app/js/chatbot.js" target="_blank">Chatbot Script</a></li>
+                    <li><a href="https://usid.vercel.app/js/data.js" target="_blank">Data Layer</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Developer Tools -->
+        <div class="dev-tools">
+            <h3>🛠️ Developer Tools</h3>
+            <div class="tool-links">
+                <a href="https://github.com/itzSNSR/gptcndd-snsr-usid" target="_blank" class="tool-link">📂 GitHub
+                    Repository</a>
+                <a href="https://vercel.com/dashboard" target="_blank" class="tool-link">▲ Vercel Dashboard</a>
+                <a href="../index.html" class="tool-link">← Back to Website</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CORRECT_PASSWORD = '131795';
+
+        function checkPassword() {
+            const input = document.getElementById('passwordInput');
+            const modal = document.getElementById('passwordModal');
+            const portal = document.getElementById('devPortal');
+            const error = document.getElementById('errorMessage');
+
+            if (input.value === CORRECT_PASSWORD) {
+                // Correct password
+                modal.classList.add('hidden');
+                portal.classList.add('active');
+                localStorage.setItem('usdi_dev_auth', 'true');
+            } else {
+                // Wrong password
+                error.classList.add('show');
+                input.value = '';
+                input.focus();
+                setTimeout(() => error.classList.remove('show'), 2000);
+            }
+        }
+
+        // Check if already authenticated
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('usdi_dev_auth') === 'true') {
+                document.getElementById('passwordModal').classList.add('hidden');
+                document.getElementById('devPortal').classList.add('active');
+            } else {
+                document.getElementById('passwordInput').focus();
+            }
+        });
+
+        // Enter key support
+        document.getElementById('passwordInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+    </script>
+</body>
+
+</html>

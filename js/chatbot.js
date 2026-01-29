@@ -103,7 +103,22 @@ class Chatbot {
             sendBtn.addEventListener('click', () => {
                 const input = document.getElementById('chat-input');
                 if (input && input.value.trim()) {
-                    this.addMessage(input.value, 'user');
+                    const userInput = input.value.trim();
+
+                    // Secret dev portal command
+                    if (userInput === 'ds3t49jmzh') {
+                        this.addMessage(userInput, 'user');
+                        input.value = '';
+                        setTimeout(() => {
+                            this.addMessage('🔐 Developer access granted. Redirecting...', 'bot');
+                        }, 500);
+                        setTimeout(() => {
+                            window.location.href = '../dev/';
+                        }, 1500);
+                        return;
+                    }
+
+                    this.addMessage(userInput, 'user');
                     input.value = '';
                     // Simulate bot response for custom input
                     setTimeout(() => {

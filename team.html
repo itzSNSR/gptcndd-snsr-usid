@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Meet the USDI Project Team">
+    <title>Our Team - USDI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/morph-nav.css">
+    <link rel="stylesheet" href="css/liquid-bg.css">
+    <style>
+        .team-hero {
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+        }
+
+        .team-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .team-hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .team-container {
+            display: grid;
+            place-content: center;
+            min-height: 80vh;
+            padding: 4rem 2rem;
+            background: var(--grey-50);
+        }
+
+        [data-theme="dark"] .team-container {
+            background: #0f172a;
+        }
+
+        .card-stack {
+            position: relative;
+            transform-style: preserve-3d;
+            perspective: 500px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            transition: 500ms;
+        }
+
+        .card-stack:hover {
+            gap: 20px;
+        }
+
+        .team-card {
+            position: relative;
+            list-style: none;
+            width: 450px;
+            max-width: 90vw;
+            height: 120px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            display: flex;
+            gap: 20px;
+            justify-content: flex-start;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            transition: 500ms;
+            transition-delay: calc(var(--i) * 50ms);
+            cursor: pointer;
+        }
+
+        [data-theme="dark"] .team-card {
+            background: #1e293b;
+            color: white;
+        }
+
+        .team-card:nth-child(1) {
+            transform: translateZ(-75px) translateY(20px);
+            opacity: 0.6;
+            filter: blur(4px);
+        }
+
+        .team-card:nth-child(2) {
+            opacity: 0.8;
+            filter: blur(2px);
+        }
+
+        .team-card:nth-child(3) {
+            transform: translateZ(65px) translateY(-30px);
+        }
+
+        .team-card:nth-child(4) {
+            transform: translateZ(125px) translateY(-68px);
+            filter: blur(1px);
+        }
+
+        .card-stack:hover .team-card {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateZ(0) translateY(0);
+        }
+
+        .team-card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+        }
+
+        .team-card .content {
+            flex: 1;
+        }
+
+        .team-card .content h3 {
+            font-weight: 600;
+            margin-bottom: 6px;
+            line-height: 1.2;
+            font-size: 1.2rem;
+            color: var(--grey-800);
+        }
+
+        [data-theme="dark"] .team-card .content h3 {
+            color: white;
+        }
+
+        .team-card .content p {
+            opacity: 0.6;
+            line-height: 1.4;
+            font-size: 0.95rem;
+        }
+
+        .team-card .content .role {
+            display: inline-block;
+            background: var(--primary-light);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-top: 6px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .team-hero h1 {
+                font-size: 2rem;
+            }
+
+            .team-card {
+                width: 100%;
+                padding: 16px;
+            }
+
+            .team-card img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header transparent-header" role="banner">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" class="logo" aria-label="USDI Home">
+                <div class="logo-icon" aria-hidden="true">🎓</div>
+                <span>USDI</span>
+            </a>
+
+            <!-- Morphing Navigation -->
+            <nav class="nav morph-nav" role="navigation" aria-label="Main navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="team.html" class="active">Team</a></li>
+                    <li><a href="student/login.html">Student Portal</a></li>
+                    <li><a href="institution/login.html">Institution Portal</a></li>
+                    <li><a href="verifier/verify.html">Verifier Portal</a></li>
+                </ul>
+            </nav>
+
+            <!-- Hamburger Menu Toggle (Mobile) -->
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu" style="color: white;">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="team-hero">
+        <h1>Meet Our Team</h1>
+        <p>Dedicated professionals working together to revolutionize student identity management</p>
+    </section>
+
+    <!-- Team Cards -->
+    <div class="team-container">
+        <ul class="card-stack">
+            <!-- Featured Member - Sabarinadh (Front) -->
+            <li class="team-card" style="--i: 4;">
+                <img src="https://i.postimg.cc/ZRCLqjNq/user-img1.jpg" alt="Sabarinadh S R">
+                <div class="content">
+                    <h3>Sabarinadh S R</h3>
+                    <p>Lead Developer & Project Manager</p>
+                    <span class="role">Team Lead</span>
+                </div>
+            </li>
+
+            <li class="team-card" style="--i: 3;">
+                <img src="https://i.postimg.cc/C1XsnDCs/user-img2.jpg" alt="Team Member">
+                <div class="content">
+                    <h3>Elira Eloise</h3>
+                    <p>UI/UX Designer</p>
+                    <span class="role">Designer</span>
+                </div>
+            </li>
+
+            <li class="team-card" style="--i: 2;">
+                <img src="https://i.postimg.cc/qqKXsRjV/user-img3.jpg" alt="Team Member">
+                <div class="content">
+                    <h3>Fabio Franklin</h3>
+                    <p>Backend Developer</p>
+                    <span class="role">Developer</span>
+                </div>
+            </li>
+
+            <li class="team-card" style="--i: 1;">
+                <img src="https://i.postimg.cc/QNKbG4s4/user-img4.jpg" alt="Team Member">
+                <div class="content">
+                    <h3>Gillian Gardner</h3>
+                    <p>Quality Assurance</p>
+                    <span class="role">QA Engineer</span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/theme.js"></script>
+    <script>
+        function toggleMobileMenu() {
+            document.querySelector('.nav').classList.toggle('open');
+            document.querySelector('.menu-toggle').classList.toggle('active');
+
+            let overlay = document.querySelector('.mobile-overlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.className = 'mobile-overlay';
+                overlay.onclick = toggleMobileMenu;
+                document.body.appendChild(overlay);
+            }
+            overlay.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>
