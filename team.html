@@ -81,13 +81,14 @@
         }
 
         /* Adjusted Stack Z-Index/Transforms for 5 Items */
-        .team-card:nth-child(1) {
+        /* Adjusted Stack Z-Index/Transforms for 5 Items (Reversed: 1=Front, 5=Back) */
+        .team-card:nth-child(5) {
             transform: translateZ(-100px) translateY(30px);
             opacity: 0.5;
             filter: blur(4px);
         }
 
-        .team-card:nth-child(2) {
+        .team-card:nth-child(4) {
             transform: translateZ(-50px) translateY(15px);
             opacity: 0.7;
             filter: blur(3px);
@@ -99,12 +100,12 @@
             filter: blur(1px);
         }
 
-        .team-card:nth-child(4) {
+        .team-card:nth-child(2) {
             transform: translateZ(50px) translateY(-15px);
             filter: blur(0.5px);
         }
 
-        .team-card:nth-child(5) {
+        .team-card:nth-child(1) {
             transform: translateZ(100px) translateY(-30px);
             filter: blur(0);
         }
