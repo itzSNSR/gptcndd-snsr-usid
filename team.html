@@ -80,28 +80,32 @@
             color: white;
         }
 
+        /* Adjusted Stack Z-Index/Transforms for 5 Items */
         .team-card:nth-child(1) {
-            transform: translateZ(-75px) translateY(20px);
-            opacity: 0.6;
+            transform: translateZ(-100px) translateY(30px);
+            opacity: 0.5;
             filter: blur(4px);
         }
 
         .team-card:nth-child(2) {
-            opacity: 0.8;
-            filter: blur(2px);
+            transform: translateZ(-50px) translateY(15px);
+            opacity: 0.7;
+            filter: blur(3px);
         }
 
         .team-card:nth-child(3) {
-            transform: translateZ(65px) translateY(-30px);
-        }
-
-        .team-card:nth-child(4) {
-            transform: translateZ(125px) translateY(-68px);
+            transform: translateZ(0) translateY(0);
+            opacity: 0.9;
             filter: blur(1px);
         }
 
+        .team-card:nth-child(4) {
+            transform: translateZ(50px) translateY(-15px);
+            filter: blur(0.5px);
+        }
+
         .team-card:nth-child(5) {
-            transform: translateZ(175px) translateY(-110px);
+            transform: translateZ(100px) translateY(-30px);
             filter: blur(0);
         }
 
@@ -111,6 +115,7 @@
             transform: translateZ(0) translateY(0);
         }
 
+        /* Avatar Images from DiceBear */
         .team-card img {
             width: 80px;
             height: 80px;
@@ -208,40 +213,59 @@
     <!-- Team Cards -->
     <div class="team-container">
         <ul class="card-stack">
-            <!-- Featured Member - Sabarinadh (Front) -->
-            <li class="team-card" style="--i: 4;">
-                <img src="https://i.postimg.cc/ZRCLqjNq/user-img1.jpg" alt="Sabarinadh S R">
+
+            <li class="team-card" style="--i: 5;">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Gowtham" alt="Gowtham A Syam">
                 <div class="content">
-                    <h3>Sabarinadh S R</h3>
-                    <p>Lead Developer & Project Manager</p>
-                    <span class="role">Team Lead</span>
+                    <h3>Gowtham A Syam</h3>
+                    <p>Full Stack Developer</p>
+                    <span class="role">TEAM MEMBER</span>
+                </div>
+            </li>
+
+            <li class="team-card" style="--i: 4;">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jasim" alt="Jasim Muhammed S S">
+                <div class="content">
+                    <h3>Jasim Muhammed S S</h3>
+                    <p>Backend Developer</p>
+                    <span class="role">TEAM MEMBER</span>
                 </div>
             </li>
 
             <li class="team-card" style="--i: 3;">
-                <img src="https://i.postimg.cc/C1XsnDCs/user-img2.jpg" alt="Team Member">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Akash" alt="Akash R K">
                 <div class="content">
-                    <h3>Elira Eloise</h3>
+                    <h3>Akash R K</h3>
                     <p>UI/UX Designer</p>
-                    <span class="role">Designer</span>
+                    <span class="role">TEAM MEMBER</span>
                 </div>
             </li>
 
             <li class="team-card" style="--i: 2;">
-                <img src="https://i.postimg.cc/qqKXsRjV/user-img3.jpg" alt="Team Member">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sreehari" alt="Sreehari J">
                 <div class="content">
-                    <h3>Fabio Franklin</h3>
-                    <p>Backend Developer</p>
-                    <span class="role">Developer</span>
+                    <h3>Sreehari J</h3>
+                    <p>Quality Assurance</p>
+                    <span class="role">TEAM MEMBER</span>
                 </div>
             </li>
 
+            <!-- Team Leader - Sabarinadh (Moved to downside/bottom) -->
             <li class="team-card" style="--i: 1;">
-                <img src="https://i.postimg.cc/QNKbG4s4/user-img4.jpg" alt="Team Member">
+                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sabarinadh" alt="Sabarinadh S R">
                 <div class="content">
-                    <h3>Gillian Gardner</h3>
-                    <p>Quality Assurance</p>
-                    <span class="role">QA Engineer</span>
+                    <h3>Sabarinadh S R</h3>
+                    <p>Project Lead & Developer</p>
+                    <span class="role">TEAM LEADER</span>
+                    <br>
+                    <a href="https://github.com/itzSNSR" target="_blank"
+                        style="display: inline-flex; align-items: center; gap: 4px; margin-top: 8px; color: var(--primary); text-decoration: none; font-size: 0.9rem;">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                            <path
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z" />
+                        </svg>
+                        itz_snsr
+                    </a>
                 </div>
             </li>
         </ul>
