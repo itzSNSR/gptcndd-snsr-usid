@@ -282,7 +282,7 @@ const USDI_DATA = {
     // Get student by USN
     getStudentByUSN: function (usn) {
         const students = this.getAllStudents();
-        return students.find(s => s.usn.toUpperCase() === usn.toUpperCase());
+        return students.find(s => s.usn && s.usn.toUpperCase() === usn.toUpperCase());
     },
 
     // Get student by mobile
