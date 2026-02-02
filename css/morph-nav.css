@@ -101,6 +101,7 @@ html {
         transition: 500ms;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         opacity: 0;
+        pointer-events: none;
     }
 
     /* Show on Hover */
