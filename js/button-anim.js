@@ -26,10 +26,17 @@ window.startLoader = function (btn) {
 
 window.finishLoader = function (btn, success) {
     if (!btn) return;
-    btn.classList.add('loaded');
-    setTimeout(() => {
-        btn.classList.add('finished');
-    }, 500); // Wait for checkmark animation
+
+    if (success) {
+        btn.classList.add('loaded');
+        setTimeout(() => {
+            btn.classList.add('finished');
+        }, 500);
+    } else {
+        // Error case: Just stop loading and re-enable
+        btn.classList.remove('loading');
+        btn.disabled = false;
+    }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
