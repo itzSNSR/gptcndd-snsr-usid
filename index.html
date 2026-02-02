@@ -382,14 +382,27 @@
     <script>
         function submitToGoogleForm(event) {
             event.preventDefault();
+            console.log('[Contact Form] Submit started');
 
             const name = document.getElementById('entry-name').value;
             const email = document.getElementById('entry-email').value;
             const message = document.getElementById('entry-message').value;
             const submitBtn = document.getElementById('submit-btn');
+            const contactForm = document.getElementById('contact-form');
+            const successDiv = document.getElementById('contact-success');
 
-            // START ANIMATION
-            startLoader(submitBtn);
+            // START ANIMATION (with fallback)
+            try {
+                if (typeof startLoader === 'function') {
+                    startLoader(submitBtn);
+                } else {
+                    submitBtn.disabled = true;
+                    console.warn('[Contact Form] startLoader not available');
+                }
+            } catch (e) {
+                console.error('[Contact Form] Animation error:', e);
+                submitBtn.disabled = true;
+            }
 
             // Build form data
             const formData = new FormData();
@@ -405,44 +418,64 @@
                     message: message,
                     timestamp: new Date().toLocaleString()
                 };
-
                 let contactLogs = JSON.parse(localStorage.getItem('usdi_contact_logs') || '[]');
-                contactLogs.unshift(newLog); // Add to top
+                contactLogs.unshift(newLog);
                 localStorage.setItem('usdi_contact_logs', JSON.stringify(contactLogs));
-                console.log('Contact log saved locally:', newLog);
+                console.log('[Contact Form] Saved to localStorage:', newLog);
             } catch (e) {
-                console.error('Error saving local log:', e);
+                console.error('[Contact Form] localStorage error:', e);
             }
 
             // Submit to Google Forms
+            console.log('[Contact Form] Sending to Google Forms...');
             fetch('https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse', {
                 method: 'POST',
                 mode: 'no-cors',
                 body: formData
             }).then(() => {
-                // SUCCESS ANIMATION
-                finishLoader(submitBtn, true);
+                console.log('[Contact Form] Fetch completed (no-cors, assumed success)');
 
+                // SUCCESS ANIMATION (with fallback)
+                try {
+                    if (typeof finishLoader === 'function') {
+                        finishLoader(submitBtn, true);
+                    }
+                } catch (e) {
+                    console.error('[Contact Form] finishLoader error:', e);
+                }
+
+                // Show success message after a short delay for animation
                 setTimeout(() => {
-                    // Show success (no-cors doesn't return response, but data is sent)
-                    document.getElementById('contact-form').style.display = 'none';
-                    document.getElementById('contact-success').classList.remove('hidden');
+                    contactForm.style.display = 'none';
+                    successDiv.classList.remove('hidden');
+                    console.log('[Contact Form] Success message shown');
 
                     // Reset after 5 seconds
                     setTimeout(() => {
-                        document.getElementById('contact-form').reset();
-                        document.getElementById('contact-form').style.display = 'block';
-                        document.getElementById('contact-success').classList.add('hidden');
-
-                        // Reset button state
-                        submitBtn.className = 'expand btn-primary'; // reset classes
+                        contactForm.reset();
+                        contactForm.style.display = 'block';
+                        successDiv.classList.add('hidden');
+                        submitBtn.className = 'expand btn-primary';
                         submitBtn.disabled = false;
+                        console.log('[Contact Form] Form reset');
                     }, 5000);
-                }, 1000); // wait for finish animation
+                }, 1000);
             }).catch((error) => {
-                console.error('Error:', error);
-                showError('Failed to send message. Please try again.');
-                finishLoader(submitBtn, false);
+                console.error('[Contact Form] Fetch error:', error);
+                try {
+                    if (typeof showError === 'function') {
+                        showError('Failed to send message. Please try again.');
+                    } else {
+                        alert('Failed to send message. Please try again.');
+                    }
+                    if (typeof finishLoader === 'function') {
+                        finishLoader(submitBtn, false);
+                    } else {
+                        submitBtn.disabled = false;
+                    }
+                } catch (e) {
+                    submitBtn.disabled = false;
+                }
             });
         }
 
