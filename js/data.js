@@ -550,7 +550,9 @@ const USDI_DATA = {
                 student.status === this.STATUS.VERIFIED_GOVERNMENT ||
                 student.status === this.STATUS.ACTIVE ||
                 student.status === 'Active' ||
-                student.status === 'Graduated';
+                student.status === 'Graduated' ||
+                student.status === 'Transferred' ||
+                student.status === 'Discontinued';
 
             if (isFullyVerified) {
                 return {
