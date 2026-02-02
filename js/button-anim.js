@@ -17,6 +17,21 @@ const createSVG = (width, height, className, childType, childAttributes) => {
     return { svg, child };
 };
 
+// Global Loader Helpers (for manual button control)
+window.startLoader = function (btn) {
+    if (!btn) return;
+    btn.classList.add('loading');
+    btn.disabled = true;
+};
+
+window.finishLoader = function (btn, success) {
+    if (!btn) return;
+    btn.classList.add('loaded');
+    setTimeout(() => {
+        btn.classList.add('finished');
+    }, 500); // Wait for checkmark animation
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".generate-button").forEach((button) => {
         const width = button.offsetWidth;
