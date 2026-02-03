@@ -277,7 +277,7 @@
 
                         <!-- 1. Google Form Submission Target (Hidden Iframe) -->
                         <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"
-                            onload="if(submitted) {window.location='#contact';}"></iframe>
+                            onload="window.onIframeLoad()"></iframe>
 
                         <!-- 2. Actual Form -->
                         <form id="contact-form"
@@ -383,26 +383,27 @@
     <script>
         var submitted = false;
 
+        // Called when the iframe loads (after submission)
+        window.onIframeLoad = function () {
+            if (submitted) {
+                console.log('[Contact Form] Iframe loaded - Submission successful');
+                const form = document.getElementById('contact-form');
+                const success = document.getElementById('contact-success');
+
+                if (form && success) {
+                    form.style.display = 'none';
+                    success.classList.remove('hidden');
+                }
+            }
+        };
+
         function handleContactSubmit() {
             console.log('[Contact Form] Submit initiated');
             submitted = true;
             const btn = document.getElementById('submit-btn');
-            const form = document.getElementById('contact-form');
-            const success = document.getElementById('contact-success');
 
-            // Delay UI changes slightly to ensure form submission event fires first
-            setTimeout(() => {
-                btn.innerHTML = '⏳ Sending...';
-                btn.disabled = true;
-                btn.style.opacity = '0.7';
-            }, 100);
-
-            // Wait 1.5s then show success (form submits to iframe in background)
-            setTimeout(() => {
-                form.style.display = 'none';
-                success.classList.remove('hidden');
-                console.log('[Contact Form] Success shown');
-            }, 1500);
+            // Just change text, DO NOT disable button immediately to prevent cancelling submission
+            if (btn) btn.innerHTML = '⏳ Sending...';
 
             // Return true IMMEDIATELLY to allow the form to submit to the iframe
             return true;
