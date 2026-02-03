@@ -312,7 +312,7 @@
                             </div>
 
                             <button type="submit" id="submit-btn" class="btn-primary"
-                                style="width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 0.5rem; transition: all 0.3s ease;">
+                                style="width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; background: var(--primary); color: white; border: none; border-radius: 0.5rem; transition: all 0.3s ease; position: relative; z-index: 10;">
                                 📩 Send Message
                             </button>
                         </form>
@@ -390,10 +390,12 @@
             const form = document.getElementById('contact-form');
             const success = document.getElementById('contact-success');
 
-            // Show loading state
-            btn.innerHTML = '⏳ Sending...';
-            btn.disabled = true;
-            btn.style.opacity = '0.7';
+            // Delay UI changes slightly to ensure form submission event fires first
+            setTimeout(() => {
+                btn.innerHTML = '⏳ Sending...';
+                btn.disabled = true;
+                btn.style.opacity = '0.7';
+            }, 100);
 
             // Wait 1.5s then show success (form submits to iframe in background)
             setTimeout(() => {
@@ -402,7 +404,7 @@
                 console.log('[Contact Form] Success shown');
             }, 1500);
 
-            // Return true to allow the form to submit to the iframe
+            // Return true IMMEDIATELLY to allow the form to submit to the iframe
             return true;
         }
 
