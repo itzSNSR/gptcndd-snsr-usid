@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Contact Test - Working Version</title>
+    <style>
+        body {
+            background: #1e293b;
+            color: white;
+            padding: 2rem;
+            font-family: Arial;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            background: #334155;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 0.5rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #contact-success {
+            background: #059669;
+            padding: 2rem;
+            text-align: center;
+            border-radius: 0.5rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Contact Form - Working Test</h2>
+
+    <script>var submitted = false;</script>
+
+    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"
+        onload="if(submitted){alert('Submitted!');}"></iframe>
+
+    <form
+        action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse"
+        method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+
+        <label>Name:</label>
+        <input type="text" name="entry.1193802242" required>
+
+        <label>Email:</label>
+        <input type="email" name="entry.1535943653" required>
+
+        <label>Message:</label>
+        <textarea name="entry.1569823675" rows="5" required></textarea>
+
+        <button type="submit">Submit to Google Form</button>
+    </form>
+
+    <div id="contact-success" class="hidden">
+        <h3>✅ Message Sent!</h3>
+        <p>Thank you for contacting us.</p>
+    </div>
+</body>
+
+</html>
