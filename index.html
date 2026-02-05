@@ -263,74 +263,217 @@
 
     <link rel="stylesheet" href="css/button-anim.css">
 
-    <!-- Contact Section -->
-    <section class="features" id="contact" style="background: #1e293b;">
-        <div class="container">
-            <div class="text-center mb-8">
-                <h2 style="color: white; font-size: 2.5rem; margin-bottom: 1rem;">Contact Us</h2>
-                <p style="color: var(--grey-400);">Have questions? Get in touch with the USDI team</p>
-            </div>
-            <div style="max-width: 600px; margin: 0 auto;">
-                <div class="card"
-                    style="background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1);">
-                    <div class="card-body" style="padding: 2rem;">
+    <!-- ========== CONTACT SECTION (FRESH RECODE) ========== -->
+    <section id="contact" style="background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); padding: 80px 0;">
 
-                        <!-- EXACT COPY FROM WORKING TEST FILE -->
-                        <script>var submitted = false;</script>
+        <!-- EMBEDDED STYLES - No external dependencies -->
+        <style>
+            .contact-container {
+                max-width: 500px;
+                margin: 0 auto;
+                padding: 0 20px;
+            }
 
-                        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"
-                            onload="if(submitted) { document.getElementById('contact-form').style.display='none'; document.getElementById('contact-success').style.display='block'; }"></iframe>
+            .contact-title {
+                color: #ffffff;
+                font-size: 2.5rem;
+                text-align: center;
+                margin-bottom: 10px;
+            }
 
-                        <form id="contact-form"
-                            action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse"
-                            method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+            .contact-subtitle {
+                color: #94a3b8;
+                text-align: center;
+                margin-bottom: 40px;
+            }
 
-                            <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label class="form-label"
-                                    style="color: var(--grey-300); margin-bottom: 0.5rem; display: block;">Name <span
-                                        style="color: var(--danger);">*</span></label>
-                                <input type="text" name="entry.1193802242" id="entry-name" class="form-input"
-                                    placeholder="Enter your full name" required
-                                    style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--grey-700); color: white; border-radius: 0.5rem;">
-                            </div>
+            .contact-card {
+                background: rgba(30, 41, 59, 0.8);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 16px;
+                padding: 32px;
+            }
 
-                            <div class="form-group" style="margin-bottom: 1.5rem;">
-                                <label class="form-label"
-                                    style="color: var(--grey-300); margin-bottom: 0.5rem; display: block;">Email <span
-                                        style="color: var(--danger);">*</span></label>
-                                <input type="email" name="entry.1535943653" id="entry-email" class="form-input"
-                                    placeholder="Enter your email" required
-                                    style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--grey-700); color: white; border-radius: 0.5rem;">
-                            </div>
+            .contact-field {
+                margin-bottom: 20px;
+            }
 
-                            <div class="form-group" style="margin-bottom: 2rem;">
-                                <label class="form-label"
-                                    style="color: var(--grey-300); margin-bottom: 0.5rem; display: block;">Message <span
-                                        style="color: var(--danger);">*</span></label>
-                                <textarea name="entry.1569823675" id="entry-message" class="form-input" rows="5"
-                                    placeholder="Write your message here..." required
-                                    style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.2); border: 1px solid var(--grey-700); color: white; border-radius: 0.5rem; resize: vertical;"></textarea>
-                            </div>
+            .contact-label {
+                display: block;
+                color: #cbd5e1;
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
 
-                            <button type="submit" id="submit-btn"
-                                style="width: 100%; padding: 1rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; background: #2563eb; color: white; border: none; border-radius: 0.5rem;">
-                                📩 Send Message
-                            </button>
-                        </form>
+            .contact-label span {
+                color: #ef4444;
+            }
 
-                        <div id="contact-success" style="display:none; text-align: center; padding: 2rem;">
-                            <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
-                            <h3 style="color: white; margin-bottom: 0.5rem;">Message Sent!</h3>
-                            <p style="color: var(--grey-400);">Thank you for contacting us. We will get back to you
-                                shortly.</p>
-                            <button onclick="location.reload()"
-                                style="margin-top: 1.5rem; padding: 0.5rem 1rem; background: transparent; border: 1px solid var(--grey-600); color: var(--grey-300); border-radius: 0.25rem; cursor: pointer;">Send
-                                Another</button>
-                        </div>
+            .contact-input {
+                width: 100%;
+                padding: 14px 16px;
+                background: rgba(0, 0, 0, 0.3);
+                border: 1px solid #475569;
+                border-radius: 8px;
+                color: #ffffff;
+                font-size: 16px;
+                outline: none;
+                transition: border-color 0.2s;
+                box-sizing: border-box;
+            }
+
+            .contact-input:focus {
+                border-color: #3b82f6;
+            }
+
+            .contact-input::placeholder {
+                color: #64748b;
+            }
+
+            .contact-textarea {
+                resize: vertical;
+                min-height: 120px;
+            }
+
+            .contact-btn {
+                width: 100%;
+                padding: 16px;
+                background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+                border: none;
+                border-radius: 8px;
+                color: #ffffff;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: transform 0.2s, box-shadow 0.2s;
+            }
+
+            .contact-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+            }
+
+            .contact-btn:active {
+                transform: translateY(0);
+            }
+
+            .contact-success {
+                text-align: center;
+                padding: 40px 20px;
+            }
+
+            .contact-success-icon {
+                font-size: 64px;
+                margin-bottom: 16px;
+            }
+
+            .contact-success h3 {
+                color: #22c55e;
+                font-size: 24px;
+                margin-bottom: 8px;
+            }
+
+            .contact-success p {
+                color: #94a3b8;
+                margin-bottom: 24px;
+            }
+
+            .contact-reset-btn {
+                padding: 10px 24px;
+                background: transparent;
+                border: 1px solid #475569;
+                border-radius: 6px;
+                color: #94a3b8;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+            .contact-reset-btn:hover {
+                background: rgba(255, 255, 255, 0.05);
+            }
+        </style>
+
+        <div class="contact-container">
+            <h2 class="contact-title">📬 Contact Us</h2>
+            <p class="contact-subtitle">Have questions? We'd love to hear from you.</p>
+
+            <div class="contact-card">
+                <!-- Hidden iframe for form submission -->
+                <iframe id="gform-target" name="gform-target" style="display:none;"></iframe>
+
+                <!-- Contact Form -->
+                <form id="gform"
+                    action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse"
+                    method="POST" target="gform-target">
+
+                    <div class="contact-field">
+                        <label class="contact-label">Your Name <span>*</span></label>
+                        <input type="text" name="entry.1193802242" class="contact-input" placeholder="John Doe"
+                            required>
                     </div>
+
+                    <div class="contact-field">
+                        <label class="contact-label">Email Address <span>*</span></label>
+                        <input type="email" name="entry.1535943653" class="contact-input" placeholder="john@example.com"
+                            required>
+                    </div>
+
+                    <div class="contact-field">
+                        <label class="contact-label">Your Message <span>*</span></label>
+                        <textarea name="entry.1569823675" class="contact-input contact-textarea"
+                            placeholder="Write your message here..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="contact-btn" id="contact-submit-btn">
+                        📩 Send Message
+                    </button>
+                </form>
+
+                <!-- Success Message (Initially Hidden) -->
+                <div id="gform-success" class="contact-success" style="display:none;">
+                    <div class="contact-success-icon">✅</div>
+                    <h3>Message Sent Successfully!</h3>
+                    <p>Thank you for reaching out. We'll get back to you soon.</p>
+                    <button class="contact-reset-btn" onclick="resetContactForm()">Send Another Message</button>
                 </div>
             </div>
         </div>
+
+        <!-- EMBEDDED JAVASCRIPT - Self-contained logic -->
+        <script>
+            (function () {
+                var formSubmitted = false;
+                var form = document.getElementById('gform');
+                var iframe = document.getElementById('gform-target');
+                var successDiv = document.getElementById('gform-success');
+                var submitBtn = document.getElementById('contact-submit-btn');
+
+                // When form submits
+                form.addEventListener('submit', function () {
+                    formSubmitted = true;
+                    submitBtn.textContent = '⏳ Sending...';
+                    submitBtn.style.opacity = '0.7';
+                });
+
+                // When iframe loads (form submitted)
+                iframe.addEventListener('load', function () {
+                    if (formSubmitted) {
+                        form.style.display = 'none';
+                        successDiv.style.display = 'block';
+                    }
+                });
+
+                // Reset function
+                window.resetContactForm = function () {
+                    formSubmitted = false;
+                    form.reset();
+                    form.style.display = 'block';
+                    successDiv.style.display = 'none';
+                    submitBtn.textContent = '📩 Send Message';
+                    submitBtn.style.opacity = '1';
+                };
+            })();
+        </script>
     </section>
 
 
