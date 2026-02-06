@@ -263,10 +263,9 @@
 
     <link rel="stylesheet" href="css/button-anim.css">
 
-    <!-- ========== CONTACT SECTION (FRESH RECODE) ========== -->
+    <!-- ========== CONTACT SECTION ========== -->
     <section id="contact" style="background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%); padding: 80px 0;">
 
-        <!-- EMBEDDED STYLES - No external dependencies -->
         <style>
             .contact-container {
                 max-width: 500px;
@@ -348,13 +347,18 @@
                 transition: transform 0.2s, box-shadow 0.2s;
             }
 
-            .contact-btn:hover {
+            .contact-btn:hover:not(:disabled) {
                 transform: translateY(-2px);
                 box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
             }
 
-            .contact-btn:active {
+            .contact-btn:active:not(:disabled) {
                 transform: translateY(0);
+            }
+
+            .contact-btn:disabled {
+                opacity: 0.7;
+                cursor: not-allowed;
             }
 
             .contact-success {
@@ -391,6 +395,17 @@
             .contact-reset-btn:hover {
                 background: rgba(255, 255, 255, 0.05);
             }
+
+            .contact-error {
+                color: #ef4444;
+                font-size: 14px;
+                margin-top: 8px;
+                display: none;
+            }
+
+            .contact-error.show {
+                display: block;
+            }
         </style>
 
         <div class="contact-container">
@@ -398,39 +413,33 @@
             <p class="contact-subtitle">Have questions? We'd love to hear from you.</p>
 
             <div class="contact-card">
-                <!-- Hidden iframe for form submission -->
-                <iframe id="gform-target" name="gform-target" style="display:none;"></iframe>
-
                 <!-- Contact Form -->
-                <form id="gform"
-                    action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse"
-                    method="POST" target="gform-target">
+                <form id="contact-form">
 
                     <div class="contact-field">
                         <label class="contact-label">Your Name <span>*</span></label>
-                        <input type="text" name="entry.1193802242" class="contact-input" placeholder="John Doe"
-                            required>
+                        <input type="text" name="name" class="contact-input" placeholder="John Doe" required>
                     </div>
 
                     <div class="contact-field">
                         <label class="contact-label">Email Address <span>*</span></label>
-                        <input type="email" name="entry.1535943653" class="contact-input" placeholder="john@example.com"
-                            required>
+                        <input type="email" name="email" class="contact-input" placeholder="john@example.com" required>
                     </div>
 
                     <div class="contact-field">
                         <label class="contact-label">Your Message <span>*</span></label>
-                        <textarea name="entry.1569823675" class="contact-input contact-textarea"
-                            placeholder="Write your message here..." required></textarea>
+                        <textarea name="message" class="contact-input contact-textarea" placeholder="Write your message here..." required></textarea>
                     </div>
 
                     <button type="submit" class="contact-btn" id="contact-submit-btn">
                         📩 Send Message
                     </button>
+
+                    <div class="contact-error" id="contact-error"></div>
                 </form>
 
                 <!-- Success Message (Initially Hidden) -->
-                <div id="gform-success" class="contact-success" style="display:none;">
+                <div id="contact-success" class="contact-success" style="display:none;">
                     <div class="contact-success-icon">✅</div>
                     <h3>Message Sent Successfully!</h3>
                     <p>Thank you for reaching out. We'll get back to you soon.</p>
@@ -439,40 +448,76 @@
             </div>
         </div>
 
-        <!-- EMBEDDED JAVASCRIPT - Self-contained logic -->
         <script>
-            (function () {
-                var formSubmitted = false;
-                var form = document.getElementById('gform');
-                var iframe = document.getElementById('gform-target');
-                var successDiv = document.getElementById('gform-success');
-                var submitBtn = document.getElementById('contact-submit-btn');
+            const form = document.getElementById('contact-form');
+            const submitBtn = document.getElementById('contact-submit-btn');
+            const successDiv = document.getElementById('contact-success');
+            const errorDiv = document.getElementById('contact-error');
 
-                // When form submits
-                form.addEventListener('submit', function () {
-                    formSubmitted = true;
-                    submitBtn.textContent = '⏳ Sending...';
-                    submitBtn.style.opacity = '0.7';
-                });
+            const SUPABASE_URL = 'https://0ec90b57d6e95fcbda19832f.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJib2x0IiwicmVmIjoiMGVjOTBiNTdkNmU5NWZjYmRhMTk4MzJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4ODE1NzQsImV4cCI6MTc1ODg4MTU3NH0.9I8-U0x86Ak8t2DGaIk0HfvTSLsAyzdnz-Nw00mMkKw';
 
-                // When iframe loads (form submitted)
-                iframe.addEventListener('load', function () {
-                    if (formSubmitted) {
-                        form.style.display = 'none';
-                        successDiv.style.display = 'block';
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const name = form.name.value.trim();
+                const email = form.email.value.trim();
+                const message = form.message.value.trim();
+
+                if (!name || !email || !message) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.textContent = '⏳ Sending...';
+                errorDiv.classList.remove('show');
+
+                try {
+                    const functionUrl = `${SUPABASE_URL}/functions/v1/contact-submit`;
+
+                    const response = await fetch(functionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        },
+                        body: JSON.stringify({
+                            name,
+                            email,
+                            message,
+                        }),
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Failed to submit form');
                     }
-                });
 
-                // Reset function
-                window.resetContactForm = function () {
-                    formSubmitted = false;
-                    form.reset();
-                    form.style.display = 'block';
-                    successDiv.style.display = 'none';
+                    form.style.display = 'none';
+                    successDiv.style.display = 'block';
+                } catch (error) {
+                    console.error('Form submission error:', error);
+                    showError(error.message || 'Failed to send message. Please try again.');
+                    submitBtn.disabled = false;
                     submitBtn.textContent = '📩 Send Message';
-                    submitBtn.style.opacity = '1';
-                };
-            })();
+                }
+            });
+
+            function showError(message) {
+                errorDiv.textContent = message;
+                errorDiv.classList.add('show');
+            }
+
+            window.resetContactForm = function () {
+                form.reset();
+                form.style.display = 'block';
+                successDiv.style.display = 'none';
+                submitBtn.disabled = false;
+                submitBtn.textContent = '📩 Send Message';
+                errorDiv.classList.remove('show');
+            };
         </script>
     </section>
 
@@ -523,38 +568,10 @@
     <script src="js/toast.js"></script>
     <script src="js/button-anim.js?v=2"></script>
     <script>
-        function handleContactSubmit() {
-            console.log('[Contact Form] Submit initiated');
-            window.submitted = true;
-            const btn = document.getElementById('submit-btn');
-
-            // Just change text, DO NOT disable button
-            if (btn) btn.innerHTML = '⏳ Sending...';
-
-            // Return true IMMEDIATELLY to allow the form to submit to the iframe
-            return true;
-        }
-
-        function resetForm() {
-            submitted = false;
-            const form = document.getElementById('contact-form');
-            const success = document.getElementById('contact-success');
-            const btn = document.getElementById('submit-btn');
-
-            form.reset();
-            success.classList.add('hidden');
-            form.style.display = 'block';
-
-            btn.innerHTML = '📩 Send Message';
-            btn.disabled = false;
-            btn.style.opacity = '1';
-            console.log('[Contact Form] Form reset');
-        }
-
         document.querySelectorAll('.btn-hover-text').forEach(btn => {
             const defaultText = btn.getAttribute('data-default');
             const hoverText = btn.getAttribute('data-hover');
-            const span = btn.querySelector('span'); // Target the span
+            const span = btn.querySelector('span');
 
             if (span) {
                 btn.addEventListener('mouseenter', () => {
