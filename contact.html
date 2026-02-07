@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="USDI Help Center - Get support and guidance">
+    <title>Help Center - USDI</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/button-anim.css">
+    <link rel="stylesheet" href="css/morph-nav.css">
+</head>
+
+<body class="static-liquid-bg">
+    <!-- Skip Link -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Header (Consistent with Index) -->
+    <header class="header transparent-header" role="banner">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center;">
+            <a href="index.html" class="logo" aria-label="USDI Home">
+                <div class="logo-icon" aria-hidden="true">🎓</div>
+                <span>USDI</span>
+            </a>
+
+            <!-- Navigation -->
+            <nav class="nav morph-nav" role="navigation" aria-label="Main navigation">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="student/login.html">Student</a></li>
+                    <li><a href="institution/login.html">Institution</a></li>
+                    <li><a href="#contact" class="active">Help Center</a></li>
+
+                    <!-- Theme Switcher -->
+                    <li>
+                        <label class="switch">
+                            <input class="switch__input" type="checkbox" role="switch"
+                                onchange="toggleTheme(this.checked)" />
+                            <span class="switch__icon">
+                                <span class="switch__icon-part switch__icon-part--1"></span>
+                                <span class="switch__icon-part switch__icon-part--2"></span>
+                                <span class="switch__icon-part switch__icon-part--3"></span>
+                                <span class="switch__icon-part switch__icon-part--4"></span>
+                                <span class="switch__icon-part switch__icon-part--5"></span>
+                                <span class="switch__icon-part switch__icon-part--6"></span>
+                                <span class="switch__icon-part switch__icon-part--7"></span>
+                                <span class="switch__icon-part switch__icon-part--8"></span>
+                                <span class="switch__icon-part switch__icon-part--9"></span>
+                                <span class="switch__icon-part switch__icon-part--10"></span>
+                                <span class="switch__icon-part switch__icon-part--11"></span>
+                            </span>
+                            <span class="switch__sr">Dark Mode</span>
+                        </label>
+                    </li>
+                </ul>
+            </nav>
+
+            <button class="menu-toggle" onclick="toggleMobileMenu()" aria-label="Toggle Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    <div class="mobile-overlay" onclick="closeMobileMenu()"></div>
+
+    <!-- Main Content -->
+    <main id="main-content">
+
+        <!-- Hero Section -->
+        <section class="hero" style="min-height: 40vh; display: flex; align-items: center; padding-top: 120px;">
+            <div class="container text-center">
+                <h1>Hello! How can we help you today?</h1>
+                <p class="text-muted text-xl">or check out our extensive FAQ/ help sections</p>
+            </div>
+        </section>
+
+        <!-- Help Grid -->
+        <section class="container" style="margin-bottom: 80px;">
+            <div class="grid grid-2"> <!-- 2x2 Layout -->
+                <a href="#" class="feature-card text-center text-decoration-none"
+                    style="display: block; transition: transform 0.3s;">
+                    <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">📖</div>
+                    <h3>User Manual</h3>
+                </a>
+                <a href="#" class="feature-card text-center text-decoration-none"
+                    style="display: block; transition: transform 0.3s;">
+                    <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">👤</div>
+                    <h3>Onboarding Guide</h3>
+                </a>
+                <a href="#" class="feature-card text-center text-decoration-none"
+                    style="display: block; transition: transform 0.3s;">
+                    <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">❓</div>
+                    <h3>FAQ</h3>
+                </a>
+                <a href="#" class="feature-card text-center text-decoration-none"
+                    style="display: block; transition: transform 0.3s;">
+                    <div class="feature-icon" style="font-size: 3rem; margin-bottom: 1rem;">▶️</div>
+                    <h3>Video Tutorials</h3>
+                </a>
+            </div>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section class="container container-md" id="contact" style="margin-bottom: 100px;">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h2>Contact Us</h2>
+                </div>
+                <div class="card-body">
+                    <!-- Hidden iframe to prevent redirect -->
+                    <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(window.submitted) {
+                            document.getElementById('contact-form').reset();
+                            document.getElementById('success-message').style.display = 'block';
+                            document.getElementById('contact-form').style.display = 'none';
+                            window.submitted = false;
+                        }">
+                    </iframe>
+
+                    <form id="contact-form"
+                        action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSfef_0cW8VDg2DRbCg2lEl9v6Ennw1oIt5p0D0kJShoLlGtqw/formResponse"
+                        method="POST" target="hidden_iframe" onsubmit="window.submitted=true;">
+
+                        <div style="margin-bottom: 20px;">
+                            <label class="form-label">Name</label>
+                            <input type="text" name="entry.1193802242" class="form-input" placeholder="Your Name"
+                                required>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label class="form-label">Email</label>
+                            <input type="email" name="entry.1535943653" class="form-input" placeholder="your@email.com"
+                                required>
+                        </div>
+                        <div style="margin-bottom: 20px;">
+                            <label class="form-label">Message</label>
+                            <textarea name="entry.1569823675" class="form-input form-textarea" rows="5"
+                                placeholder="How can we help?" required></textarea>
+                        </div>
+
+                        <!-- Hidden Validations -->
+                        <input type="hidden" name="fvv" value="1">
+                        <input type="hidden" name="fbzx" value="-4509580342686146760">
+                        <input type="hidden" name="pageHistory" value="0">
+                        <input type="hidden" name="partialResponse" value='[null,null,"-4509580342686146760"]'>
+                        <input type="hidden" name="submissionTimestamp" value="-1">
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">
+                            Send Message
+                        </button>
+                    </form>
+
+                    <!-- Success Message (Initially Hidden) -->
+                    <div id="success-message" style="display:none; text-align: center; padding: 40px;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
+                        <h3 style="color: var(--success); margin-bottom: 0.5rem;">Message Sent!</h3>
+                        <p class="text-muted">Thank you for reaching out. We'll get back to you soon.</p>
+                        <button class="btn btn-outline" style="margin-top: 20px;" onclick="
+                            document.getElementById('contact-form').style.display = 'block';
+                            document.getElementById('success-message').style.display = 'none';
+                        ">Send Another Message</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer" style="padding: 60px 0 20px;">
+        <div class="container">
+            <div class="grid grid-3" style="margin-bottom: 40px;">
+                <div>
+                    <h4>Quick Links</h4>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <a href="index.html" class="text-muted">Home</a>
+                        <a href="student/login.html" class="text-muted">Student Portal</a>
+                        <a href="institution/login.html" class="text-muted">Institution Portal</a>
+                    </div>
+                </div>
+                <div>
+                    <h4>Contact</h4>
+                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">
+                        <span class="text-muted">📧 support@usdi.gov.in</span>
+                        <span class="text-muted">📞 1800-123-456</span>
+                    </div>
+                </div>
+            </div>
+            <div style="border-top: 1px solid var(--grey-700); padding-top: 20px; text-align: center;">
+                <p class="text-muted text-sm">© 2026 Unified Student Digital ID System (USDI). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/theme.js"></script>
+    <script src="js/button-anim.js"></script>
+    <script>
+        // Mobile Menu Logic (Inline for simplicity or consistency)
+        function toggleMobileMenu() {
+            document.querySelector('.nav').classList.toggle('open');
+            document.querySelector('.menu-toggle').classList.toggle('active');
+            document.querySelector('.mobile-overlay').classList.toggle('active');
+        }
+        function closeMobileMenu() {
+            document.querySelector('.nav').classList.remove('open');
+            document.querySelector('.menu-toggle').classList.remove('active');
+            document.querySelector('.mobile-overlay').classList.remove('active');
+        }
+    </script>
+</body>
+
+</html>
